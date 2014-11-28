@@ -1,4 +1,4 @@
-<div id="message_recipient_<?php echo $sk['recipient']['id']; ?>" class="recipient-list cursor-hand" onclick="SK_getMessages(<?php echo $sk['recipient']['id']; ?>,'<?php echo $sk['recipient']['name']; ?>');">
+<div id="message_recipient_<?php echo $sk['recipient']['id']; ?>" class="recipient-list cursor-hand" onclick="FA_getMessages(<?php echo $sk['recipient']['id']; ?>,'<?php echo $sk['recipient']['name']; ?>');">
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
         <tr>
         <td width="32px" align="left" valign="middle">
@@ -8,7 +8,7 @@
             <span class="bold-500"><?php echo $sk['recipient']['name']; ?></span>
             <i class="icon-circle online-icon <?php if ($sk['recipient']['online'] == true) echo 'active'; ?>"></i>
             <?php
-            $message_count = SK_countMessages(
+            $message_count = FA_countMessages(
                 array(
                     'new' => true,
                     'recipient_id' => $sk['recipient']['id']

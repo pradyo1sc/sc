@@ -3,45 +3,45 @@ $message = 'Failed to save changes. Please do not keep required fields empty.';
 
 if (isset($_POST['update_group_information']) && !empty($_POST['group_id']) && is_numeric($_POST['group_id']) && isset($_POST['keep_blank']) && empty($_POST['keep_blank']) && $logged_in == true) {
     $saved = false;
-    $group_id = SK_secureEncode($_POST['group_id']);
+    $group_id = FA_secureEncode($_POST['group_id']);
     $set_query_one = 'id=id';
     $set_query_two = 'id=id';
     
     $continue = true;
     
     if (!empty($_POST['name'])) {
-        $name = SK_secureEncode($_POST['name']);
+        $name = FA_secureEncode($_POST['name']);
         $set_query_one .= ",name='$name'";
     }
     
     if (!empty($_POST['username'])) {
-        $username = SK_secureEncode($_POST['username']);
+        $username = FA_secureEncode($_POST['username']);
         $set_query_one .= ",username='$username'";
         
-        if (!SK_validateUsername($username)) {
+        if (!FA_validateUsername($username)) {
             $continue = false;
             $message = 'Invalid username';
         }
     }
     
     if (!empty($_POST['email'])) {
-        $email = SK_secureEncode($_POST['email']);
+        $email = FA_secureEncode($_POST['email']);
         $set_query_one .= ",email='$email'";
         
-        if (!SK_validateEmail($email)) {
+        if (!FA_validateEmail($email)) {
             $message = 'Invalid email';
         }
     }
     
     if (!empty($_POST['about'])) {
-        $about = SK_secureEncode($_POST['about']);
+        $about = FA_secureEncode($_POST['about']);
         $set_query_one .= ",about='$about'";
     } else {
         $set_query_one .= ",about=''";
     }
     
     if (!empty($_POST['group_privacy'])) {
-        $group_privacy = SK_secureEncode($_POST['group_privacy']);
+        $group_privacy = FA_secureEncode($_POST['group_privacy']);
         $set_query_two .= ",group_privacy='$group_privacy'";
         
         if (!preg_match('/(open|closed|secret)/', $group_privacy)) {
@@ -51,7 +51,7 @@ if (isset($_POST['update_group_information']) && !empty($_POST['group_id']) && i
     }
     
     if (!empty($_POST['add_privacy'])) {
-        $add_privacy = SK_secureEncode($_POST['add_privacy']);
+        $add_privacy = FA_secureEncode($_POST['add_privacy']);
         $set_query_two .= ",add_privacy='$add_privacy'";
         
         if (!preg_match('/(members|admins)/', $add_privacy)) {
@@ -61,7 +61,7 @@ if (isset($_POST['update_group_information']) && !empty($_POST['group_id']) && i
     }
     
     if (!empty($_POST['timeline_post_privacy'])) {
-        $timeline_post_privacy = SK_secureEncode($_POST['timeline_post_privacy']);
+        $timeline_post_privacy = FA_secureEncode($_POST['timeline_post_privacy']);
         $set_query_two .= ",timeline_post_privacy='$timeline_post_privacy'";
         
         if (!preg_match('/(everyone|admins)/', $timeline_post_privacy)) {

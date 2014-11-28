@@ -1,5 +1,5 @@
 <?php
-function SK_verifyLogin() {
+function FA_verifyLogin() {
     global $config;
     require_once('../assets/settings/admin.php');
     

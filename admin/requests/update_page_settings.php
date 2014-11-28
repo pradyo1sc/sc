@@ -3,8 +3,8 @@ if (isset($_POST['update_page_settings']) && isset($_POST['keep_blank']) && empt
     $saved = false;
     
     if (!empty($_POST['message_privacy']) && !empty($_POST['timeline_post_privacy'])) {
-        $message_privacy = SK_secureEncode($_POST['message_privacy']);
-        $timeline_post_privacy = SK_secureEncode($_POST['timeline_post_privacy']);
+        $message_privacy = FA_secureEncode($_POST['message_privacy']);
+        $timeline_post_privacy = FA_secureEncode($_POST['timeline_post_privacy']);
         
         if (preg_match('/(everyone|none)/', $message_privacy) && preg_match('/(everyone|admins)/', $timeline_post_privacy)) {
             $query = "ALTER TABLE " . DB_PAGES . " ALTER message_privacy SET DEFAULT '$message_privacy', ALTER timeline_post_privacy SET DEFAULT '$timeline_post_privacy'";

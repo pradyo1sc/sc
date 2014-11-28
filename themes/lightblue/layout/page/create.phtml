@@ -17,12 +17,12 @@
                 <div class="input float-left span65">
                     <select name="page_category_id">
                         <?php
-                        foreach (SK_getPageCategories() as $parent_category) {
+                        foreach (FA_getPageCategories() as $parent_category) {
                         ?>
                         <optgroup label="<?php echo $parent_category['name']; ?>">
                         
                         <?php
-                        foreach (SK_getPageCategories($parent_category['id']) as $main_category) {
+                        foreach (FA_getPageCategories($parent_category['id']) as $main_category) {
                         ?>
                         <option value="<?php echo $main_category['id']; ?>"><?php echo $main_category['name']; ?></option>
                         <?php
@@ -45,7 +45,7 @@
                     ?>:
                 </label>
                 <div class="input float-left span65">
-                    <input type="text" value="<?php echo $lang['page_name_textarea_label']; ?>" placeholder="<?php echo $lang['page_name_textarea_label']; ?>" data-placeholder="<?php echo $lang['page_name_textarea_label']; ?>" onkeyup="SK_generateUsername(this.value);" data-copy-to=".page-name-input">
+                    <input type="text" value="<?php echo $lang['page_name_textarea_label']; ?>" placeholder="<?php echo $lang['page_name_textarea_label']; ?>" data-placeholder="<?php echo $lang['page_name_textarea_label']; ?>" onkeyup="FA_generateUsername(this.value);" data-copy-to=".page-name-input">
                     
                     <input class="page-name-input" type="hidden" name="page_name">
                 </div>
@@ -60,7 +60,7 @@
                 </label>
                 
                 <div class="input float-left span65">
-                    <input class="username-textinput" type="text" value="<?php echo $lang['page_username_textarea_label']; ?>" placeholder="<?php echo $lang['page_username_textarea_label']; ?>" data-placeholder="<?php echo $lang['page_username_textarea_label']; ?>" autocomplete="off" data-copy-to=".page-username-input" onkeyup="SK_checkUsername(this.value,0,'.check-username-result',true);">
+                    <input class="username-textinput" type="text" value="<?php echo $lang['page_username_textarea_label']; ?>" placeholder="<?php echo $lang['page_username_textarea_label']; ?>" data-placeholder="<?php echo $lang['page_username_textarea_label']; ?>" autocomplete="off" data-copy-to=".page-username-input" onkeyup="FA_checkUsername(this.value,0,'.check-username-result',true);">
                     
                     <input class="page-username-input" type="hidden" name="page_username">
                     
@@ -118,7 +118,7 @@
 <script>
 $(function(){
     $('form.create-page-form').ajaxForm({
-        url: SK_source() + '?t=page&a=create',
+        url: FA_source() + '?t=page&a=create',
         
         beforeSend: function() {
             $('form.create-page-form')

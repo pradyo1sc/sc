@@ -3,12 +3,12 @@ if (isset($_POST['update_user_settings']) && isset($_POST['keep_blank']) && empt
     $saved = false;
     
     if (!empty($_POST['comment_privacy']) && isset($_POST['confirm_followers']) && !empty($_POST['follow_privacy']) && !empty($_POST['message_privacy']) && !empty($_POST['timeline_post_privacy'])) {
-        $comment_privacy = SK_secureEncode($_POST['comment_privacy']);
-        $confirm_followers = SK_secureEncode($_POST['confirm_followers']);
-        $follow_privacy = SK_secureEncode($_POST['follow_privacy']);
-        $message_privacy = SK_secureEncode($_POST['message_privacy']);
-        $timeline_post_privacy = SK_secureEncode($_POST['timeline_post_privacy']);
-        $post_privacy = SK_secureEncode($_POST['post_privacy']);
+        $comment_privacy = FA_secureEncode($_POST['comment_privacy']);
+        $confirm_followers = FA_secureEncode($_POST['confirm_followers']);
+        $follow_privacy = FA_secureEncode($_POST['follow_privacy']);
+        $message_privacy = FA_secureEncode($_POST['message_privacy']);
+        $timeline_post_privacy = FA_secureEncode($_POST['timeline_post_privacy']);
+        $post_privacy = FA_secureEncode($_POST['post_privacy']);
         
         if (preg_match('/(everyone|following)/', $comment_privacy) && preg_match('/(0|1)/', $confirm_followers) && preg_match('/(everyone|following)/', $follow_privacy) && preg_match('/(everyone|following)/', $message_privacy) && preg_match('/(everyone|following|none)/', $timeline_post_privacy) && preg_match('/(everyone|following)/', $post_privacy)) {
             $query = "ALTER TABLE ". DB_USERS ."

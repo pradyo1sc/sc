@@ -45,4 +45,4 @@ $terms['tos'] = '<div class="list-column">
 </div>';
 
 $sk['terms'] = $terms;
-$sk['content'] = SK_getPage('terms/content');
+$sk['content'] = FA_getPage('terms/content');

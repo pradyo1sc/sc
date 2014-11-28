@@ -27,7 +27,7 @@ global $config, $dbConnect;
         <?php
         
         if (!empty($_GET['search_query'])) {
-            $search_query = SK_secureEncode($_GET['search_query']);
+            $search_query = FA_secureEncode($_GET['search_query']);
             
             if (is_numeric($search_query)) {
                 $query_part = "id=" . $search_query;
@@ -48,7 +48,7 @@ global $config, $dbConnect;
         $sql_query_one = mysqli_query($dbConnect, $query_one);
         
         while ($group = mysqli_fetch_array($sql_query_one, MYSQLI_ASSOC)) {
-        $group = SK_getAccount($group['id']);
+        $group = FA_getAccount($group['id']);
         ?>
         <div class="user-data-wrapper manage-group-list" data-group-id="<?php echo $group['id']; ?>">
             <div class="float-left span10">
@@ -73,13 +73,13 @@ global $config, $dbConnect;
     </div>
     <?php if (!isset($search_query)) { ?>
     <div class="list-wrapper show-more-wrapper" align="center">
-        <a onclick="SK_loadMoreGroups();">Show more groups</a>
+        <a onclick="FA_loadMoreGroups();">Show more groups</a>
     </div>
     <?php } ?>
 </div>
 <script src="jquery.js"></script>
 <script>
-function SK_loadMoreGroups() {
+function FA_loadMoreGroups() {
     after_group_id = $('.manage-group-list:last').attr('data-group-id');
     
     show_more_text = $('.show-more-wrapper').find('a').text();

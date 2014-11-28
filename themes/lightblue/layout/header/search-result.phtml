@@ -18,7 +18,7 @@
                         echo $lang['gender_' . $sk['list']['gender'] . '_label'];
                     }
                 } elseif ($sk['list']['type'] == "page") {
-                    $category = SK_getPageCategoryData($sk['list']['category_id']);
+                    $category = FA_getPageCategoryData($sk['list']['category_id']);
                     echo $category['name'];
                 } elseif ($sk['list']['type'] == "group") {
                     echo $lang[$sk['list']['group_privacy'] . '_group'];

@@ -1,6 +1,6 @@
 <?php
 if ($logged != true) {
-    header('Location: ' . SK_smoothLink('index.php?tab1=welcome'));
+    header('Location: ' . FA_smoothLink('index.php?tab1=welcome'));
 }
 
-$sk['content'] = SK_getPage('group/create');
+$sk['content'] = FA_getPage('group/create');

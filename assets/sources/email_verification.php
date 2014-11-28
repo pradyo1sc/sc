@@ -6,8 +6,8 @@ if (!isset($dbConnect)) {
 $redirect = true;
 
 if (!empty($_GET['email']) && !empty($_GET['key'])) {
-    $email = SK_secureEncode($_GET['email']);
-    $key = SK_secureEncode($_GET['key']);
+    $email = FA_secureEncode($_GET['email']);
+    $key = FA_secureEncode($_GET['key']);
     
     $query_one = "SELECT id,password FROM " . DB_ACCOUNTS . " WHERE email='$email' AND email_verification_key='$key'";
     $sql_query_one = mysqli_query($dbConnect, $query_one);
@@ -29,5 +29,5 @@ if (!empty($_GET['email']) && !empty($_GET['key'])) {
 }
 
 if ($redirect === true) {
-    header('Location: ' . SK_smoothLink('index.php?tab1=welcome'));
+    header('Location: ' . FA_smoothLink('index.php?tab1=welcome'));
 }

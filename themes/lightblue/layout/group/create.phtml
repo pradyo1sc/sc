@@ -8,7 +8,7 @@
                 <label class="float-left span20"><?php echo $lang['group_name_label']; ?>:</label>
                 
                 <div class="input float-left span70">
-                    <input type="text" value="<?php echo $lang['group_name_textarea_label']; ?>" placeholder="<?php echo $lang['group_name_textarea_label']; ?>" data-placeholder="<?php echo $lang['group_name_textarea_label']; ?>" onkeyup="SK_generateUsername(this.value);" data-copy-to=".group-name-input">
+                    <input type="text" value="<?php echo $lang['group_name_textarea_label']; ?>" placeholder="<?php echo $lang['group_name_textarea_label']; ?>" data-placeholder="<?php echo $lang['group_name_textarea_label']; ?>" onkeyup="FA_generateUsername(this.value);" data-copy-to=".group-name-input">
                     
                     <input class="group-name-input" type="hidden" name="group_name">
                 </div>
@@ -20,7 +20,7 @@
                 <label class="float-left span20"><?php echo $lang['username_label']; ?>:</label>
                 
                 <div class="input float-left span70">
-                    <input class="username-textinput" type="text" value="<?php echo $lang['group_username_textarea_label']; ?>" placeholder="<?php echo $lang['group_username_textarea_label']; ?>" data-placeholder="<?php echo $lang['group_username_textarea_label']; ?>" autocomplete="off" data-copy-to=".group-username-input" onkeyup="SK_checkUsername(this.value,0,'.check-username-result',true);">
+                    <input class="username-textinput" type="text" value="<?php echo $lang['group_username_textarea_label']; ?>" placeholder="<?php echo $lang['group_username_textarea_label']; ?>" data-placeholder="<?php echo $lang['group_username_textarea_label']; ?>" autocomplete="off" data-copy-to=".group-username-input" onkeyup="FA_checkUsername(this.value,0,'.check-username-result',true);">
                     
                     <input class="group-username-input" type="hidden" name="group_username">
                     
@@ -120,7 +120,7 @@
 <script>
 $(function () {
     $('form.create-group-form').ajaxForm({
-        url: SK_source() + '?t=group&a=create',
+        url: FA_source() + '?t=group&a=create',
         
         beforeSend: function() {
             $('form.create-group-form')

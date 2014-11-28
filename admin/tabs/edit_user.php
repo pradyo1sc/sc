@@ -6,7 +6,7 @@ if (empty($_GET['id'])) {
     return null;
 }
 
-$user = SK_getAccount($_GET['id']);
+$user = FA_getAccount($_GET['id']);
 
 ?>
 <form class="content-container" method="post" action="?tab1=edit_user&id=<?php echo $_GET['id'] ?>">

@@ -41,8 +41,8 @@ $sk['config'] = $config;
 $logged = false;
 $user = null;
 
-if (SK_isLogged()) {
-    $user = SK_getUser($_SESSION['user_id'], true);
+if (FA_isLogged()) {
+    $user = FA_getUser($_SESSION['user_id'], true);
     
     if (!empty($user['id']) && $user['type'] == "user") {
         $sk['user'] = $user;
@@ -55,7 +55,7 @@ if (SK_isLogged()) {
             $_SESSION['language'] = $user['language'];
         }
         
-        if (!SK_isFollowing($user['id'], $user['id'])) {
+        if (!FA_isFollowing($user['id'], $user['id'])) {
             $query_three = "DELETE FROM " . DB_FOLLOWERS . " WHERE follower_id=" . $user['id'] . " AND following_id=" . $user['id'];
             $sql_query_three = mysqli_query($dbConnect, $query_three);
             

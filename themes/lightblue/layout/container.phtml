@@ -26,19 +26,19 @@
     <?php
     if ($sk['config']['smooth_links'] == 1) {
         echo '<script>
-    function SK_source(){
+    function FA_source(){
         return \'' . $sk['config']['ajax_path'] . '\';
     }
-    function SK_pageSource() {
+    function FA_pageSource() {
         return \'' . $sk['config']['page_path'] . '\';
     }
 </script>';
     } else {
         echo '<script>
-    function SK_source(){
+    function FA_source(){
         return \'request.php\';
     }
-    function SK_pageSource() {
+    function FA_pageSource() {
         return \'page.php\';
     }
 </script>';
@@ -57,15 +57,15 @@
     // Open chat automatically from session
     if ($sk['config']['chat'] == 1) {
         
-        if ($chat_recipient = SK_getChat()) {
-            echo '<script>$(function() { SK_getChat(' . $chat_recipient['id'] . ',\'' . $chat_recipient['name'] . '\'); });</script>';
+        if ($chat_recipient = FA_getChat()) {
+            echo '<script>$(function() { FA_getChat(' . $chat_recipient['id'] . ',\'' . $chat_recipient['name'] . '\'); });</script>';
         }
     }
     ?>
     <script>
     /* Ajax Page Loader */
-    function SK_loadPage(pageurl) {
-        $.get(SK_pageSource() + pageurl, {}, function (data) {
+    function FA_loadPage(pageurl) {
+        $.get(FA_pageSource() + pageurl, {}, function (data) {
             $('.page-wrapper')
                 .html(data);
             stopPageLoadingBar();
@@ -120,13 +120,13 @@
     $(document).on('click', '*[data-href]', function(e) {
         e.preventDefault();
         startPageLoadingBar();
-        SK_loadPage($(this).attr('data-href'));
+        FA_loadPage($(this).attr('data-href'));
         $(document).scrollTop(0);
     });
     </script>
 </head>
 <body<?php if ($sk['config']['smooth_links'] == true) { echo ' data-rewrite="1"'; } ?>>
-    <?php echo SK_getPage('header/content'); ?>
+    <?php echo FA_getPage('header/content'); ?>
     <div class="page-loading-bar">
         <dd></dd>
         <dt></dt>
@@ -136,11 +136,11 @@
         <?php echo $sk['content']; ?>
     </div>
     
-    <?php echo SK_getPage('footer/content'); ?>
+    <?php echo FA_getPage('footer/content'); ?>
     
     <?php
     if ($sk['logged'] == true && $sk['config']['chat'] == 1) {
-        echo SK_getPage('chat/container');
+        echo FA_getPage('chat/container');
     }
     ?>
     <audio id="notification-sound" preload="auto">

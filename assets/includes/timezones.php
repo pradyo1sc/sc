@@ -1,5 +1,5 @@
 <?php
-function SK_getTimezones() {
+function FA_getTimezones() {
     $timezones = null;
     
     if ($timezones === null) {
@@ -10,7 +10,7 @@ function SK_getTimezones() {
         foreach (DateTimeZone::listIdentifiers() as $timezone) {
             $now->setTimezone(new DateTimeZone($timezone));
             $offsets[] = $offset = $now->getOffset();
-            $timezones[$timezone] = '(' . SK_convertToGMT($offset) . ') ' . SK_rearrangeTimezoneName($timezone);
+            $timezones[$timezone] = '(' . FA_convertToGMT($offset) . ') ' . FA_rearrangeTimezoneName($timezone);
         }
         
         array_multisort($offsets, $timezones);
@@ -20,13 +20,13 @@ function SK_getTimezones() {
     return $timezones;
 }
 
-function SK_convertToGMT($offset) {
+function FA_convertToGMT($offset) {
     $hours = intval($offset / 3600);
     $minutes = abs(intval($offset % 3600 / 60));
     return 'GMT' . ($offset ? sprintf('%+03d:%02d', $hours, $minutes) : '');
 }
 
-function SK_rearrangeTimezoneName($name) {
+function FA_rearrangeTimezoneName($name) {
     $name = str_replace('/', ', ', $name);
     $name = str_replace('_', ' ', $name);
     $name = str_replace('St ', 'St. ', $name);

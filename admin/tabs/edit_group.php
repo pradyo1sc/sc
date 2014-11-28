@@ -6,7 +6,7 @@ if (empty($_GET['id'])) {
     return null;
 }
 
-$group = SK_getAccount($_GET['id']);
+$group = FA_getAccount($_GET['id']);
 
 ?>
 <form class="content-container" method="post" action="?tab1=edit_group&id=<?php echo $_GET['id'] ?>">

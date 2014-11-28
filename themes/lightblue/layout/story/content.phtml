@@ -48,13 +48,13 @@
             <?php
             if ($sk['story']['admin'] == true) {
             ?>
-            <span class="remove-btn cursor-hand" title="<?php echo $lang['remove']; ?>" onclick="SK_deletePostWindow(<?php echo $sk['story']['id']; ?>);">
+            <span class="remove-btn cursor-hand" title="<?php echo $lang['remove']; ?>" onclick="FA_deletePostWindow(<?php echo $sk['story']['id']; ?>);">
                 <i class="icon-remove progress-icon"></i>
             </span>
             <?php
-            } elseif (!SK_isPostReported($sk['story']['id'])) {
+            } elseif (!FA_isPostReported($sk['story']['id'])) {
             ?>
-            <span class="report-btn cursor-hand" title="<?php echo $lang['report']; ?>" onclick="SK_reportPost(<?php echo $sk['story']['id']; ?>);">
+            <span class="report-btn cursor-hand" title="<?php echo $lang['report']; ?>" onclick="FA_reportPost(<?php echo $sk['story']['id']; ?>);">
                 <i class="icon-flag progress-icon"></i>
             </span>
             <?php
@@ -70,15 +70,15 @@
     if ($sk['logged'] == true) {
     ?>
     <div class="options-wrapper">
-        <?php echo SK_getPostLikeButton($sk['story']['id']); ?>
+        <?php echo FA_getPostLikeButton($sk['story']['id']); ?>
         
         <abbr class="space6">&#183;</abbr>
         
-        <?php echo SK_getPostShareButton($sk['story']['id']); ?>
+        <?php echo FA_getPostShareButton($sk['story']['id']); ?>
         
         <abbr class="space6">&#183;</abbr>
         
-        <?php echo SK_getPostFollowButton($sk['story']['id']); ?>
+        <?php echo FA_getPostFollowButton($sk['story']['id']); ?>
     </div>
     <?php
     }
@@ -107,7 +107,7 @@
             foreach ($sk['story']['media'] as $photo) {
             ?>
             <a href="javascript:void(0);">
-                <img class="<?php echo $photo_class; ?>" src="<?php echo $photo['url']; ?>" alt="Photo" onclick="javascript:SK_openLightbox(<?php echo $photo['post_id']; ?>);">
+                <img class="<?php echo $photo_class; ?>" src="<?php echo $photo['url']; ?>" alt="Photo" onclick="javascript:FA_openLightbox(<?php echo $photo['post_id']; ?>);">
             </a>
             <?php
             }
@@ -141,7 +141,7 @@
                 <td align="left" valign="middle">
                     <span class="story-like-activity">
                         <?php
-                        echo SK_getPostLikeActivityButton($sk['story']['id']);
+                        echo FA_getPostLikeActivityButton($sk['story']['id']);
                         ?>
                     </span>
                     
@@ -149,7 +149,7 @@
                     
                     <span class="story-comment-activity">
                         <?php
-                        echo SK_getPostCommentActivityButton($sk['story']['id']);
+                        echo FA_getPostCommentActivityButton($sk['story']['id']);
                         ?>
                     </span>
                     
@@ -157,7 +157,7 @@
                     
                     <span class="story-share-activity">
                         <?php
-                        echo SK_getPostShareActivityButton($sk['story']['id']);
+                        echo FA_getPostShareActivityButton($sk['story']['id']);
                         ?>
                     </span>
                 </td>
@@ -192,7 +192,7 @@
         <?php
         if ($sk['story']['view_all_comments'] == true) {
         ?>
-        <div class="view-more-wrapper" align="center" onclick="SK_loadAllComments(<?php echo $sk['story']['id']; ?>);">
+        <div class="view-more-wrapper" align="center" onclick="FA_loadAllComments(<?php echo $sk['story']['id']; ?>);">
             <i class="icon-lightbulb progress-icon hide"></i>
             <?php
             echo $lang['view_all_comments_label'];

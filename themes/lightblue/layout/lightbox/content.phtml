@@ -30,19 +30,19 @@
                     </div>
 
                     <div class="lb-story-options">
-                        <?php echo SK_getPostLikeButton($sk['lb_story']['id']); ?>
+                        <?php echo FA_getPostLikeButton($sk['lb_story']['id']); ?>
                         
                         <abbr class="space6">
                             &#183;
                         </abbr>
                         
-                        <?php echo SK_getPostShareButton($sk['lb_story']['id']); ?>
+                        <?php echo FA_getPostShareButton($sk['lb_story']['id']); ?>
                         
                         <abbr class="space6">
                             &#183;
                         </abbr>
                         
-                        <?php echo SK_getPostFollowButton($sk['lb_story']['id']); ?>
+                        <?php echo FA_getPostFollowButton($sk['lb_story']['id']); ?>
                     </div>
 
                     <div class="lb-story-text">
@@ -53,7 +53,7 @@
                 <?php
                 if ($sk['lb_story']['view_all_comments'] == true) {
                 ?>
-                <div class="view-more-wrapper" align="center" onclick="SK_loadAllComments(<?php echo $sk['lb_story']['id']; ?>);">
+                <div class="view-more-wrapper" align="center" onclick="FA_loadAllComments(<?php echo $sk['lb_story']['id']; ?>);">
                     <i class="icon-lightbulb progress-icon hide"></i>
                     <?php
                     echo $lang['view_all_comments_label'];
@@ -65,8 +65,8 @@
 
                 <div class="comments-wrapper">
                     <?php
-                    foreach (SK_getComments($sk['lb_story']['id'], 8) as $sk['comment']) {
-                        echo SK_getPage('lightbox/comment');
+                    foreach (FA_getComments($sk['lb_story']['id'], 8) as $sk['comment']) {
+                        echo FA_getPage('lightbox/comment');
                     }
                     ?>
                 </div>
@@ -79,7 +79,7 @@
                             </td>
 
                             <td class="lb-comment-textarea-wrapper" valign="top" align="left">
-                                <textarea class="lb-new-comment-textarea auto-grow-input" placeholder="<?php echo $lang['comment_textarea_label']; ?>" onkeyup="SK_registerCommentviaLB(this.value,<?php echo $sk['lb_story']['id']; ?>,<?php echo $sk['user']['id']; ?>,event);"></textarea>
+                                <textarea class="lb-new-comment-textarea auto-grow-input" placeholder="<?php echo $lang['comment_textarea_label']; ?>" onkeyup="FA_registerCommentviaLB(this.value,<?php echo $sk['lb_story']['id']; ?>,<?php echo $sk['user']['id']; ?>,event);"></textarea>
                                 <i class="icon-lightbulb progress-icon hide"></i>
                             </td>
                         </tr>
@@ -163,23 +163,23 @@
         $(".sc-lightbox-container").remove();
     }
 
-    function SK_registerCommentviaLB(text, post_id, timeline_id, event) {
+    function FA_registerCommentviaLB(text, post_id, timeline_id, event) {
         if (event.keyCode == 13 && event.shiftKey == 0) {
             main_wrapper = $('.story_' + post_id);
             comment_textarea = main_wrapper.find('.lb-comment-textarea-wrapper');
             textarea_wrapper = comment_textarea.find('textarea');
             textarea_wrapper.val('');
             
-            SK_progressIconLoader(comment_textarea);
+            FA_progressIconLoader(comment_textarea);
             
-            $.post(SK_source() + '?t=post&a=comment&lb=1&post_id=' + post_id, {text: text, timeline_id: timeline_id}, function (data) {
+            $.post(FA_source() + '?t=post&a=comment&lb=1&post_id=' + post_id, {text: text, timeline_id: timeline_id}, function (data) {
                 
                 if (data.status == 200) {
                     main_wrapper.find('.comments-wrapper').append(data.html);
                     main_wrapper.find('.story-comment-activity').html(data.activity_html);
                 }
                 
-                SK_progressIconLoader(comment_textarea);
+                FA_progressIconLoader(comment_textarea);
             });
         }
     }

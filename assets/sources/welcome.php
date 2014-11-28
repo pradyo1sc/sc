@@ -1,14 +1,14 @@
 <?php
 if (!empty($_COOKIE['sk_u_i']) && !empty($_COOKIE['sk_u_p'])) {
-    $u_i = SK_secureEncode($_COOKIE['sk_u_i']);
-    $u_p = SK_secureEncode($_COOKIE['sk_u_p']);
+    $u_i = FA_secureEncode($_COOKIE['sk_u_i']);
+    $u_p = FA_secureEncode($_COOKIE['sk_u_p']);
     
     $_SESSION['user_id'] = $u_i;
     $_SESSION['user_pass'] = $u_p;
 }
 
 if ($logged == true) {
-    header('Location: ' . SK_smoothLink('index.php?tab1=home'));
+    header('Location: ' . FA_smoothLink('index.php?tab1=home'));
 }
 
 /* Core */
@@ -34,4 +34,4 @@ $fb_login_url = $facebook->getLoginUrl($params);
 
 $sk['fb_login_url'] = $fb_login_url;
 
-$sk['content'] = SK_getPage('welcome/content');
+$sk['content'] = FA_getPage('welcome/content');

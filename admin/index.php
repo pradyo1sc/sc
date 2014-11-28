@@ -15,7 +15,7 @@ foreach ($function_files as $func_file) {
 
 $logged_in = false;
 
-if (SK_verifyLogin()) {
+if (FA_verifyLogin()) {
     $logged_in = true;
 }
 

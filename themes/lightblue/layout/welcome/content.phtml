@@ -39,7 +39,7 @@
     <?php
     if (isset($_GET['tab2']) && $_GET['tab2'] == "password_reset") {
         
-        if (isset($_GET['id']) && SK_isValidPasswordResetToken($_GET['id']) != false) {
+        if (isset($_GET['id']) && FA_isValidPasswordResetToken($_GET['id']) != false) {
     ?>
     <form class="welcome-form passwordreset-form" method="post">
         <div class="form-header">
@@ -77,7 +77,7 @@
                 <?php echo $lang['forgot_password']; ?>?
             </div>
             <div class="float-right">
-                <a href="<?php echo SK_smoothLink('index.php?tab1=welcome'); ?>"><?php echo $lang['log_in']; ?></a>
+                <a href="<?php echo FA_smoothLink('index.php?tab1=welcome'); ?>"><?php echo $lang['log_in']; ?></a>
             </div>
             <div class="float-clear"></div>
         </div>
@@ -99,7 +99,7 @@
                 <?php echo $lang['log_in']; ?>
             </div>
             <div class="float-right">
-                <a href="<?php echo SK_smoothLink('index.php?tab1=welcome&tab2=forgot_password'); ?>"><?php echo $lang['forgot_password']; ?>?</a>
+                <a href="<?php echo FA_smoothLink('index.php?tab1=welcome&tab2=forgot_password'); ?>"><?php echo $lang['forgot_password']; ?>?</a>
             </div>
             <div class="float-clear"></div>
         </div>
@@ -130,7 +130,7 @@
             </div>
             
             <div class="input-wrapper">
-                <input type="text" name="username" placeholder="<?php echo $lang['username_label']; ?>" onkeyup="SK_checkUsername(this.value,0,'.check-username-result',false);" autocomplete="off">
+                <input type="text" name="username" placeholder="<?php echo $lang['username_label']; ?>" onkeyup="FA_checkUsername(this.value,0,'.check-username-result',false);" autocomplete="off">
                 <div class="check-username-result"></div>
             </div>
             
@@ -168,9 +168,9 @@
                     }
                     ?>
                 </select>
-                <select class="birth-month-select" name="birthday[1]" style="width: 98px;" onchange="SK_getMonthDays(this.value);">
+                <select class="birth-month-select" name="birthday[1]" style="width: 98px;" onchange="FA_getMonthDays(this.value);">
                     <?php
-                    foreach (SK_getMonths() as $month_number => $month_data) {
+                    foreach (FA_getMonths() as $month_number => $month_data) {
                         
                         if ($month_number == $sk['user']['birth']['month']) {
                             $option = '<option value="' . $month_number . '" selected>' . $month_data[1] . '</option>';
@@ -198,7 +198,7 @@
                 </select>
             </div>
             <script>
-            function SK_getMonthDays(month_number) {
+            function FA_getMonthDays(month_number) {
                 var month = new Array();
                 month[1] = 31;
                 month[2] = 28;
@@ -247,7 +247,7 @@
             }
 
             if ($sk['config']['captcha'] == true) {
-            $captcha = SK_createCaptcha();
+            $captcha = FA_createCaptcha();
             ?>
             <div class="input-wrapper">
                 <table border="0" width="100%" cellspacing="0" cellpadding="0">

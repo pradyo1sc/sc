@@ -1,5 +1,5 @@
 <?php
-function SK_secureEncode($string) {
+function FA_secureEncode($string) {
     global $dbConnect;
     
     $string = trim($string);

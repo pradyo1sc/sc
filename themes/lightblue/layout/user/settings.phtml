@@ -7,31 +7,31 @@
             ?>
         </div>
         
-        <a class="list-column" href="<?php echo SK_smoothLink('index.php?tab1=settings&tab2=general'); ?>" data-href="?tab1=settings&tab2=general">
+        <a class="list-column" href="<?php echo FA_smoothLink('index.php?tab1=settings&tab2=general'); ?>" data-href="?tab1=settings&tab2=general">
             <?php
             echo $lang['general_settings_label'];
             ?>
         </a>
         
-        <a class="list-column" href="<?php echo SK_smoothLink('index.php?tab1=settings&tab2=privacy'); ?>" data-href="?tab1=settings&tab2=privacy">
+        <a class="list-column" href="<?php echo FA_smoothLink('index.php?tab1=settings&tab2=privacy'); ?>" data-href="?tab1=settings&tab2=privacy">
             <?php
             echo $lang['privacy_settings_label'];
             ?>
         </a>
         
-        <a class="list-column" href="<?php echo SK_smoothLink('index.php?tab1=settings&tab2=avatar'); ?>" data-href="?tab1=settings&tab2=avatar">
+        <a class="list-column" href="<?php echo FA_smoothLink('index.php?tab1=settings&tab2=avatar'); ?>" data-href="?tab1=settings&tab2=avatar">
             <?php
             echo $lang['timeline_avatar_label'];
             ?>
         </a>
         
-        <a class="list-column" href="<?php echo SK_smoothLink('index.php?tab1=settings&tab2=cover'); ?>" data-href="?tab1=settings&tab2=cover">
+        <a class="list-column" href="<?php echo FA_smoothLink('index.php?tab1=settings&tab2=cover'); ?>" data-href="?tab1=settings&tab2=cover">
             <?php
             echo $lang['timeline_cover_label'];
             ?>
         </a>
         
-        <a class="list-column" href="<?php echo SK_smoothLink('index.php?tab1=settings&tab2=password'); ?>" data-href="?tab1=settings&tab2=password">
+        <a class="list-column" href="<?php echo FA_smoothLink('index.php?tab1=settings&tab2=password'); ?>" data-href="?tab1=settings&tab2=password">
             <?php
             echo $lang['password_label'];
             ?>
@@ -57,7 +57,7 @@
                     ?>:
                 </label>
                 <div class="input float-left span70">
-                    <input type="text" name="username" value="<?php echo $sk['user']['username']; ?>" autocomplete="off" onkeyup="SK_checkUsername(this.value,<?php echo $sk['user']['id']; ?>,'.check-username-result',true);">
+                    <input type="text" name="username" value="<?php echo $sk['user']['username']; ?>" autocomplete="off" onkeyup="FA_checkUsername(this.value,<?php echo $sk['user']['id']; ?>,'.check-username-result',true);">
                     <div class="check-username-result ajax-result"></div>
                 </div>
                 <div class="float-clear"></div>
@@ -119,10 +119,10 @@
                         }
                         ?>
                     </select>
-                    <select class="birth-month-select" name="birthday[1]" style="width: 30%;" onchange="SK_getMonthDays(this.value);">
+                    <select class="birth-month-select" name="birthday[1]" style="width: 30%;" onchange="FA_getMonthDays(this.value);">
                         <option value=""><?php echo $lang['month']; ?>:</option>
                         <?php
-                        foreach (SK_getMonths() as $month_number => $month_data) {
+                        foreach (FA_getMonths() as $month_number => $month_data) {
                             
                             if ($month_number == $sk['user']['birth']['month']) {
                                 $option = '<option value="' . $month_number . '" selected>' . $month_data[1] . '</option>';
@@ -213,7 +213,7 @@
                 <div class="input float-left span70">
                     <select name="timezone">
                         <?php
-                        foreach (SK_getTimezones() as $tz_val => $tz_name) {
+                        foreach (FA_getTimezones() as $tz_val => $tz_name) {
                             
                             if ($tz_val == $sk['user']['timezone']) {
                                 echo '<option value="' . $tz_val . '" selected>' . $tz_name . '</option>';
@@ -240,10 +240,10 @@
     <script>
     $(function () {
         $('form.update-timeline-form').ajaxForm({
-            url: SK_source()+'?t=user&a=settings',
+            url: FA_source()+'?t=user&a=settings',
             
             beforeSend: function () {
-                SK_progressIconLoader($('form.update-timeline-form').find('button'));
+                FA_progressIconLoader($('form.update-timeline-form').find('button'));
             },
             
             success: function (responseText) {
@@ -258,12 +258,12 @@
                     });
                 }
                 
-                SK_progressIconLoader($('form.update-timeline-form').find('button'));
+                FA_progressIconLoader($('form.update-timeline-form').find('button'));
             }
         });
     });
     
-    function SK_getMonthDays(month_number) {
+    function FA_getMonthDays(month_number) {
         var month = new Array();
         month[1] = 31;
         month[2] = 28;
@@ -531,10 +531,10 @@
     </form>
     <script>
     $('form.update-timeline-form').ajaxForm({
-        url: SK_source()+'?t=user&a=settings',
+        url: FA_source()+'?t=user&a=settings',
         
         beforeSend: function () {
-            SK_progressIconLoader($('form.update-timeline-form').find('button'));
+            FA_progressIconLoader($('form.update-timeline-form').find('button'));
         },
         
         
@@ -550,7 +550,7 @@
                     });
             }
             
-            SK_progressIconLoader($('form.update-timeline-form').find('button'));
+            FA_progressIconLoader($('form.update-timeline-form').find('button'));
         }
     });
     </script>
@@ -650,7 +650,7 @@
     <script>
     $(function () {
         $('form.update-timeline-form').ajaxForm({
-            url: SK_source()+'?t=user&a=settings',
+            url: FA_source()+'?t=user&a=settings',
             
             success: function (responseText) {
                 

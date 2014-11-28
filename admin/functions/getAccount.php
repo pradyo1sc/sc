@@ -1,11 +1,11 @@
 <?php
-function SK_getAccount($account_id=0) {
+function FA_getAccount($account_id=0) {
     global $config, $dbConnect;
     
     if (is_numeric($account_id)) {
-        $check_query_part = "id=" . SK_secureEncode($account_id);
+        $check_query_part = "id=" . FA_secureEncode($account_id);
     } elseif (preg_match('/[A-Za-z0-9_]/', $account_id)) {
-        $check_query_part = "username='" . SK_secureEncode($account_id) . "'";
+        $check_query_part = "username='" . FA_secureEncode($account_id) . "'";
     }
     
     $check_query = "SELECT * FROM " . DB_ACCOUNTS . " WHERE $check_query_part AND active=1";
@@ -24,14 +24,14 @@ function SK_getAccount($account_id=0) {
         if (mysqli_num_rows($account_sql_query) == 1) {
             $account_sql_fetch = mysqli_fetch_assoc($account_sql_query);
             $account_sql_fetch['password'] = '';
-            $account_sql_fetch['url'] = SK_smoothLink('index.php?tab1=timeline&id=' . $account_sql_fetch['username']);
+            $account_sql_fetch['url'] = FA_smoothLink('index.php?tab1=timeline&id=' . $account_sql_fetch['username']);
             $account_name_array = explode(' ', $account_sql_fetch['name']);
             $account_sql_fetch['first_name'] = $account_name_array[0];
             $account_sql_fetch['last_name'] = $account_name_array[count($account_name_array)-1];
             $no_avatar = false;
             
             if ($account_sql_fetch['cover_id'] > 0) {
-                $account_sql_fetch['cover'] = SK_getMedia($account_sql_fetch['cover_id']);
+                $account_sql_fetch['cover'] = FA_getMedia($account_sql_fetch['cover_id']);
                 $account_sql_fetch['actual_cover_url'] =  $config['theme_url'] . '/' . $account_sql_fetch['cover']['url'] . '.' . $account_sql_fetch['cover']['extension'];
                 $account_sql_fetch['cover_url'] =  $config['theme_url'] . '/' . $account_sql_fetch['cover']['url'] . '_cover.' . $account_sql_fetch['cover']['extension'];
             } else {
@@ -39,7 +39,7 @@ function SK_getAccount($account_id=0) {
             }
             
             if ($account_sql_fetch['avatar_id'] > 0) {
-                $account_sql_fetch['avatar'] = SK_getMedia($account_sql_fetch['avatar_id']);
+                $account_sql_fetch['avatar'] = FA_getMedia($account_sql_fetch['avatar_id']);
                 $account_sql_fetch['thumbnail_url'] =  $config['site_url'] . '/' . $account_sql_fetch['avatar']['url'] . '_thumb.' . $account_sql_fetch['avatar']['extension'];
                 $account_sql_fetch['avatar_url'] =  $config['theme_url'] . '/' . $account_sql_fetch['avatar']['url'] . '_100x100.' . $account_sql_fetch['avatar']['extension'];
             } else {

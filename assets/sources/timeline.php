@@ -6,7 +6,7 @@ if ($logged == true) {
 }
 
 if (!empty($_GET['id'])) {
-    $id = SK_secureEncode($_GET['id']);
+    $id = FA_secureEncode($_GET['id']);
     
     if (is_numeric($id)) {
         $sql_query_text = "id=" . $id;
@@ -15,7 +15,7 @@ if (!empty($_GET['id'])) {
     }
     
     if (!empty($sql_query_text)) {
-        $timeline = SK_getUser($id, true);
+        $timeline = FA_getUser($id, true);
         
         if (is_array($timeline) && isset($timeline['id'])) {
             $sk['timeline'] = $timeline;

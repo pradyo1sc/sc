@@ -22,13 +22,13 @@
                     <?php
                     if ($sk['comment']['admin'] == true) {
                     ?>
-                    <span class="comment-remove-btn cursor-hand" title="Remove" onclick="SK_deletePostWindow(<?php echo $sk['comment']['id']; ?>);">
+                    <span class="comment-remove-btn cursor-hand" title="Remove" onclick="FA_deletePostWindow(<?php echo $sk['comment']['id']; ?>);">
                         <i class="icon-remove progress-icon"></i>
                     </span>
                     <?php
-                    } elseif (!SK_isPostReported($sk['comment']['id'])) {
+                    } elseif (!FA_isPostReported($sk['comment']['id'])) {
                     ?>
-                    <span class="report-btn cursor-hand" title="Report" onclick="SK_reportPost(<?php echo $sk['comment']['id']; ?>);">
+                    <span class="report-btn cursor-hand" title="Report" onclick="FA_reportPost(<?php echo $sk['comment']['id']; ?>);">
                         <i class="icon-flag progress-icon"></i>
                     </span>
                     <?php
@@ -43,14 +43,14 @@
                     <abbr class="space1">&#183;</abbr>
                     <?php
                     if ($sk['logged'] == true) {
-                    echo SK_getPostLikeButton($sk['comment']['id']);
+                    echo FA_getPostLikeButton($sk['comment']['id']);
                     ?>
                     <abbr class="space1">&#183;</abbr>
                     <?php
                     }
                     ?>
                     
-                    <?php echo SK_getPostLikeActivityButton($sk['comment']['id']); ?>
+                    <?php echo FA_getPostLikeActivityButton($sk['comment']['id']); ?>
                 </div>
             </div>
         </td>

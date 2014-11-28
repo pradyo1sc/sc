@@ -1,6 +1,6 @@
-<span class="like-activity activity-btn" onclick="SK_getStoryLikes(<?php echo $sk['story']['id']; ?>);" title="<?php echo $lang['likes_label']; ?>">
+<span class="like-activity activity-btn" onclick="FA_getStoryLikes(<?php echo $sk['story']['id']; ?>);" title="<?php echo $lang['likes_label']; ?>">
     <?php
-    echo SK_countPostLikes($sk['story']['id']);
+    echo FA_countPostLikes($sk['story']['id']);
     ?>
     <i class="icon-thumbs-up progress-icon" data-icon="thumbs-up"></i>
 </span>

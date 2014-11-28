@@ -1,6 +1,6 @@
 <?php
 if (isset($_POST['delete_user']) && isset($_POST['delete_btn']) && !empty($_POST['user_id']) && is_numeric($_POST['user_id']) && isset($_POST['keep_blank']) && empty($_POST['keep_blank']) && $logged_in == true) {
-    $user_id = SK_secureEncode($_POST['user_id']);
+    $user_id = FA_secureEncode($_POST['user_id']);
     $saved = false;
     
     $queries[] = "DELETE FROM " . DB_POSTS . " WHERE timeline_id=" . $user_id;

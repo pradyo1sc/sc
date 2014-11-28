@@ -2,8 +2,8 @@
 if (isset($_GET['tab1']) && $_GET['tab1'] == "manage_reports" && $logged_in == true) {
     
     if (!empty($_GET['id']) && !empty($_GET['action'])) {
-        $id = SK_secureEncode($_GET['id']);
-        $action = SK_secureEncode($_GET['action']);
+        $id = FA_secureEncode($_GET['id']);
+        $action = FA_secureEncode($_GET['action']);
         $query_one = "SELECT * FROM " . DB_REPORTS . " WHERE id=$id AND active=1 AND status=0";
         $sql_query_one = mysqli_query($dbConnect, $query_one);
         

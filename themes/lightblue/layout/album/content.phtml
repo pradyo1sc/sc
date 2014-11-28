@@ -9,7 +9,7 @@
             <span>Upload Photos</span>
         </div>
 
-        <div class="right-side album-delete-btn" onclick="SK_deleteAlbumWindow(<?php echo $sk['album']['id']; ?>);">
+        <div class="right-side album-delete-btn" onclick="FA_deleteAlbumWindow(<?php echo $sk['album']['id']; ?>);">
             <i class="icon-remove progress-icon"></i> 
             Delete Album
         </div>
@@ -38,14 +38,14 @@
 
         <div class="album-photos">
             <?php
-            foreach (SK_getAlbumPhotos($sk['album']['id']) as $photo) {
+            foreach (FA_getAlbumPhotos($sk['album']['id']) as $photo) {
             ?>
             <div class="e-photo photo_<?php echo $photo['post_id']; ?>">
-                <img src="<?php echo $sk['config']['site_url'] . '/' . $photo['url'] . '_100x100.' . $photo['extension']; ?>" width="100%" onclick="javascript:SK_openLightbox(<?php echo $photo['post_id']; ?>);">
+                <img src="<?php echo $sk['config']['site_url'] . '/' . $photo['url'] . '_100x100.' . $photo['extension']; ?>" width="100%" onclick="javascript:FA_openLightbox(<?php echo $photo['post_id']; ?>);">
                 <?php
                 if ($sk['album']['timeline_id'] == $sk['user']['id']) {
                 ?>
-                <div class="remove-btn" title="Delete Photo" onclick="SK_deletePostWindow(<?php echo $photo['post_id']; ?>);">
+                <div class="remove-btn" title="Delete Photo" onclick="FA_deletePostWindow(<?php echo $photo['post_id']; ?>);">
                     <i class="icon-remove"></i>
                 </div>
                 <?php
@@ -83,8 +83,8 @@
         
         <div class="suggestions-content">
             <?php
-            foreach (SK_getFollowSuggestions() as $sk['suggestion']) {
-                echo SK_getPage('home/suggestion-wrap');
+            foreach (FA_getFollowSuggestions() as $sk['suggestion']) {
+                echo FA_getPage('home/suggestion-wrap');
             }
             ?>
         </div>
@@ -96,12 +96,12 @@
         </div>
         <div class="trending-content">
             <?php
-            $trendings = SK_getTrendings('popular');
+            $trendings = FA_getTrendings('popular');
             
             if (is_array($trendings) && count($trendings) > 0) {
                 
                 foreach ($trendings as $sk['trend']) {
-                    echo SK_getPage('hashtag/trend-wrap');
+                    echo FA_getPage('hashtag/trend-wrap');
                 }
             }
             ?>
@@ -123,10 +123,10 @@
 <script>
 $(function () {
     $('form.e-album-form').ajaxForm({
-        url: SK_source() + '?t=album&a=upload',
+        url: FA_source() + '?t=album&a=upload',
         
         beforeSend: function() {
-            SK_progressIconLoader($('.e-album-uploader'));
+            FA_progressIconLoader($('.e-album-uploader'));
         },
 
         uploadProgress: function(event, position, total, percentComplete) {
@@ -146,17 +146,17 @@ $(function () {
                 $('.album-photos').prepend(responseText.html);
             }
 
-            SK_progressIconLoader(container);
+            FA_progressIconLoader(container);
             container.find('span').text('Upload Photos');
         }
     });
 });
 
-function SK_deleteAlbumWindow(album_id) {
+function FA_deleteAlbumWindow(album_id) {
     button_wrapper = $('.album-delete-btn');
-    SK_progressIconLoader(button_wrapper);
+    FA_progressIconLoader(button_wrapper);
 
-    $.get(SK_source(), {t: 'album', album_id: album_id, a: 'delete_window'}, function(data) {
+    $.get(FA_source(), {t: 'album', album_id: album_id, a: 'delete_window'}, function(data) {
         
         if (data.status == 200) {
             $(document.body)
@@ -168,13 +168,13 @@ function SK_deleteAlbumWindow(album_id) {
             }
         }
         
-        SK_progressIconLoader(button_wrapper);
+        FA_progressIconLoader(button_wrapper);
     });
 }
 
-function SK_deleteAlbum(album_id) {
-    SK_closeWindow();
-    $.get(SK_source(), {t: 'album', album_id: album_id, a: 'delete'}, function(data) {
+function FA_deleteAlbum(album_id) {
+    FA_closeWindow();
+    $.get(FA_source(), {t: 'album', album_id: album_id, a: 'delete'}, function(data) {
         
         if (data.status == 200) {
             window.location = data.location;

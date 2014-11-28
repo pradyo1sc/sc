@@ -3,8 +3,8 @@ if (isset($_POST['update_group_settings']) && isset($_POST['keep_blank']) && emp
     $saved = false;
     
     if (!empty($_POST['add_privacy']) && !empty($_POST['timeline_post_privacy'])) {
-        $add_privacy = SK_secureEncode($_POST['add_privacy']);
-        $timeline_post_privacy = SK_secureEncode($_POST['timeline_post_privacy']);
+        $add_privacy = FA_secureEncode($_POST['add_privacy']);
+        $timeline_post_privacy = FA_secureEncode($_POST['timeline_post_privacy']);
         
         if (preg_match('/(members|admins)/', $add_privacy) && preg_match('/(members|admins)/', $timeline_post_privacy)) {
             $query = "ALTER TABLE " . DB_GROUPS . " ALTER add_privacy SET DEFAULT '$add_privacy', ALTER timeline_post_privacy SET DEFAULT '$timeline_post_privacy'";

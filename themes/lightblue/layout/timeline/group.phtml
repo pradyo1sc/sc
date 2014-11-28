@@ -22,43 +22,43 @@
         <table border="0" width="100%" cellpadding="0" cellspacing="0">
         <tr>
             <?php
-            if (($sk['timeline']['add_privacy'] == "members" && SK_isFollowing($sk['timeline']['id'])) or ($sk['timeline']['add_privacy'] == "admins" && SK_isGroupAdmin($sk['timeline']['id']))) {
+            if (($sk['timeline']['add_privacy'] == "members" && FA_isFollowing($sk['timeline']['id'])) or ($sk['timeline']['add_privacy'] == "admins" && FA_isGroupAdmin($sk['timeline']['id']))) {
             ?>
             <td class="statistic" align="center" valign="middle">
-                <a href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=add_members&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=add_members&id=<?php echo $sk['timeline']['username']; ?>">
+                <a href="<?php echo FA_smoothLink('index.php?tab1=timeline&tab2=add_members&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=add_members&id=<?php echo $sk['timeline']['username']; ?>">
                     <?php echo $lang['group_add_members_label']; ?>
                 </a>
             </td>
             <?php
             }
             
-            if (SK_isGroupAdmin($sk['timeline']['id']) && SK_countFollowRequests($sk['timeline']['id']) > 0) {
+            if (FA_isGroupAdmin($sk['timeline']['id']) && FA_countFollowRequests($sk['timeline']['id']) > 0) {
             ?>
             <td class="statistic" align="center" valign="middle">
-                <a href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=requests&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=requests&id=<?php echo $sk['timeline']['username']; ?>">
-                    <?php echo SK_countFollowRequests($sk['timeline']['id']) . ' ' . $lang['group_requests_label']; ?>
+                <a href="<?php echo FA_smoothLink('index.php?tab1=timeline&tab2=requests&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=requests&id=<?php echo $sk['timeline']['username']; ?>">
+                    <?php echo FA_countFollowRequests($sk['timeline']['id']) . ' ' . $lang['group_requests_label']; ?>
                 </a>
             </td>
             <?php
             }
             ?>
             <td class="statistic" align="center" valign="middle">
-                <a href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=list_members&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=list_members&id=<?php echo $sk['timeline']['username']; ?>">
+                <a href="<?php echo FA_smoothLink('index.php?tab1=timeline&tab2=list_members&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=list_members&id=<?php echo $sk['timeline']['username']; ?>">
                     <?php
-                    echo SK_countFollowers($sk['timeline']['id']) . ' ' .$lang['group_members_label'];
+                    echo FA_countFollowers($sk['timeline']['id']) . ' ' .$lang['group_members_label'];
                     ?>
                 </a>
             </td>
             <td class="statistic" align="center" valign="middle">
-                <a href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=list_admins&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=list_admins&id=<?php echo $sk['timeline']['username']; ?>">
+                <a href="<?php echo FA_smoothLink('index.php?tab1=timeline&tab2=list_admins&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=list_admins&id=<?php echo $sk['timeline']['username']; ?>">
                     <?php
-                    echo SK_countGroupAdmins($sk['timeline']['id']) . ' ' .$lang['group_admins_label'];
+                    echo FA_countGroupAdmins($sk['timeline']['id']) . ' ' .$lang['group_admins_label'];
                     ?>
                 </a>
             </td>
             <td class="statistic" align="center" valign="middle">
-                <a href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=stories&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=stories&id=<?php echo $sk['timeline']['username']; ?>">
-                    <?php echo SK_countPosts($sk['timeline']['id']) . ' ' . $lang['posts_label']; ?>
+                <a href="<?php echo FA_smoothLink('index.php?tab1=timeline&tab2=stories&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=stories&id=<?php echo $sk['timeline']['username']; ?>">
+                    <?php echo FA_countPosts($sk['timeline']['id']) . ' ' . $lang['posts_label']; ?>
                 </a>
             </td>
         </tr>
@@ -68,16 +68,16 @@
 
 <div class="float-left span35">
     <?php
-    if (SK_isGroupAdmin($sk['timeline']['id'])) {
+    if (FA_isGroupAdmin($sk['timeline']['id'])) {
     ?>
     <div class="timeline-buttons cover-resize-buttons">
         <table border="0" width="100%" cellspacing="0" cellpadding="0">
         <tr>
             <td align="center" valign="middle">
-                <a onclick="SK_saveReposition();"><i class="icon-pushpin"></i> <?php echo $lang['save_position_label']; ?></a>
+                <a onclick="FA_saveReposition();"><i class="icon-pushpin"></i> <?php echo $lang['save_position_label']; ?></a>
             </td>
             <td align="center" valign="middle">
-                <a onclick="SK_cancelReposition();"><i class="icon-remove"></i> <?php echo $lang['cancel']; ?></a>
+                <a onclick="FA_cancelReposition();"><i class="icon-remove"></i> <?php echo $lang['cancel']; ?></a>
             </td>
         </tr>
         </table>
@@ -92,11 +92,11 @@
         <tr>
             <td align="center" valign="middle">
                 <?php
-                echo SK_getFollowButton($sk['timeline']['id']);
+                echo FA_getFollowButton($sk['timeline']['id']);
                 ?>
             </td>
             <td align="center" valign="middle">
-                <a href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=settings&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&id=<?php echo $sk['timeline']['username']; ?>">
+                <a href="<?php echo FA_smoothLink('index.php?tab1=timeline&tab2=settings&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&id=<?php echo $sk['timeline']['username']; ?>">
                     <i class="icon-gear"></i> 
                     <?php
                     echo $lang['settings_label'];
@@ -114,7 +114,7 @@
                 </a>
             </td>
             <td align="center" valign="middle">
-                <a onclick="SK_repositionCover();">
+                <a onclick="FA_repositionCover();">
                     <i class="icon-move"></i> 
                     <?php
                     echo $lang['reposition_cover_label'];
@@ -136,7 +136,7 @@
         <tr>
             <td align="center" valign="middle">
                 <?php
-                echo SK_getFollowButton($sk['timeline']['id']);
+                echo FA_getFollowButton($sk['timeline']['id']);
                 ?>
             </td>
         </tr>
@@ -168,7 +168,7 @@
         <?php
         if (isset($_GET['tab2']) && $_GET['tab2'] == "add_members") {
             
-            if (($sk['timeline']['add_privacy'] == "members" && SK_isFollowing($sk['timeline']['id'])) or ($sk['timeline']['add_privacy'] == "admins" && SK_isGroupAdmin($sk['timeline']['id']))) {
+            if (($sk['timeline']['add_privacy'] == "members" && FA_isFollowing($sk['timeline']['id'])) or ($sk['timeline']['add_privacy'] == "admins" && FA_isGroupAdmin($sk['timeline']['id']))) {
             ?>
             <div class="list-wrapper">
                 <div class="list-header">
@@ -178,7 +178,7 @@
                 </div>
                 
                 <?php
-                if (SK_countFollowing($sk['user']['id']) == 0) {
+                if (FA_countFollowing($sk['user']['id']) == 0) {
                 ?>
                 <div class="list-column">
                     <?php
@@ -192,9 +192,9 @@
                 <?php
                 } else {
                     
-                    foreach (SK_getFollowers($sk['user']['id']) as $follower) {
+                    foreach (FA_getFollowers($sk['user']['id']) as $follower) {
                         
-                        if (!SK_isFollowing($sk['timeline']['id'], $follower['id'])) {
+                        if (!FA_isFollowing($sk['timeline']['id'], $follower['id'])) {
                 ?>
                 <div class="list-column follower-id-<?php echo $follower['id']; ?>">
                     <table border="0" width="100%" cellspacing="0" cellpadding="0">
@@ -212,7 +212,7 @@
                             </a>
                         </td>
                         <td align="right" valign="middle">
-                            <input class="column-btn add-member-btn" type="submit" value="Add" onclick="SK_addGroupMember(<?php echo $sk['timeline']['id']; ?>,<?php echo $follower['id']; ?>);">
+                            <input class="column-btn add-member-btn" type="submit" value="Add" onclick="FA_addGroupMember(<?php echo $sk['timeline']['id']; ?>,<?php echo $follower['id']; ?>);">
                         </td>
                     </tr>
                     </table>
@@ -225,10 +225,10 @@
             </div>
             
             <script>
-            function SK_addGroupMember(group_id, member_id) {
+            function FA_addGroupMember(group_id, member_id) {
                 $('.follower-id-' + member_id).find('.add-member-btn').val('Adding..');
                 
-                $.post(SK_source() + '?t=group&a=add_member', {group_id: group_id, member_id: member_id}, function (data) {
+                $.post(FA_source() + '?t=group&a=add_member', {group_id: group_id, member_id: member_id}, function (data) {
                     
                     if (data.status == 200) {
                         $('.follower-id-' + member_id).slideUp(function() {
@@ -249,7 +249,7 @@
                 ?>
             </div>
             <?php
-            foreach (SK_getFollowers($sk['timeline']['id']) as $member) {
+            foreach (FA_getFollowers($sk['timeline']['id']) as $member) {
             ?>
             <div class="list-column group-member-<?php echo $member['id']; ?>">
                 <table border="0" width="100%" cellspacing="0" cellpadding="0">
@@ -267,15 +267,15 @@
                     </td>
                     
                     <?php
-                    if (SK_isGroupAdmin($sk['timeline']['id'])) {
+                    if (FA_isGroupAdmin($sk['timeline']['id'])) {
                     ?>
                     <td align="right" valign="middle">
-                        <input class="column-btn remove-member-btn" type="submit" value="Remove" onclick="SK_removeGroupMember(<?php echo $sk['timeline']['id']; ?>,<?php echo $member['id']; ?>);">
+                        <input class="column-btn remove-member-btn" type="submit" value="Remove" onclick="FA_removeGroupMember(<?php echo $sk['timeline']['id']; ?>,<?php echo $member['id']; ?>);">
                         
                         <?php
-                        if (!SK_isGroupAdmin($sk['timeline']['id'], $member['id'])) {
+                        if (!FA_isGroupAdmin($sk['timeline']['id'], $member['id'])) {
                         ?>
-                        <input class="column-btn add-admin-btn" type="submit" value="Make admin" onclick="SK_addGroupAdmin(<?php echo $sk['timeline']['id']; ?>,<?php echo $member['id']; ?>);">
+                        <input class="column-btn add-admin-btn" type="submit" value="Make admin" onclick="FA_addGroupAdmin(<?php echo $sk['timeline']['id']; ?>,<?php echo $member['id']; ?>);">
                         <?php
                         }
                         ?>
@@ -292,10 +292,10 @@
         </div>
         
         <script>
-        function SK_removeGroupMember(group_id, member_id) {
+        function FA_removeGroupMember(group_id, member_id) {
             $('.group-member-' + member_id).find('.remove-member-btn').val('Removing..');
             
-            $.post(SK_source() + '?t=group&a=remove_member', {group_id: group_id, member_id: member_id}, function (data) {
+            $.post(FA_source() + '?t=group&a=remove_member', {group_id: group_id, member_id: member_id}, function (data) {
                 
                 if (data.status == 200) {
                     $('.group-member-' + member_id).slideUp(function () {
@@ -305,10 +305,10 @@
             });
         }
         
-        function SK_addGroupAdmin(group_id, admin_id) {
+        function FA_addGroupAdmin(group_id, admin_id) {
             $('.group-member-' + admin_id).find('.add-admin-btn').val('Making..');
             
-            $.post(SK_source() + '?t=group&a=add_admin', {group_id: group_id, admin_id: admin_id}, function (data) {
+            $.post(FA_source() + '?t=group&a=add_admin', {group_id: group_id, admin_id: admin_id}, function (data) {
                 if (data.status == 200) {
                     $('.group-member-'+admin_id).slideUp(function () {
                         $(this).remove();
@@ -328,7 +328,7 @@
             </div>
             
             <?php
-            foreach (SK_getGroupAdmins($sk['timeline']['id']) as $admin) {
+            foreach (FA_getGroupAdmins($sk['timeline']['id']) as $admin) {
             ?>
             <div class="list-column group-admin-<?php echo $admin['id']; ?>">
                 <table border="0" width="100%" cellspacing="0" cellpadding="0">
@@ -348,10 +348,10 @@
                     </td>
                     
                     <?php
-                    if (SK_isGroupAdmin($sk['timeline']['id'])) {
+                    if (FA_isGroupAdmin($sk['timeline']['id'])) {
                     ?>
                     <td align="right" valign="middle">
-                        <input class="column-btn remove-admin-btn" type="submit" value="Remove" onclick="SK_removeGroupAdmin(<?php echo $sk['timeline']['id']; ?>,<?php echo $admin['id']; ?>);">
+                        <input class="column-btn remove-admin-btn" type="submit" value="Remove" onclick="FA_removeGroupAdmin(<?php echo $sk['timeline']['id']; ?>,<?php echo $admin['id']; ?>);">
                     </td>
                     <?php
                     }
@@ -364,10 +364,10 @@
             ?>
         </div>
         <script>
-        function SK_removeGroupAdmin(group_id, admin_id) {
+        function FA_removeGroupAdmin(group_id, admin_id) {
             $('.group-admin-' + admin_id).find('.remove-admin-btn').val('Removing..');
             
-            $.post(SK_source() + '?t=group&a=remove_admin', {group_id: group_id, admin_id: admin_id}, function (data) {
+            $.post(FA_source() + '?t=group&a=remove_admin', {group_id: group_id, admin_id: admin_id}, function (data) {
                 
                 if (data.status == 200) {
                     $('.group-admin-' + admin_id).slideUp(function () {
@@ -378,7 +378,7 @@
         }
         </script>
         <?php
-        } elseif (isset($_GET['tab2']) && $_GET['tab2'] == "requests" && SK_isGroupAdmin($sk['timeline']['id'])) {
+        } elseif (isset($_GET['tab2']) && $_GET['tab2'] == "requests" && FA_isGroupAdmin($sk['timeline']['id'])) {
         ?>
         <div class="list-wrapper">
             <div class="list-header">
@@ -388,7 +388,7 @@
             </div>
             
             <?php
-            foreach (SK_getFollowRequests($sk['timeline']['id']) as $request) {
+            foreach (FA_getFollowRequests($sk['timeline']['id']) as $request) {
             ?>
             <div class="list-column group-member-<?php echo $request['id']; ?>">
                 <table border="0" width="100%" cellspacing="0" cellpadding="0">
@@ -406,11 +406,11 @@
                     </td>
                     
                     <?php
-                    if (SK_isGroupAdmin($sk['timeline']['id'])) {
+                    if (FA_isGroupAdmin($sk['timeline']['id'])) {
                     ?>
                     <td align="right" valign="middle">
-                        <input class="column-btn accept-btn" type="submit" value="Accept" onclick="SK_acceptGroupMember(<?php echo $sk['timeline']['id']; ?>,<?php echo $request['id']; ?>);">
-                        <input class="column-btn decline-btn" type="submit" value="Decline" onclick="SK_declineGroupMember(<?php echo $sk['timeline']['id']; ?>,<?php echo $request['id']; ?>);">
+                        <input class="column-btn accept-btn" type="submit" value="Accept" onclick="FA_acceptGroupMember(<?php echo $sk['timeline']['id']; ?>,<?php echo $request['id']; ?>);">
+                        <input class="column-btn decline-btn" type="submit" value="Decline" onclick="FA_declineGroupMember(<?php echo $sk['timeline']['id']; ?>,<?php echo $request['id']; ?>);">
                     </td>
                     <?php
                     }
@@ -423,10 +423,10 @@
             ?>
         </div>
         <script>
-        function SK_acceptGroupMember(group_id, member_id) {
+        function FA_acceptGroupMember(group_id, member_id) {
             $('.group-member-' + member_id).find('.accept-btn').val('Accepting..');
             
-            $.post(SK_source() + '?t=group&a=accept_member', {group_id: group_id, member_id: member_id}, function (data) {
+            $.post(FA_source() + '?t=group&a=accept_member', {group_id: group_id, member_id: member_id}, function (data) {
                 
                 if (data.status == 200) {
                     $('.group-member-' + member_id).slideUp(function () {
@@ -436,10 +436,10 @@
             });
         }
         
-        function SK_declineGroupMember(group_id, member_id) {
+        function FA_declineGroupMember(group_id, member_id) {
             $('.group-member-' + member_id).find('.decline-btn').val('Declining..');
             
-            $.post(SK_source() + '?t=group&a=remove_member', {group_id: group_id, member_id: member_id}, function (data) {
+            $.post(FA_source() + '?t=group&a=remove_member', {group_id: group_id, member_id: member_id}, function (data) {
                 
                 if (data.status == 200) {
                     $('.group-member-' + member_id).slideUp(function () {
@@ -450,7 +450,7 @@
         }
         </script>
         <?php
-        } elseif (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isGroupAdmin($sk['timeline']['id'])) {
+        } elseif (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && FA_isGroupAdmin($sk['timeline']['id'])) {
         ?>
         <form class="update-group-settings-form" method="post">
         <div class="form-container">
@@ -466,7 +466,7 @@
                     ?>:
                 </label>
                 <div class="input float-left span65">
-                    <input type="text" name="username" value="<?php echo $sk['timeline']['username']; ?>" autocomplete="off" onkeyup="SK_checkUsername(this.value,<?php echo $sk['timeline']['id']; ?>,'.check-username-result',true);">
+                    <input type="text" name="username" value="<?php echo $sk['timeline']['username']; ?>" autocomplete="off" onkeyup="FA_checkUsername(this.value,<?php echo $sk['timeline']['id']; ?>,'.check-username-result',true);">
                     <div class="check-username-result ajax-result"></div>
                 </div>
                 <div class="float-clear"></div>
@@ -632,7 +632,7 @@
         </form>
         <script>
         $('form.update-group-settings-form').ajaxForm({
-            url: SK_source() + '?t=group&a=update_settings',
+            url: FA_source() + '?t=group&a=update_settings',
             
             beforeSend: function() {
                 $('form.update-group-settings-form').find('input[type="submit"]')
@@ -648,12 +648,12 @@
         </script>
         <?php
         } else {
-            echo SK_getStoryPublisherBox(0, $sk['timeline']['id']);
+            echo FA_getStoryPublisherBox(0, $sk['timeline']['id']);
         ?>
         <div class="stories-container" data-story-type="all" data-story-timeline="<?php echo $sk['timeline']['id']; ?>">
             <div class="stories-wrapper">
             <?php
-            $stories = SK_getStories(
+            $stories = FA_getStories(
                 array(
                     'publisher_id' => $sk['timeline']['id']
                 )
@@ -662,13 +662,13 @@
             if (is_array($stories) && count($stories) > 0) {
                 
                 foreach ($stories as $sk['story']) {
-                    echo SK_getPage('story/content');
+                    echo FA_getPage('story/content');
                 }
             }
             ?>
             </div>
             <div align="center">
-                <div class="load-btn" onclick="SK_loadOldStories();">
+                <div class="load-btn" onclick="FA_loadOldStories();">
                     <i class="icon-reorder progress-icon hide"></i>
                     <?php echo $lang['view_previous_posts_label']; ?>
                 </div>
@@ -686,37 +686,37 @@
             echo $lang['filters_header'];
             ?>
         </div>
-        <div class="filter all-wrapper" onclick="SK_filterStories('all',<?php echo $sk['timeline']['id']; ?>);">
+        <div class="filter all-wrapper" onclick="FA_filterStories('all',<?php echo $sk['timeline']['id']; ?>);">
             <i class="icon-tasks progress-icon" data-icon="tasks"></i> 
             <?php
             echo $lang['filter_label_all'];
             ?>
         </div>
-        <div class="filter texts-wrapper" onclick="SK_filterStories('texts',<?php echo $sk['timeline']['id']; ?>);">
+        <div class="filter texts-wrapper" onclick="FA_filterStories('texts',<?php echo $sk['timeline']['id']; ?>);">
             <i class="icon-pencil progress-icon" data-icon="pencil"></i> 
             <?php
             echo $lang['filter_label_texts'];
             ?>
         </div>
-        <div class="filter photos-wrapper" onclick="SK_filterStories('photos',<?php echo $sk['timeline']['id']; ?>);">
+        <div class="filter photos-wrapper" onclick="FA_filterStories('photos',<?php echo $sk['timeline']['id']; ?>);">
             <i class="icon-camera-retro progress-icon" data-icon="camera-retro"></i> 
             <?php
             echo $lang['filter_label_photos'];
             ?>
         </div>
-        <div class="filter videos-wrapper" onclick="SK_filterStories('videos',<?php echo $sk['timeline']['id']; ?>);">
+        <div class="filter videos-wrapper" onclick="FA_filterStories('videos',<?php echo $sk['timeline']['id']; ?>);">
             <i class="icon-film progress-icon" data-icon="film"></i> 
             <?php
             echo $lang['filter_label_videos'];
             ?>
         </div>
-        <div class="filter music-wrapper" onclick="SK_filterStories('music',<?php echo $sk['timeline']['id']; ?>);">
+        <div class="filter music-wrapper" onclick="FA_filterStories('music',<?php echo $sk['timeline']['id']; ?>);">
             <i class="icon-music progress-icon" data-icon="music"></i> 
             <?php
             echo $lang['filter_label_music'];
             ?>
         </div>
-        <div class="filter places-wrapper" onclick="SK_filterStories('places',<?php echo $sk['timeline']['id']; ?>);">
+        <div class="filter places-wrapper" onclick="FA_filterStories('places',<?php echo $sk['timeline']['id']; ?>);">
             <i class="icon-map-marker progress-icon" data-icon="map-marker"></i> 
             <?php
             echo $lang['filter_label_places'];
@@ -729,7 +729,7 @@
 </div>
 <div class="float-clear"></div>
 <?php
-if ($sk['logged'] == true && SK_isGroupAdmin($sk['timeline']['id'])) {
+if ($sk['logged'] == true && FA_isGroupAdmin($sk['timeline']['id'])) {
 ?>
 <script>
 $(function(){
@@ -737,7 +737,7 @@ $(function(){
     $('.cover-resize-wrapper').height($('.cover-resize-wrapper').width()*0.3);
     
     $('form.cover-form').ajaxForm({
-        url: SK_source() + '?t=cover&a=new',
+        url: FA_source() + '?t=cover&a=new',
         
         beforeSend: function() {
             $('.cover-progress')
@@ -786,7 +786,7 @@ $(function(){
     });
     
     $('form.cover-position-form').ajaxForm({
-        url: SK_source()+'?t=cover&a=reposition',
+        url: FA_source()+'?t=cover&a=reposition',
         
         beforeSend: function() {
             $('.cover-progress').html('<?php echo $lang['repositioning']; ?>...').fadeIn('fast').removeClass('hidden');
@@ -821,7 +821,7 @@ $(function(){
     });
 });
 
-function SK_repositionCover() {
+function FA_repositionCover() {
     cover_wrapper = $('.cover-wrapper');
     cover_resize_wrapper = $('.cover-resize-wrapper');
     cover_resize_buttons = $('.cover-resize-buttons');
@@ -861,7 +861,7 @@ function SK_repositionCover() {
     });
 }
 
-function SK_saveReposition() {
+function FA_saveReposition() {
     
     if ($('input.cover-position').length == 1) {
         posY = $('input.cover-position').val();
@@ -869,7 +869,7 @@ function SK_saveReposition() {
     }
 }
 
-function SK_cancelReposition() {
+function FA_cancelReposition() {
     $('.cover-wrapper').show();
     $('.cover-resize-wrapper').hide();
     $('.cover-resize-buttons').hide();

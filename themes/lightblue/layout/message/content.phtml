@@ -2,8 +2,8 @@
 <div class="float-right span74">
     <?php
     if (!empty($_GET['recipient_id'])) {
-        $recipient_id = SK_secureEncode($_GET['recipient_id']);
-        $recipient = SK_getUser($recipient_id);
+        $recipient_id = FA_secureEncode($_GET['recipient_id']);
+        $recipient = FA_getUser($recipient_id);
         
         if (empty($recipient['id'])) {
             unset($recipient);
@@ -31,7 +31,7 @@
                 $prev_msg_recipient_id = $recipient['id'];
             }
             ?>
-            <div class="view-more-wrapper cursor-hand bold-500 hidden" align="center" onclick="SK_getPreviousMessages(<?php echo $prev_msg_recipient_id; ?>);">
+            <div class="view-more-wrapper cursor-hand bold-500 hidden" align="center" onclick="FA_getPreviousMessages(<?php echo $prev_msg_recipient_id; ?>);">
                 <i class="icon-arrow-up progress-icon hide"></i>
                 <?php
                 echo $lang['view_previous_messages_label'];
@@ -49,8 +49,8 @@
         
         <div class="textarea-container" align="center">
             <form class="send-message-form" method="post" enctype="multipart/form-data">
-                <textarea class="message-textarea auto-grow-input" name="text" placeholder="<?php echo $lang['write_a_message_label']; ?>..." onkeyup="SK_sendMessageForm(event);" onfocus="SK_sendMessageForm(event);" data-height="22" disabled></textarea>
-                <input class="message-photo-input hidden" name="photos[]" type="file" accept="image/jpeg,image/png" onchange="SK_uploadMessageForm();">
+                <textarea class="message-textarea auto-grow-input" name="text" placeholder="<?php echo $lang['write_a_message_label']; ?>..." onkeyup="FA_sendMessageForm(event);" onfocus="FA_sendMessageForm(event);" data-height="22" disabled></textarea>
+                <input class="message-photo-input hidden" name="photos[]" type="file" accept="image/jpeg,image/png" onchange="FA_uploadMessageForm();">
                 <div class="options-wrapper">
                     <i class="icon-camera progress-icon cursor-hand" title="<?php echo $lang['upload_photo']; ?>" valign="middle" onclick="$('.message-photo-input').click();"></i>
                 </div>
@@ -64,13 +64,13 @@
 <div class="float-left span25">
     <div class="message-recipient-wrapper">
         <div class="wrapper-header">
-            <input class="recipient-search" type="text" placeholder="<?php echo $lang['messages_search_label']; ?>" onkeyup="SK_getRecipients(this.value);">
+            <input class="recipient-search" type="text" placeholder="<?php echo $lang['messages_search_label']; ?>" onkeyup="FA_getRecipients(this.value);">
             <i class="icon-search cursor-hand" onclick="$('.recipient-search').focus();"></i>
         </div>
         <div class="recipient-list-wrapper">
             <?php
-            foreach(SK_getMessageRecipients() as $sk['recipient']) {
-                echo SK_getPage('message/recipient-list');
+            foreach(FA_getMessageRecipients() as $sk['recipient']) {
+                echo FA_getPage('message/recipient-list');
             }
             ?>
         </div>
@@ -85,11 +85,11 @@
 
 <script>
 $(function() {
-    setInterval('SK_getNewMessages();', 7500);
-    setInterval('SK_updateRecipients();', 30000);
+    setInterval('FA_getNewMessages();', 7500);
+    setInterval('FA_updateRecipients();', 30000);
     
     $('form.send-message-form').ajaxForm({
-        url: SK_source() + '?t=message&a=send_message',
+        url: FA_source() + '?t=message&a=send_message',
         
         beforeSend: function() {
             $('.message-textarea').attr('disabled',true);
@@ -111,24 +111,24 @@ $(function() {
             $('form.send-message-form').clearForm();
             $('.message-textarea').val('').attr('disabled', false).keyup().focus();
             
-            SK_progressIconLoader($('.textarea-container').find('.options-wrapper'));
+            FA_progressIconLoader($('.textarea-container').find('.options-wrapper'));
         }
     });
     
     <?php
     if (isset($recipient['id'])) {
     ?>
-    SK_getMessages(<?php echo $recipient['id']; ?>,'<?php echo $recipient['name']; ?>');
+    FA_getMessages(<?php echo $recipient['id']; ?>,'<?php echo $recipient['name']; ?>');
     <?php
     }
     ?>
 });
 
-function SK_updateRecipients() {
+function FA_updateRecipients() {
     
     if ($('.recipient-search').val().length == 0) {
         
-        $.get(SK_source(), {t: 'search', a: 'recipients'}, function (data) {
+        $.get(FA_source(), {t: 'search', a: 'recipients'}, function (data) {
             
             if (data.status == 200) {
                 $('.recipient-list-wrapper').html(data.html);
@@ -137,9 +137,9 @@ function SK_updateRecipients() {
     }
 }
 
-function SK_getRecipients(query) {
+function FA_getRecipients(query) {
     
-    $.get(SK_source(), {t: 'search', a: 'recipients', q: query}, function (data) {
+    $.get(FA_source(), {t: 'search', a: 'recipients', q: query}, function (data) {
         
         if (data.status == 200) {
             $('.recipient-list-wrapper').html(data.html);
@@ -147,7 +147,7 @@ function SK_getRecipients(query) {
     });
 }
 
-function SK_getMessages(recipient_id,recipient_name) {
+function FA_getMessages(recipient_id,recipient_name) {
     message_container = $('.message-container');
     container_header = message_container.find('.container-header');
     text_messages_container = $('.text-messages-container');
@@ -161,12 +161,12 @@ function SK_getMessages(recipient_id,recipient_name) {
     textarea_wrapper.attr('disabled', true);
     $(document).scrollTop(0);
     
-    SK_progressIconLoader(container_header);
+    FA_progressIconLoader(container_header);
     
     $('#message_recipient_' + recipient_id)
         .find('.update-alert').hide();
     
-    $.get(SK_source(), {t: 'message', a: 'load_messages', recipient_id: recipient_id}, function (data) {
+    $.get(FA_source(), {t: 'message', a: 'load_messages', recipient_id: recipient_id}, function (data) {
         
         if (data.status == 200) {
             text_messages_wrapper.html(data.html);
@@ -175,7 +175,7 @@ function SK_getMessages(recipient_id,recipient_name) {
                 text_messages_wrapper.html('<div align="center" style="color: #898f9c; margin-top: 12px;"><?php echo $lang['no_messages_to_show_label']; ?></div>');
                 view_more_wrapper.hide();
             } else {
-                view_more_wrapper.attr('onclick', 'SK_getPreviousMessages(' + recipient_id + ');').show();
+                view_more_wrapper.attr('onclick', 'FA_getPreviousMessages(' + recipient_id + ');').show();
             }
             
             if (data.reply_ability_status == true) {
@@ -190,18 +190,18 @@ function SK_getMessages(recipient_id,recipient_name) {
         }
         
         text_messages_container.scrollTop(text_messages_container.prop('scrollHeight'));
-        SK_progressIconLoader(container_header);
+        FA_progressIconLoader(container_header);
     });
 }
 
-function SK_getNewMessages() {
+function FA_getNewMessages() {
     text_messages_container = $('.text-messages-container');
     text_messages_wrapper = $('.text-messages-wrapper');
     textarea_wrapper = $('.message-textarea');
     
     recipient_id = $('#recipient-id').val();
     
-    $.get(SK_source(), {t: 'message', a: 'load_new_messages', recipient_id: recipient_id}, function (data) {
+    $.get(FA_source(), {t: 'message', a: 'load_new_messages', recipient_id: recipient_id}, function (data) {
         
         if (data.status == 200) {
             text_messages_wrapper.append(data.html);
@@ -214,14 +214,14 @@ function SK_getNewMessages() {
     });
 }
 
-function SK_getPreviousMessages(recipient_id) {
+function FA_getPreviousMessages(recipient_id) {
     view_more_wrapper = $('.view-more-wrapper');
     
     before_message_id = $('.text-message-wrapper:first').attr('data-message-id');
     
-    SK_progressIconLoader(view_more_wrapper);
+    FA_progressIconLoader(view_more_wrapper);
     
-    $.get(SK_source(), {t: 'message', a: 'load_previous_messages', recipient_id: recipient_id, before_message_id: before_message_id}, function (data) {
+    $.get(FA_source(), {t: 'message', a: 'load_previous_messages', recipient_id: recipient_id, before_message_id: before_message_id}, function (data) {
         
         if (data.status == 200) {
             $('.text-messages-wrapper').prepend(data.html);
@@ -231,28 +231,28 @@ function SK_getPreviousMessages(recipient_id) {
             view_more_wrapper.hide();
         }
         
-        SK_progressIconLoader(view_more_wrapper);
+        FA_progressIconLoader(view_more_wrapper);
     });
 }
 
-function SK_sendMessageForm(e) {
+function FA_sendMessageForm(e) {
     document.title = document_title;
     
     if (e.keyCode == 13 && e.shiftKey == 0) {
         e.preventDefault();
         $('form.send-message-form').submit();
-        SK_progressIconLoader($('.textarea-container').find('.options-wrapper'));
+        FA_progressIconLoader($('.textarea-container').find('.options-wrapper'));
     }
 }
 
-function SK_uploadMessageForm() {
+function FA_uploadMessageForm() {
     document.title = document_title;
     $('form.send-message-form').submit();
-    SK_progressIconLoader($('.textarea-container').find('.options-wrapper'));
+    FA_progressIconLoader($('.textarea-container').find('.options-wrapper'));
 }
 
-function SK_removeMsg(id) {
-    $.post(SK_source() + '?t=message&a=delete', {message_id: id}, function (data) {
+function FA_removeMsg(id) {
+    $.post(FA_source() + '?t=message&a=delete', {message_id: id}, function (data) {
         
         if (data.status == 200) {
             $('#message_' + id).slideUp(function () {

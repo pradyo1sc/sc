@@ -27,7 +27,7 @@ global $config, $dbConnect;
         <?php
         
         if (!empty($_GET['search_query'])) {
-            $search_query = SK_secureEncode($_GET['search_query']);
+            $search_query = FA_secureEncode($_GET['search_query']);
             
             if (is_numeric($search_query)) {
                 $query_part = "id=" . $search_query;
@@ -48,7 +48,7 @@ global $config, $dbConnect;
         $sql_query_one = mysqli_query($dbConnect, $query_one);
         
         while ($page = mysqli_fetch_array($sql_query_one, MYSQLI_ASSOC)) {
-        $page = SK_getAccount($page['id']);
+        $page = FA_getAccount($page['id']);
         ?>
         <div class="user-data-wrapper manage-page-list" data-page-id="<?php echo $page['id']; ?>">
             <div class="float-left span10">
@@ -74,13 +74,13 @@ global $config, $dbConnect;
     </div>
     <?php if (!isset($search_query)) { ?>
     <div class="list-wrapper show-more-wrapper" align="center">
-        <a onclick="SK_loadMorePages();">Show more pages</a>
+        <a onclick="FA_loadMorePages();">Show more pages</a>
     </div>
     <?php } ?>
 </div>
 <script src="jquery.js"></script>
 <script>
-function SK_loadMorePages() {
+function FA_loadMorePages() {
     after_page_id = $('.manage-page-list:last').attr('data-page-id');
     
     show_more_text = $('.show-more-wrapper').find('a').text();

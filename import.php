@@ -2,7 +2,7 @@
 require_once('assets/includes/core.php');
 $redirect = true;
 
-function SK_importMedia($url='') {
+function FA_importMedia($url='') {
     global $dbConnect;
     
     if (empty($url)) {
@@ -44,7 +44,7 @@ function SK_importMedia($url='') {
     }
     
     $sql_id = mysqli_insert_id($dbConnect);
-    $original_file_name = $photo_dir . '/' . SK_generateKey() . '_' . $sql_id . '_' . md5($sql_id);
+    $original_file_name = $photo_dir . '/' . FA_generateKey() . '_' . $sql_id . '_' . md5($sql_id);
     $original_file = $original_file_name . '.' . $url_ext;
     $register_cover = @file_put_contents($original_file, $source);
     
@@ -91,7 +91,7 @@ function SK_importMedia($url='') {
         
         foreach ($imageSizes as $ratio => $data) {
             $save_file = $data['name'] . '.' . $url_ext;
-            SK_processMedia($data['type'], $original_file, $save_file, $data['width'], $data['height']);
+            FA_processMedia($data['type'], $original_file, $save_file, $data['width'], $data['height']);
         }
         
         mysqli_query($dbConnect, "UPDATE " . DB_MEDIA . " SET url='$original_file_name',temp=0,active=1 WHERE id=$sql_id");
@@ -134,8 +134,8 @@ if (!empty($_GET['type'])) {
                 $getJson = @json_decode($getApi, true);
                 
                 if (!empty($getJson['name']) && !empty($getJson['id'])) {
-                    $getJson['name'] = SK_secureEncode($getJson['name']);
-                    $getJson['id'] = SK_secureEncode($getJson['id']);
+                    $getJson['name'] = FA_secureEncode($getJson['name']);
+                    $getJson['id'] = FA_secureEncode($getJson['id']);
                     $getJson['username'] = 'fb_' . $getJson['id'];
                     $possibleUsername = preg_replace('/([^a-z_])/i', '', strtolower($getJson['name']));
 
@@ -149,13 +149,13 @@ if (!empty($_GET['type'])) {
                     }
                     
                     if (!empty($getJson['email'])) {
-                        $getJson['email'] = SK_secureEncode($getJson['email']);
+                        $getJson['email'] = FA_secureEncode($getJson['email']);
                     } else {
                         $getJson['email'] = $getJson['username'] . '@facebook.com';
                     }
                     
                     if (!empty($getJson['gender'])) {
-                        $getJson['gender'] = SK_secureEncode($getJson['gender']);
+                        $getJson['gender'] = FA_secureEncode($getJson['gender']);
                     } else {
                         $getJson['gender'] = 'male';
                     }
@@ -175,7 +175,7 @@ if (!empty($_GET['type'])) {
                         setcookie('sk_u_p', $_SESSION['user_pass'], time() + (60 * 60 * 24 * 7));
                     } else {
                         
-                        if (($register = SK_registerUser($getJson)) != false) {
+                        if (($register = FA_registerUser($getJson)) != false) {
                             $register['password'] = $getJson['password'];
                             $sk['mail'] = $register;
                             
@@ -192,13 +192,13 @@ if (!empty($_GET['type'])) {
                             $headers .= "MIME-Version: 1.0\r\n";
                             $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
                             
-                            $message = SK_getPage('emails/facebook-registration');
+                            $message = FA_getPage('emails/facebook-registration');
                             mail($to, $subject, $message, $headers);
                             
                             $redirect = true;
                             
                             if (!empty($getJson['cover']) && is_array($getJson['cover'])) {
-                                $cover = SK_importMedia($getJson['cover']['source']);
+                                $cover = FA_importMedia($getJson['cover']['source']);
                                 
                                 if (is_array($cover)) {
                                     $query_one = "UPDATE " . DB_ACCOUNTS . " SET cover_id=" . $cover['id'] . " WHERE id=" . $register['id'];
@@ -207,7 +207,7 @@ if (!empty($_GET['type'])) {
                             }
                             
                             if (is_array($getJson['picture']) && !empty($getJson['picture']['data']['url'])) {
-                                $avatar = SK_importMedia($getJson['picture']['data']['url']);
+                                $avatar = FA_importMedia($getJson['picture']['data']['url']);
                                 
                                 if (is_array($avatar)) {
                                     $query_two = "UPDATE " . DB_ACCOUNTS . " SET avatar_id=" . $avatar['id'] . " WHERE id=" . $register['id'];
@@ -229,7 +229,7 @@ if (!empty($_GET['type'])) {
 }
 
 if ($redirect == true) {
-    header('Location: ' . SK_smoothLink('index.php?tab1=welcome'));
+    header('Location: ' . FA_smoothLink('index.php?tab1=welcome'));
 }
 
 ?>

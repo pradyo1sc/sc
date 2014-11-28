@@ -20,7 +20,7 @@ if (!isset($sk['chat']['recipient']['id'])) {
             </span>
         </div>
         <div class="float-right">
-            <i class="icon-remove close-icon" onclick="SK_closeChat();" title="Close chat"></i>
+            <i class="icon-remove close-icon" onclick="FA_closeChat();" title="Close chat"></i>
         </div>
         <div class="float-clear"></div>
     </div>
@@ -29,16 +29,16 @@ if (!isset($sk['chat']['recipient']['id'])) {
             <?php
             if (isset($sk['chat']['recipient']['id'])) {
                 $array_data = array('recipient_id' => $sk['chat']['recipient']['id']);
-                $messages = SK_getMessages($array_data);
+                $messages = FA_getMessages($array_data);
                 
                 if (is_array($messages)) {
                     
                     foreach ($messages as $sk['message']) {
                         
                         if ($sk['message']['account']['id'] == $sk['user']['id']) {
-                            echo SK_getPage('chat/outgoing-text');
+                            echo FA_getPage('chat/outgoing-text');
                         } else {
-                            echo SK_getPage('chat/incoming-text');
+                            echo FA_getPage('chat/incoming-text');
                         }
                     }
                 }
@@ -48,7 +48,7 @@ if (!isset($sk['chat']['recipient']['id'])) {
         <?php
         $chat_textarea = false;
         
-        if ($sk['chat']['recipient']['message_privacy'] == "following" && SK_isFollowing($sk['user']['id'], $sk['chat']['recipient']['id'])) {
+        if ($sk['chat']['recipient']['message_privacy'] == "following" && FA_isFollowing($sk['user']['id'], $sk['chat']['recipient']['id'])) {
             $chat_textarea = true;
         } elseif ($sk['chat']['recipient']['message_privacy'] == "everyone") {
             $chat_textarea = true;
@@ -57,12 +57,12 @@ if (!isset($sk['chat']['recipient']['id'])) {
         if ($chat_textarea == true) {
         ?>
         <div class="chat-textarea">
-            <textarea class="auto-grow-input" onfocus="SK_focusChat();" onkeyup="SK_sendChatMessage(this.value,<?php echo $sk['chat']['recipient']['id']; ?>,event);"></textarea>
+            <textarea class="auto-grow-input" onfocus="FA_focusChat();" onkeyup="FA_sendChatMessage(this.value,<?php echo $sk['chat']['recipient']['id']; ?>,event);"></textarea>
             <div class="advanced-options">
                 <i class="icon-smile cursor-hand" onclick="javascript:$('.chat-emoticons-wrapper').toggle();"></i>
                 <div class="chat-emoticons-wrapper">
                     <?php
-                    $emoticons = SK_getEmoticons();
+                    $emoticons = FA_getEmoticons();
                     
                     if (is_array($emoticons)) {
                         

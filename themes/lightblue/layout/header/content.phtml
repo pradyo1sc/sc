@@ -10,7 +10,7 @@
                 </td>
                 <td align="left" valign="top">
                     <div class="header-live-search">
-                        <input value="<?php echo $lang['header_search_textarea_label']; ?>" placeholder="<?php echo $lang['header_search_textarea_label']; ?>" data-placeholder="<?php echo $lang['header_search_textarea_label']; ?>" type="text" onkeyup="SK_headerSearch(this.value);">
+                        <input value="<?php echo $lang['header_search_textarea_label']; ?>" placeholder="<?php echo $lang['header_search_textarea_label']; ?>" data-placeholder="<?php echo $lang['header_search_textarea_label']; ?>" type="text" onkeyup="FA_headerSearch(this.value);">
                     </div>
                 </td>
             </tr>
@@ -20,13 +20,13 @@
             <?php
             if ($sk['logged'] == true) {
             ?>
-            <a class="header-nav float-left" href="<?php echo SK_smoothLink('index.php?tab1=home'); ?>" title="<?php echo $lang['home_label']; ?>" data-href="?tab1=home">
+            <a class="header-nav float-left" href="<?php echo FA_smoothLink('index.php?tab1=home'); ?>" title="<?php echo $lang['home_label']; ?>" data-href="?tab1=home">
                 <i class="icon icon-home"></i>
             </a>
-            <a class="notification-nav header-nav float-left" title="<?php echo $lang['notification_label']; ?>" onclick="SK_openNotifications();">
+            <a class="notification-nav header-nav float-left" title="<?php echo $lang['notification_label']; ?>" onclick="FA_openNotifications();">
                 <i class="icon icon-globe"></i>
                 <?php
-                $notification_alert = SK_countNotifications(
+                $notification_alert = FA_countNotifications(
                     array(
                         'unread' => true
                     )
@@ -41,10 +41,10 @@
                     <?php echo $notification_alert; ?>
                 </span>
             </a>
-            <a class="message-nav header-nav float-left" href="<?php echo SK_smoothLink('index.php?tab1=messages'); ?>" title="<?php echo $lang['message_label']; ?>" data-href="?tab1=messages">
+            <a class="message-nav header-nav float-left" href="<?php echo FA_smoothLink('index.php?tab1=messages'); ?>" title="<?php echo $lang['message_label']; ?>" data-href="?tab1=messages">
                 <i class="icon icon-comments"></i>
                 <?php
-                $message_alert = SK_countMessages(
+                $message_alert = FA_countMessages(
                     array(
                         'new' => true,
                         'update' => false
@@ -61,7 +61,7 @@
                 </span>
             </a>
             <?php
-            $new_follow_requests = SK_countFollowRequests();
+            $new_follow_requests = FA_countFollowRequests();
             $hidden_class = '';
             $follow_nav_url = 'index.php?tab1=timeline&tab2=requests&id=' . $sk['user']['username'];
             
@@ -76,7 +76,7 @@
                 $follownavTitle = $lang['header_following_label'];
             }
             ?>
-            <a class="followers-nav header-nav float-left" href="<?php echo SK_smoothLink($follow_nav_url); ?>" title="<?php echo $follownavTitle; ?>" data-href="<?php echo str_replace('index.php', '', $follow_nav_url); ?>">
+            <a class="followers-nav header-nav float-left" href="<?php echo FA_smoothLink($follow_nav_url); ?>" title="<?php echo $follownavTitle; ?>" data-href="<?php echo str_replace('index.php', '', $follow_nav_url); ?>">
                 <i class="icon icon-group"></i>
                 <span class="new-update-alert<?php echo $hidden_class; ?>">
                     <?php
@@ -84,7 +84,7 @@
                     ?>
                 </span>
             </a>
-            <a class="manager-nav header-nav float-left" href="<?php echo SK_smoothLink('index.php?tab1=more'); ?>" title="<?php echo $lang['my_pages_groups_label']; ?>" data-href="?tab1=more">
+            <a class="manager-nav header-nav float-left" href="<?php echo FA_smoothLink('index.php?tab1=more'); ?>" title="<?php echo $lang['my_pages_groups_label']; ?>" data-href="?tab1=more">
                 <i class="icon icon-reorder"></i>
             </a>
             <div class="header-user-info float-left cursor-hand" style="position: relative;">
@@ -93,13 +93,13 @@
                     <strong><?php echo $sk['user']['first_name']; ?></strong>
                 </a>
                 <i class="icon-caret-down dropdown-icon"></i>
-                <span class="dropdown-overlay-wrap" onclick="SK_moreToggle();"></span>
+                <span class="dropdown-overlay-wrap" onclick="FA_moreToggle();"></span>
             </div>
             <div class="float-clear"></div>
             <?php
             } else {
             ?>
-            <a class="header-join-wrapper" href="<?php echo SK_smoothLink('index.php?tab1=welcome'); ?>" title="<?php echo $lang['header_join_label']; ?>">
+            <a class="header-join-wrapper" href="<?php echo FA_smoothLink('index.php?tab1=welcome'); ?>" title="<?php echo $lang['header_join_label']; ?>">
                 <i class="icon icon-signin"></i> <?php echo $lang['header_join_label']; ?>
             </a>
             <?php
@@ -155,15 +155,15 @@ if ($sk['logged'] == true) {
                     <i class="icon icon-user"></i> <?php echo $lang['my_profile_label']; ?>
                 </a>
                 
-                <a class="more-list" href="<?php echo SK_smoothLink('index.php?tab1=more'); ?>" data-href="?tab1=more">
+                <a class="more-list" href="<?php echo FA_smoothLink('index.php?tab1=more'); ?>" data-href="?tab1=more">
                     <i class="icon icon-reorder"></i> <?php echo $lang['my_pages_groups_label']; ?>
                 </a>
                 
-                <a class="more-list" href="<?php echo SK_smoothLink('index.php?tab1=settings'); ?>" data-href="?tab1=settings">
+                <a class="more-list" href="<?php echo FA_smoothLink('index.php?tab1=settings'); ?>" data-href="?tab1=settings">
                     <i class="icon icon-gear"></i> <?php echo $lang['more_settings_label']; ?>
                 </a>
                 
-                <a class="more-list" href="<?php echo SK_smoothLink('index.php?tab1=logout'); ?>">
+                <a class="more-list" href="<?php echo FA_smoothLink('index.php?tab1=logout'); ?>">
                     <i class="icon icon-signout"></i> <?php echo $lang['logout']; ?>
                 </a>
             </div>
@@ -179,7 +179,7 @@ if ($sk['logged'] == true) {
 <?php
 if ($sk['logged'] == true) {
 ?>
-function SK_openNotifications() {
+function FA_openNotifications() {
     $('.dropdown-search-container').hide();
     $('.dropdown-more-container').hide();
     notification_container = $('.dropdown-notification-container');
@@ -187,9 +187,9 @@ function SK_openNotifications() {
     
     if (notification_container.css('display') == "block") {
         $('.notification-nav').addClass('header-nav-active');
-        SK_progressIconLoader(notification_container.find('.notification-header'));
+        FA_progressIconLoader(notification_container.find('.notification-header'));
         
-        $.get(SK_source(), {t: 'notifications'}, function (data) {
+        $.get(FA_source(), {t: 'notifications'}, function (data) {
             
             if (data.status == 200) {
                 
@@ -197,11 +197,11 @@ function SK_openNotifications() {
                     $('.notification-list-wrapper').html('<div class="no-wrapper" align="center"><?php echo $lang['no_notifications']; ?></div>');
                 } else {
                     $('.notification-list-wrapper').html(data.html);
-                    SK_intervalUpdates();
+                    FA_intervalUpdates();
                 }
             }
             
-            SK_progressIconLoader(notification_container.find('.notification-header'));
+            FA_progressIconLoader(notification_container.find('.notification-header'));
         });
     } else {
         $('.notification-nav').removeClass('header-nav-active');
@@ -210,7 +210,7 @@ function SK_openNotifications() {
 <?php
 }
 ?>
-function SK_headerSearch(query) {
+function FA_headerSearch(query) {
     $('.dropdown-more-container').hide();
     $('.dropdown-notification-container').hide();
     $('.notification-nav').removeClass('header-nav-active');
@@ -221,9 +221,9 @@ function SK_headerSearch(query) {
     }
     else {
         search_wrapper.show();
-        SK_progressIconLoader(search_wrapper.find('.search-header'));
+        FA_progressIconLoader(search_wrapper.find('.search-header'));
         
-        $.get(SK_source(), {t: 'search', a: 'header', q: query}, function (data) {
+        $.get(FA_source(), {t: 'search', a: 'header', q: query}, function (data) {
             
             if (data.status == 200) {
                 
@@ -243,11 +243,11 @@ function SK_headerSearch(query) {
                 }
             }
             
-            SK_progressIconLoader(search_wrapper.find('.search-header'));
+            FA_progressIconLoader(search_wrapper.find('.search-header'));
         });
     }
 }
-function SK_moreToggle() {
+function FA_moreToggle() {
     $('.dropdown-search-container').hide();
     $('.dropdown-notification-container').hide();
     $('.notification-nav').removeClass('header-nav-active');

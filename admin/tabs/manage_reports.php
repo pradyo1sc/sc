@@ -30,8 +30,8 @@ global $config, $dbConnect;
         $sql_query_two = mysqli_query($dbConnect, $query_two);
         
         while ($report = mysqli_fetch_assoc($sql_query_two)) {
-        $reporter = SK_getAccount($report['reporter_id']);
-        $post = SK_getPost($report['post_id']);
+        $reporter = FA_getAccount($report['reporter_id']);
+        $post = FA_getPost($report['post_id']);
         ?>
         <div class="user-data-wrapper manage-report-list<?php if ($report['status'] == 0) echo ' unseen'; ?>" data-report-id="<?php echo $report['id']; ?>">
             <div class="float-left span10">
@@ -66,13 +66,13 @@ global $config, $dbConnect;
     </div>
     <?php if (!isset($search_query)) { ?>
     <div class="list-wrapper show-more-wrapper" align="center">
-        <a onclick="SK_loadMoreReports();">Show more reports</a>
+        <a onclick="FA_loadMoreReports();">Show more reports</a>
     </div>
     <?php } ?>
 </div>
 <script src="jquery.js"></script>
 <script>
-function SK_loadMoreReports() {
+function FA_loadMoreReports() {
     after_report_id = $('.manage-report-list:last').attr('data-report-id');
     
     show_more_text = $('.show-more-wrapper').find('a').text();

@@ -3,8 +3,8 @@ if (isset($_POST['update_admin_login']) && isset($_POST['keep_blank']) && empty(
     $saved = false;
     
     if (!empty($_POST['admin_username']) && !empty($_POST['admin_password'])) {
-        $admin_username = SK_secureEncode($_POST['admin_username']);
-        $admin_password = SK_secureEncode($_POST['admin_password']);
+        $admin_username = FA_secureEncode($_POST['admin_username']);
+        $admin_password = FA_secureEncode($_POST['admin_password']);
         $md5_admin_password = md5($admin_password);
 
         if (preg_match('/^[A-Za-z0-9_]+$/', $admin_username)) {

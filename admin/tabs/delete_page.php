@@ -6,7 +6,7 @@ if (empty($_GET['id'])) {
     return null;
 }
 
-$page = SK_getAccount($_GET['id']);
+$page = FA_getAccount($_GET['id']);
 
 ?>
 <form class="content-container" method="post" action="?tab1=manage_pages">

@@ -20,7 +20,7 @@
                     echo $sk['list']['current_city'];
                 }
             } elseif ($sk['list']['type'] == "page") {
-                echo SK_getPageCategoryData($sk['list']['category_id'])['name'];
+                echo FA_getPageCategoryData($sk['list']['category_id'])['name'];
             } elseif ($sk['list']['type'] == "group") {
                 echo ucwords($sk['list']['group_privacy']) . ' Group';
             }
@@ -29,7 +29,7 @@
         </td>
         <td class="column-btn" align="right" valign="middle">
             <?php
-            echo SK_getFollowButton($sk['list']['id']);
+            echo FA_getFollowButton($sk['list']['id']);
             ?>
         </td>
     </tr>

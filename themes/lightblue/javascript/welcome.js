@@ -2,14 +2,14 @@ document_title = document.title;
 
 $(function () {
     $('.signup-form').ajaxForm({
-        url: SK_source() + '?t=register',
+        url: FA_source() + '?t=register',
         
         beforeSend: function() {
             signup_form = $('.signup-form');
             signup_button = signup_form.find('.submit-btn');
             signup_button.attr('disabled', true);
             signup_form.find('.post-message').fadeOut('fast');
-            SK_progressIconLoader(signup_button);
+            FA_progressIconLoader(signup_button);
         },
         
         success: function(responseText) {
@@ -30,19 +30,19 @@ $(function () {
                 }
             }
             
-            SK_progressIconLoader(signup_button);
+            FA_progressIconLoader(signup_button);
         }
     });
 
     $('.login-form').ajaxForm({
-        url: SK_source() + '?t=login',
+        url: FA_source() + '?t=login',
         
         beforeSend: function() {
             login_form = $('.login-form');
             login_button = login_form.find('.submit-btn');
             login_button.attr('disabled', true);
             login_form.find('.post-message').fadeOut('fast');
-            SK_progressIconLoader(login_button);
+            FA_progressIconLoader(login_button);
         },
         
         success: function(responseText) {
@@ -63,19 +63,19 @@ $(function () {
                 }
             }
             
-            SK_progressIconLoader(login_button);
+            FA_progressIconLoader(login_button);
         }
     });
 
     $('.forgotpass-form').ajaxForm({
-        url: SK_source() + '?t=forgot_password',
+        url: FA_source() + '?t=forgot_password',
         
         beforeSend: function() {
             forgotpass_form = $('.forgotpass-form');
             forgotpass_button = forgotpass_form.find('.submit-btn');
             forgotpass_button.attr('disabled', true);
             forgotpass_form.find('.post-message').fadeOut('fast');
-            SK_progressIconLoader(forgotpass_button);
+            FA_progressIconLoader(forgotpass_button);
         },
         
         success: function(responseText) {
@@ -91,18 +91,18 @@ $(function () {
                 forgotpass_form.find('.post-message').html(responseText.message).fadeIn('fast');
             }
             
-            SK_progressIconLoader(forgotpass_button);
+            FA_progressIconLoader(forgotpass_button);
         }
     });
 
     $('.passwordreset-form').ajaxForm({
-        url: SK_source() + '?t=reset_password',
+        url: FA_source() + '?t=reset_password',
         
         beforeSend: function() {
             passwordreset_form = $('.passwordreset-form');
             passwordreset_button = passwordreset_form.find('.submit-btn');
             passwordreset_button.attr('disabled', true);
-            SK_progressIconLoader(passwordreset_button);
+            FA_progressIconLoader(passwordreset_button);
         },
         
         success: function(responseText) {
@@ -127,7 +127,7 @@ $(function () {
                 });
             }
             
-            SK_progressIconLoader(passwordreset_button);
+            FA_progressIconLoader(passwordreset_button);
         }
     });
     
@@ -174,7 +174,7 @@ $(function () {
 });
 
 // Header search
-function SK_headerSearch(query) {
+function FA_headerSearch(query) {
     search_wrapper = $('.dropdown-search-container');
     
     if (query.length == 0) {
@@ -182,9 +182,9 @@ function SK_headerSearch(query) {
     }
     else {
         search_wrapper.show();
-        SK_progressIconLoader(search_wrapper.find('.search-header'));
+        FA_progressIconLoader(search_wrapper.find('.search-header'));
         
-        $.get(SK_source(), {t: 'search', a: 'header', q: query}, function (data) {
+        $.get(FA_source(), {t: 'search', a: 'header', q: query}, function (data) {
             
             if (data.status == 200) {
                 
@@ -204,13 +204,13 @@ function SK_headerSearch(query) {
                 }
             }
             
-            SK_progressIconLoader(search_wrapper.find('.search-header'));
+            FA_progressIconLoader(search_wrapper.find('.search-header'));
         });
     }
 }
 
 // Progress Icon Loader
-function SK_progressIconLoader(container_elem) {
+function FA_progressIconLoader(container_elem) {
     progress_icon_elem = container_elem.find('i.progress-icon');
     default_icon = progress_icon_elem.attr('data-icon');
     
@@ -239,17 +239,17 @@ function SK_progressIconLoader(container_elem) {
 }
 
 // Generate username
-function SK_generateUsername(query) {
+function FA_generateUsername(query) {
     var username = query.replace(/[^A-Za-z0-9_\-\.]/ig, '').toLowerCase();
     $('.register-username-textinput').val(username).keyup();
 }
 
 // Check username
-function SK_checkUsername(query,timeline_id,target,detailed) {
+function FA_checkUsername(query,timeline_id,target,detailed) {
     target = $(target);
     target_html = '';
     
-    $.get(SK_source(), {t: 'username', a: 'check', q: query, timeline_id: timeline_id}, function(data) {
+    $.get(FA_source(), {t: 'username', a: 'check', q: query, timeline_id: timeline_id}, function(data) {
         
         if (data.status == 200) {
             

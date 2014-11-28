@@ -2,11 +2,11 @@
 $sk['searches'] = array();
 
 if (!empty($_GET['query'])) {
-    $search_query = SK_secureEncode($_GET['query']);
+    $search_query = FA_secureEncode($_GET['query']);
     
-    foreach (SK_getSearch($search_query, 0, 30) as $search) {
+    foreach (FA_getSearch($search_query, 0, 30) as $search) {
         $sk['searches'][] = $search;
     }
 }
 
-$sk['content'] = SK_getPage('search/content');
+$sk['content'] = FA_getPage('search/content');

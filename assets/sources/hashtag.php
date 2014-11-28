@@ -2,9 +2,9 @@
 $sk['posts'] = array();
 
 if (!empty($_GET['query'])) {
-    $search_query = str_replace('#', '', SK_secureEncode($_GET['query']));
+    $search_query = str_replace('#', '', FA_secureEncode($_GET['query']));
     
-    $hashdata = SK_getHashtag($search_query);
+    $hashdata = FA_getHashtag($search_query);
     
     if (is_array($hashdata) && count($hashdata) > 0) {
         $search_string = "#[" . $hashdata['id'] . "]";
@@ -12,13 +12,13 @@ if (!empty($_GET['query'])) {
         $sql_query_one = mysqli_query($dbConnect, $query_one);
         
         while ($sql_fetch_one = mysqli_fetch_assoc($sql_query_one)) {
-            $story = SK_getStory($sql_fetch_one['id']);
+            $story = FA_getStory($sql_fetch_one['id']);
 
             if (is_array($story)) {
-                $sk['posts'][] = SK_getStory($sql_fetch_one['id']);
+                $sk['posts'][] = FA_getStory($sql_fetch_one['id']);
             }
         }
     }
 }
 
-$sk['content'] = SK_getPage('hashtag/content');
+$sk['content'] = FA_getPage('hashtag/content');

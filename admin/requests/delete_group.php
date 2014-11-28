@@ -1,6 +1,6 @@
 <?php
 if (isset($_POST['delete_group']) && isset($_POST['delete_btn']) && !empty($_POST['group_id']) && is_numeric($_POST['group_id']) && isset($_POST['keep_blank']) && empty($_POST['keep_blank']) && $logged_in == true) {
-    $group_id = SK_secureEncode($_POST['group_id']);
+    $group_id = FA_secureEncode($_POST['group_id']);
     $saved = false;
     
     $queries[] = "DELETE FROM " . DB_POSTS . " WHERE timeline_id=" . $group_id;

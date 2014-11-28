@@ -95,7 +95,7 @@ switch ($_GET['tab1']) {
 
 // If no sources found
 if (empty($sk['content'])) {
-    $sk['content'] = SK_getPage('welcome/error');
+    $sk['content'] = FA_getPage('welcome/error');
 }
 
 echo $sk['content'];

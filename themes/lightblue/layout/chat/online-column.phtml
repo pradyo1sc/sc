@@ -1,4 +1,4 @@
-<div id="online_<?php echo $sk['list']['id']; ?>" class="column cursor-hand" onclick="SK_getChat(<?php echo $sk['list']['id']; ?>,'<?php echo $sk['list']['name']; ?>');">
+<div id="online_<?php echo $sk['list']['id']; ?>" class="column cursor-hand" onclick="FA_getChat(<?php echo $sk['list']['id']; ?>,'<?php echo $sk['list']['name']; ?>');">
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
     <tr>
         <td width="32px" align="left" valign="middle">
@@ -18,7 +18,7 @@
             ?>
             <i class="icon-circle online-icon<?php echo $active_class; ?>"></i>
             <?php
-            $new_texts = SK_countMessages(array(
+            $new_texts = FA_countMessages(array(
                 'new' => true,
                 'recipient_id' => $sk['list']['id']
             ));

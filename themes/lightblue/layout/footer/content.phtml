@@ -1,37 +1,37 @@
 <div class="footer-wrapper">
     <div class="footer-content" align="center">
         <div class="footer-line">
-            <a href="<?php echo SK_smoothLink('index.php?tab1=terms&tab2=about'); ?>" data-href="?tab1=terms&tab2=about">
+            <a href="<?php echo FA_smoothLink('index.php?tab1=terms&tab2=about'); ?>" data-href="?tab1=terms&tab2=about">
                 <?php echo $lang['terms_about_label']; ?>
             </a> - 
             
             <?php
             if ($sk['logged'] == true) {
             ?>
-            <a href="<?php echo SK_smoothLink('index.php?tab1=create_page'); ?>" data-href="?tab1=create_page">
+            <a href="<?php echo FA_smoothLink('index.php?tab1=create_page'); ?>" data-href="?tab1=create_page">
                 <?php echo $lang['page_create_label']; ?>
             </a> - 
             
-            <a href="<?php echo SK_smoothLink('index.php?tab1=create_group'); ?>" data-href="?tab1=create_group">
+            <a href="<?php echo FA_smoothLink('index.php?tab1=create_group'); ?>" data-href="?tab1=create_group">
                 <?php echo $lang['group_create_label']; ?>
             </a> - 
             <?php
             }
             ?>
             
-            <a href="<?php echo SK_smoothLink('index.php?tab1=terms&tab2=contact'); ?>" data-href="?tab1=terms&tab2=contact">
+            <a href="<?php echo FA_smoothLink('index.php?tab1=terms&tab2=contact'); ?>" data-href="?tab1=terms&tab2=contact">
                 <?php echo $lang['terms_contact_label']; ?>
             </a> - 
             
-            <a href="<?php echo SK_smoothLink('index.php?tab1=terms&tab2=privacy'); ?>" data-href="?tab1=terms&tab2=privacy">
+            <a href="<?php echo FA_smoothLink('index.php?tab1=terms&tab2=privacy'); ?>" data-href="?tab1=terms&tab2=privacy">
                 <?php echo $lang['terms_privacy_label']; ?>
             </a> - 
             
-            <a href="<?php echo SK_smoothLink('index.php?tab1=terms&tab2=tos'); ?>" data-href="?tab1=terms&tab2=tos">
+            <a href="<?php echo FA_smoothLink('index.php?tab1=terms&tab2=tos'); ?>" data-href="?tab1=terms&tab2=tos">
                 <?php echo $lang['terms_tos_label']; ?>
             </a> - 
             
-            <a href="<?php echo SK_smoothLink('index.php?tab1=terms&tab2=disclaimer'); ?>" data-href="?tab1=terms&tab2=disclaimer">
+            <a href="<?php echo FA_smoothLink('index.php?tab1=terms&tab2=disclaimer'); ?>" data-href="?tab1=terms&tab2=disclaimer">
                 <?php echo $lang['terms_disclaimer_label']; ?>
             </a> - 
             
@@ -44,7 +44,7 @@
             <?php
             echo $lang['languages_label'] . ': ';
             
-            $languages = SK_getLanguages();
+            $languages = FA_getLanguages();
             $languages_html = array();
             
             foreach ($languages as $language) {

@@ -1,5 +1,5 @@
 <?php
-function SK_smoothLink($query='') {
+function FA_smoothLink($query='') {
     global $config;
     
     if ($config['smooth_links'] == 1) {

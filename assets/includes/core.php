@@ -11,12 +11,12 @@ require_once('connect.php');
 require_once('timezones.php');
 
 /* Check Functions */
-function SK_isLogged() {
+function FA_isLogged() {
     global $dbConnect;
     
     if (!empty($_SESSION['user_id']) && is_numeric($_SESSION['user_id']) && $_SESSION['user_id'] > 0 && !empty($_SESSION['user_pass'])) {
-        $user_id = SK_secureEncode($_SESSION['user_id']);
-        $user_pass = SK_secureEncode($_SESSION['user_pass']);
+        $user_id = FA_secureEncode($_SESSION['user_id']);
+        $user_pass = FA_secureEncode($_SESSION['user_pass']);
         $query = "SELECT COUNT(id) AS count FROM " . DB_ACCOUNTS . " WHERE id=$user_id AND password='$user_pass' AND type='user' AND active=1";
         $sql_query = mysqli_query($dbConnect, $query);
         $sql_fetch = mysqli_fetch_assoc($sql_query);
@@ -25,7 +25,7 @@ function SK_isLogged() {
     }
 }
 
-function SK_isPageAdmin($page_id=0, $admin_id=0) {
+function FA_isPageAdmin($page_id=0, $admin_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -39,7 +39,7 @@ function SK_isPageAdmin($page_id=0, $admin_id=0) {
     if (empty($admin_id) or $admin_id == 0) {
         $admin_id = $user['id'];
         
-        if (SK_isBlocked($page_id)) {
+        if (FA_isBlocked($page_id)) {
             return false;
         }
     }
@@ -48,8 +48,8 @@ function SK_isPageAdmin($page_id=0, $admin_id=0) {
         return false;
     }
     
-    $page_id = SK_secureEncode($page_id);
-    $admin_id = SK_secureEncode($admin_id);
+    $page_id = FA_secureEncode($page_id);
+    $admin_id = FA_secureEncode($admin_id);
     
     $query_one = "SELECT id,role FROM " . DB_PAGE_ADMINS . " WHERE admin_id=$admin_id AND page_id=$page_id AND active=1";
     $sql_query = mysqli_query($dbConnect, $query_one);
@@ -60,7 +60,7 @@ function SK_isPageAdmin($page_id=0, $admin_id=0) {
     }
 }
 
-function SK_isGroupAdmin($group_id=0, $admin_id=0) {
+function FA_isGroupAdmin($group_id=0, $admin_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -74,7 +74,7 @@ function SK_isGroupAdmin($group_id=0, $admin_id=0) {
     if (empty($admin_id) or $admin_id == 0) {
         $admin_id = $user['id'];
         
-        if (SK_isBlocked($group_id)) {
+        if (FA_isBlocked($group_id)) {
             return false;
         }
     }
@@ -83,8 +83,8 @@ function SK_isGroupAdmin($group_id=0, $admin_id=0) {
         return false;
     }
     
-    $group_id = SK_secureEncode($group_id);
-    $admin_id = SK_secureEncode($admin_id);
+    $group_id = FA_secureEncode($group_id);
+    $admin_id = FA_secureEncode($admin_id);
     
     $query_one = "SELECT id FROM " . DB_GROUP_ADMINS . " WHERE admin_id=$admin_id AND group_id=$group_id AND active=1";
     $sql_query_one = mysqli_query($dbConnect, $query_one);
@@ -94,7 +94,7 @@ function SK_isGroupAdmin($group_id=0, $admin_id=0) {
     }
 }
 
-function SK_isFollowing($following_id=0, $timeline_id=0) {
+function FA_isFollowing($following_id=0, $timeline_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -108,7 +108,7 @@ function SK_isFollowing($following_id=0, $timeline_id=0) {
     if (empty($timeline_id) or $timeline_id == 0) {
         $timeline_id = $user['id'];
         
-        if (SK_isBlocked($following_id)) {
+        if (FA_isBlocked($following_id)) {
             return false;
         }
     }
@@ -117,8 +117,8 @@ function SK_isFollowing($following_id=0, $timeline_id=0) {
         return false;
     }
     
-    $following_id = SK_secureEncode($following_id);
-    $timeline_id = SK_secureEncode($timeline_id);
+    $following_id = FA_secureEncode($following_id);
+    $timeline_id = FA_secureEncode($timeline_id);
     
     $query_text = "SELECT id FROM ". DB_FOLLOWERS ." WHERE follower_id=$timeline_id AND following_id=$following_id AND active=1";
     $sql_query = mysqli_query($dbConnect, $query_text);
@@ -128,7 +128,7 @@ function SK_isFollowing($following_id=0, $timeline_id=0) {
     }
 }
 
-function SK_isFollowRequested($following_id=0, $timeline_id=0) {
+function FA_isFollowRequested($following_id=0, $timeline_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -142,7 +142,7 @@ function SK_isFollowRequested($following_id=0, $timeline_id=0) {
     if (empty($timeline_id) or $timeline_id == 0) {
         $timeline_id = $user['id'];
         
-        if (SK_isBlocked($following_id)) {
+        if (FA_isBlocked($following_id)) {
             return false;
         }
     }
@@ -151,8 +151,8 @@ function SK_isFollowRequested($following_id=0, $timeline_id=0) {
         return false;
     }
     
-    $following_id = SK_secureEncode($following_id);
-    $timeline_id = SK_secureEncode($timeline_id);
+    $following_id = FA_secureEncode($following_id);
+    $timeline_id = FA_secureEncode($timeline_id);
     
     $query_text = "SELECT id FROM " . DB_FOLLOWERS . " WHERE follower_id=$timeline_id AND following_id=$following_id AND active=0";
     $sql_query = mysqli_query($dbConnect, $query_text);
@@ -162,7 +162,7 @@ function SK_isFollowRequested($following_id=0, $timeline_id=0) {
     }
 }
 
-function SK_isPostActive($post_id=0, $post_type='story') {
+function FA_isPostActive($post_id=0, $post_type='story') {
     global $dbConnect, $user;
     
     if (empty($post_id) or !is_numeric($post_id) or $post_id < 1) {
@@ -173,8 +173,8 @@ function SK_isPostActive($post_id=0, $post_type='story') {
        return false;
     }
     
-    $post_id = SK_secureEncode($post_id);
-    $post_type = SK_secureEncode($post_type);
+    $post_id = FA_secureEncode($post_id);
+    $post_type = FA_secureEncode($post_type);
     
     $query_text = "SELECT id,timeline_id FROM " . DB_POSTS . " WHERE post_id=$post_id AND type1='$post_type' AND type2='none' AND active=1";
     $sql_query = mysqli_query($dbConnect, $query_text);
@@ -182,20 +182,20 @@ function SK_isPostActive($post_id=0, $post_type='story') {
     if (mysqli_num_rows($sql_query) == 1) {
         $sql_fetch = mysqli_fetch_assoc($sql_query);
         
-        if (!SK_isBlocked($sql_fetch['timeline_id'])) {
+        if (!FA_isBlocked($sql_fetch['timeline_id'])) {
             return true;
         }
     }
 }
 
-function SK_isPostLiked($post_id=0, $timeline_id=0) {
+function FA_isPostLiked($post_id=0, $timeline_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
     
     global $dbConnect, $user;
     
-    if (!preg_match('/(story|comment)/', SK_getPostType($post_id))) {
+    if (!preg_match('/(story|comment)/', FA_getPostType($post_id))) {
         return false;
     }
     
@@ -207,8 +207,8 @@ function SK_isPostLiked($post_id=0, $timeline_id=0) {
         return false;
     }
     
-    $post_id = SK_secureEncode($post_id);
-    $timeline_id = SK_secureEncode($timeline_id);
+    $post_id = FA_secureEncode($post_id);
+    $timeline_id = FA_secureEncode($timeline_id);
     
     $query_one = "SELECT id FROM " . DB_POSTS . " WHERE post_id=$post_id AND timeline_id=$timeline_id AND type2='like' AND active=1";
     $sql_query_one = mysqli_query($dbConnect, $query_one);
@@ -218,14 +218,14 @@ function SK_isPostLiked($post_id=0, $timeline_id=0) {
     }
 }
 
-function SK_isPostCommented($post_id=0, $timeline_id=0) {
+function FA_isPostCommented($post_id=0, $timeline_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
     
     global $dbConnect, $user;
     
-    if (SK_getPostType($post_id) != "story") {
+    if (FA_getPostType($post_id) != "story") {
         return false;
     }
     
@@ -237,8 +237,8 @@ function SK_isPostCommented($post_id=0, $timeline_id=0) {
         return false;
     }
     
-    $post_id = SK_secureEncode($post_id);
-    $timeline_id = SK_secureEncode($timeline_id);
+    $post_id = FA_secureEncode($post_id);
+    $timeline_id = FA_secureEncode($timeline_id);
     
     $query_one = "SELECT id FROM " . DB_POSTS . " WHERE post_id=$post_id AND timeline_id=$timeline_id AND type1='story' AND type2='comment' AND active=1";
     $sql_query_one = mysqli_query($dbConnect, $query_one);
@@ -248,14 +248,14 @@ function SK_isPostCommented($post_id=0, $timeline_id=0) {
     }
 }
 
-function SK_isPostShared($post_id=0, $timeline_id=0) {
+function FA_isPostShared($post_id=0, $timeline_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
     
     global $dbConnect, $user;
     
-    if (SK_getPostType($post_id) != "story") {
+    if (FA_getPostType($post_id) != "story") {
         return false;
     }
     
@@ -267,8 +267,8 @@ function SK_isPostShared($post_id=0, $timeline_id=0) {
         return false;
     }
     
-    $post_id = SK_secureEncode($post_id);
-    $timeline_id = SK_secureEncode($timeline_id);
+    $post_id = FA_secureEncode($post_id);
+    $timeline_id = FA_secureEncode($timeline_id);
     
     $query_one = "SELECT id FROM " . DB_POSTS . " WHERE post_id=$post_id AND timeline_id=$timeline_id AND type1='story' AND type2='share' AND active=1";
     $sql_query_one = mysqli_query($dbConnect, $query_one);
@@ -278,14 +278,14 @@ function SK_isPostShared($post_id=0, $timeline_id=0) {
     }
 }
 
-function SK_isPostFollowed($post_id=0, $timeline_id=0) {
+function FA_isPostFollowed($post_id=0, $timeline_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
     
     global $dbConnect, $user;
     
-    if (SK_getPostType($post_id) != "story") {
+    if (FA_getPostType($post_id) != "story") {
         return false;
     }
     
@@ -297,8 +297,8 @@ function SK_isPostFollowed($post_id=0, $timeline_id=0) {
         return false;
     }
     
-    $post_id = SK_secureEncode($post_id);
-    $timeline_id = SK_secureEncode($timeline_id);
+    $post_id = FA_secureEncode($post_id);
+    $timeline_id = FA_secureEncode($timeline_id);
     
     $query_one = "SELECT id FROM " . DB_POSTS . " WHERE post_id=$post_id AND timeline_id=". $timeline_id ." AND type1='story' AND type2='follow' AND active=1";
     $sql_query_one = mysqli_query($dbConnect, $query_one);
@@ -308,14 +308,14 @@ function SK_isPostFollowed($post_id=0, $timeline_id=0) {
     }
 }
 
-function SK_isPostReported($post_id=0, $timeline_id=0) {
+function FA_isPostReported($post_id=0, $timeline_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
     
     global $dbConnect, $user;
     
-    if (!preg_match('/(story|comment)/', SK_getPostType($post_id))) {
+    if (!preg_match('/(story|comment)/', FA_getPostType($post_id))) {
         return false;
     }
     
@@ -327,8 +327,8 @@ function SK_isPostReported($post_id=0, $timeline_id=0) {
         return false;
     }
     
-    $post_id = SK_secureEncode($post_id);
-    $timeline_id = SK_secureEncode($timeline_id);
+    $post_id = FA_secureEncode($post_id);
+    $timeline_id = FA_secureEncode($timeline_id);
     
     $query_one = "SELECT id FROM " . DB_REPORTS . " WHERE reporter_id=$timeline_id AND post_id=" . $post_id;
     $sql_query_one = mysqli_query($dbConnect, $query_one);
@@ -338,7 +338,7 @@ function SK_isPostReported($post_id=0, $timeline_id=0) {
     }
 }
 
-function SK_isBlocked($blocked_id=0, $timeline_id=0) {
+function FA_isBlocked($blocked_id=0, $timeline_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -357,8 +357,8 @@ function SK_isBlocked($blocked_id=0, $timeline_id=0) {
         return false;
     }
     
-    $blocked_id = SK_secureEncode($blocked_id);
-    $timeline_id = SK_secureEncode($timeline_id);
+    $blocked_id = FA_secureEncode($blocked_id);
+    $timeline_id = FA_secureEncode($timeline_id);
     
     $query_text = "SELECT id FROM " . DB_BLOCKERS . " WHERE ((blocker_id=$timeline_id AND blocked_id=$blocked_id AND active=1) OR (blocker_id=$blocked_id AND blocked_id=$timeline_id AND active=1)) AND active=1";
     $sql_query = mysqli_query($dbConnect, $query_text);
@@ -368,12 +368,12 @@ function SK_isBlocked($blocked_id=0, $timeline_id=0) {
     }
 }
 
-function SK_isValidPasswordResetToken($string) {
+function FA_isValidPasswordResetToken($string) {
     global $dbConnect;
     
     $string_exp = explode('_', $string);
-    $id = SK_secureEncode($string_exp[0]);
-    $password = SK_secureEncode($string_exp[1]);
+    $id = FA_secureEncode($string_exp[0]);
+    $password = FA_secureEncode($string_exp[1]);
     
     if (empty($id) or !is_numeric($id) or $id < 1) {
         return false;
@@ -392,7 +392,7 @@ function SK_isValidPasswordResetToken($string) {
     }
 }
 
-function SK_validateEmail($string='') {
+function FA_validateEmail($string='') {
     $regex = '/^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/';
     
     if (preg_match($regex, $string)) {
@@ -402,13 +402,13 @@ function SK_validateEmail($string='') {
     return false;
 }
 
-function SK_validateUsername($query='') {
+function FA_validateUsername($query='') {
     if (strlen($query) > 3 && !is_numeric($query) && preg_match('/^[A-Za-z0-9_]+$/', $query)) {
         return true;
     }
 }
 
-function SK_secureEncode($string, $censorship=true) {
+function FA_secureEncode($string, $censorship=true) {
     global $dbConnect;
     $string = trim($string);
     $string = mysqli_real_escape_string($dbConnect, $string);
@@ -435,7 +435,7 @@ function SK_secureEncode($string, $censorship=true) {
 }
 
 /* Get functions */
-function SK_getAnnouncements() {
+function FA_getAnnouncements() {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -453,7 +453,7 @@ function SK_getAnnouncements() {
     return $get;
 }
 
-function SK_getPage($page_url='') {
+function FA_getPage($page_url='') {
     global $sk, $lang;
     
     $page = './themes/' . $sk['config']['theme'] . '/layout/' . $page_url . '.phtml';
@@ -467,7 +467,7 @@ function SK_getPage($page_url='') {
     return $page_content;
 }
 
-function SK_getLanguages() {
+function FA_getLanguages() {
     global $sk;
     $get = array();
     $languages = glob('assets/languages/*.php');
@@ -485,7 +485,7 @@ function SK_getLanguages() {
             $query_string = $_SERVER['QUERY_STRING'];
             $query_string = preg_replace('/(\&|)lang\=([A-Za-z0-9_]+)/i', '', $query_string);
             $language_url = 'index.php?' . $query_string . '&lang=' . $language;
-            $language_url = SK_secureEncode(strip_tags($language_url));
+            $language_url = FA_secureEncode(strip_tags($language_url));
         }
         
         $get[] = array(
@@ -497,7 +497,7 @@ function SK_getLanguages() {
     return $get;
 }
 
-function SK_getChat() {
+function FA_getChat() {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -510,8 +510,8 @@ function SK_getChat() {
         return false;
     }
     
-    $chat_recipient_id = SK_secureEncode($_SESSION['chat_recipient_id']);
-    $chat_recipient = SK_getUser($chat_recipient_id);
+    $chat_recipient_id = FA_secureEncode($_SESSION['chat_recipient_id']);
+    $chat_recipient = FA_getUser($chat_recipient_id);
     
     if (empty($chat_recipient['id'])) {
         return false;
@@ -520,7 +520,7 @@ function SK_getChat() {
     return $chat_recipient;
 }
 
-function SK_getNotifications($data=array()) {
+function FA_getNotifications($data=array()) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -539,19 +539,19 @@ function SK_getNotifications($data=array()) {
     if ($data['account_id'] == $user['id']) {
         $account = $user;
     } else {
-        $data['account_id'] = SK_secureEncode($data['account_id']);
-        $account = SK_getUser($data['account_id']);
+        $data['account_id'] = FA_secureEncode($data['account_id']);
+        $account = FA_getUser($data['account_id']);
     }
     
     if ($account['type'] == "user" && $account['id'] != $user['id']) {
         return false;
-    } elseif ($account['type'] == "page" && !SK_isPageAdmin($account['id'])) {
+    } elseif ($account['type'] == "page" && !FA_isPageAdmin($account['id'])) {
         return false;
     } elseif ($account['type'] == "group") {
         return false;
     }
     
-    $new_notif = SK_countNotifications(
+    $new_notif = FA_countNotifications(
         array(
             'unread' => true
         )
@@ -578,9 +578,9 @@ function SK_getNotifications($data=array()) {
     if (mysqli_num_rows($sql_query_one) > 0) {
         
         while ($sql_fetch_one = mysqli_fetch_assoc($sql_query_one)) {
-            $sql_fetch_one['notifier'] = SK_getUser($sql_fetch_one['notifier_id']);
+            $sql_fetch_one['notifier'] = FA_getUser($sql_fetch_one['notifier_id']);
             $sql_fetch_one['raw_url'] = $sql_fetch_one['url'];
-            $sql_fetch_one['url'] = SK_smoothLink($sql_fetch_one['url']);
+            $sql_fetch_one['url'] = FA_smoothLink($sql_fetch_one['url']);
             $sql_fetch_one['text'] = preg_replace(
                 '/\[b(| weight\=)(|[0-9]+)\](.*?)\[\/b\]/i',
                 '<strong style="font-weight: $2;">$3</strong>',
@@ -594,7 +594,7 @@ function SK_getNotifications($data=array()) {
     return $get;
 }
 
-function SK_getAlbums($user_id=0, $limit=0) {
+function FA_getAlbums($user_id=0, $limit=0) {
     global $dbConnect, $user;
 
     if (!is_numeric($user_id) or $user_id < 1) {
@@ -617,7 +617,7 @@ function SK_getAlbums($user_id=0, $limit=0) {
     return $get;
 }
 
-function SK_getAlbumPhotos($album_id=0) {
+function FA_getAlbumPhotos($album_id=0) {
     global $dbConnect, $user;
 
     $get = array();
@@ -627,18 +627,18 @@ function SK_getAlbumPhotos($album_id=0) {
     if (mysqli_num_rows($sql_query_one) > 0) {
 
         while ($sql_fetch_one = mysqli_fetch_assoc($sql_query_one)) {
-            $get[] = SK_getMedia($sql_fetch_one['id']);
+            $get[] = FA_getMedia($sql_fetch_one['id']);
         }
     }
 
     return $get;
 }
 
-function SK_getUsernameStatus($query='', $timeline_id=0) {
+function FA_getUsernameStatus($query='', $timeline_id=0) {
     global $dbConnect, $user;
-    $query = SK_secureEncode($query);
+    $query = FA_secureEncode($query);
     
-    if (empty($query) or !SK_validateUsername($query)) {
+    if (empty($query) or !FA_validateUsername($query)) {
         return 406;
     }
     
@@ -666,8 +666,8 @@ function SK_getUsernameStatus($query='', $timeline_id=0) {
             }
         }
         
-        $timeline_id = SK_secureEncode($timeline_id);
-        $timeline = SK_getUser($timeline_id);
+        $timeline_id = FA_secureEncode($timeline_id);
+        $timeline = FA_getUser($timeline_id);
         
         if (empty($timeline['id'])) {
             return false;
@@ -675,9 +675,9 @@ function SK_getUsernameStatus($query='', $timeline_id=0) {
         
         if ($timeline['type'] == "user" && $timeline['id'] != $user['id']) {
             return false;
-        } elseif ($timeline['type'] == "page" && !SK_isPageAdmin($timeline['id'])) {
+        } elseif ($timeline['type'] == "page" && !FA_isPageAdmin($timeline['id'])) {
             return false;
-        } elseif ($timeline['type'] == "group" && !SK_isGroupAdmin($timeline['id'])) {
+        } elseif ($timeline['type'] == "group" && !FA_isGroupAdmin($timeline['id'])) {
             return false;
         }
         
@@ -696,7 +696,7 @@ function SK_getUsernameStatus($query='', $timeline_id=0) {
     }
 }
 
-function SK_getHashtag($tag='') {
+function FA_getHashtag($tag='') {
     global $dbConnect;
     $create = false;
     
@@ -704,7 +704,7 @@ function SK_getHashtag($tag='') {
         return false;
     }
     
-    $tag = SK_secureEncode($tag);
+    $tag = FA_secureEncode($tag);
     
     if (is_numeric($tag)) {
         $query = "SELECT * FROM " . DB_HASHTAGS . " WHERE id=$tag";
@@ -741,7 +741,7 @@ function SK_getHashtag($tag='') {
     }
 }
 
-function SK_getHashtagSearch($tag='', $limit=4) {
+function FA_getHashtagSearch($tag='', $limit=4) {
     global $dbConnect;
     $get = array();
     
@@ -753,7 +753,7 @@ function SK_getHashtagSearch($tag='', $limit=4) {
         $limit = 5;
     }
     
-    $tag = SK_secureEncode($tag);
+    $tag = FA_secureEncode($tag);
     
     if (is_numeric($tag)) {
         $query = "SELECT * FROM " . DB_HASHTAGS . " WHERE id=$tag LIMIT $limit";
@@ -774,7 +774,7 @@ function SK_getHashtagSearch($tag='', $limit=4) {
     }
 }
 
-function SK_getTrendings($type='latest', $limit=5) {
+function FA_getTrendings($type='latest', $limit=5) {
     global $dbConnect;
     $get = array();
     
@@ -798,7 +798,7 @@ function SK_getTrendings($type='latest', $limit=5) {
     if ($sql_numrows > 0) {
         
         while ($sql_fetch = mysqli_fetch_assoc($sql_query)) {
-            $sql_fetch['url'] = SK_smoothLink('index.php?tab1=hashtag&query=' . $sql_fetch['tag']);
+            $sql_fetch['url'] = FA_smoothLink('index.php?tab1=hashtag&query=' . $sql_fetch['tag']);
             $get[] = $sql_fetch;
         }
         
@@ -806,9 +806,9 @@ function SK_getTrendings($type='latest', $limit=5) {
     }
 }
 
-function SK_getUser($timeline_id=0, $all=false) {
+function FA_getUser($timeline_id=0, $all=false) {
     global $dbConnect, $sk;
-    $timeline_id = SK_secureEncode($timeline_id);
+    $timeline_id = FA_secureEncode($timeline_id);
     $subquery_one = 'id,avatar_id,cover_id,name,type,username,last_logged';
     
     if (is_numeric($timeline_id)) {
@@ -842,7 +842,7 @@ function SK_getUser($timeline_id=0, $all=false) {
         $sql_fetch_two = mysqli_fetch_assoc($sql_query_two);
         
         if (isset($sql_fetch_two['username'])) {
-            $sql_fetch_two['url'] = SK_smoothLink('index.php?tab1=timeline&id=' . $sql_fetch_two['username']);
+            $sql_fetch_two['url'] = FA_smoothLink('index.php?tab1=timeline&id=' . $sql_fetch_two['username']);
         }
         
         if (isset($sql_fetch_two['name'])) {
@@ -858,7 +858,7 @@ function SK_getUser($timeline_id=0, $all=false) {
         if (isset($sql_fetch_two['cover_id'])) {
             
             if ($sql_fetch_two['cover_id'] > 0) {
-                $sql_fetch_two['cover'] = SK_getMedia($sql_fetch_two['cover_id']);
+                $sql_fetch_two['cover'] = FA_getMedia($sql_fetch_two['cover_id']);
                 $sql_fetch_two['actual_cover_url'] =  $sk['config']['site_url'] . '/' . $sql_fetch_two['cover']['url'] . '.' . $sql_fetch_two['cover']['extension'];
                 $sql_fetch_two['cover_url'] =  $sk['config']['site_url'] . '/' . $sql_fetch_two['cover']['url'] . '_cover.' . $sql_fetch_two['cover']['extension'];
             }  else {
@@ -871,7 +871,7 @@ function SK_getUser($timeline_id=0, $all=false) {
         if (isset($sql_fetch_two['avatar_id'])) {
             
             if ($sql_fetch_two['avatar_id'] > 0) {
-                $sql_fetch_two['avatar'] = SK_getMedia($sql_fetch_two['avatar_id']);
+                $sql_fetch_two['avatar'] = FA_getMedia($sql_fetch_two['avatar_id']);
                 $sql_fetch_two['thumbnail_url'] =  $sk['config']['site_url'] . '/' . $sql_fetch_two['avatar']['url'] . '_thumb.' . $sql_fetch_two['avatar']['extension'];
                 $sql_fetch_two['avatar_url'] =  $sk['config']['site_url'] . '/' . $sql_fetch_two['avatar']['url'] . '_100x100.' . $sql_fetch_two['avatar']['extension'];
             } else {
@@ -965,7 +965,7 @@ function SK_getUser($timeline_id=0, $all=false) {
     }
 }
 
-function SK_getFollowSuggestions($search_query='', $limit=5) {
+function FA_getFollowSuggestions($search_query='', $limit=5) {
     if ($GLOBALS['logged'] !== true) {
         return array();
     }
@@ -977,11 +977,11 @@ function SK_getFollowSuggestions($search_query='', $limit=5) {
         $limit = 5;
     }
     
-    $limit = SK_secureEncode($limit);
+    $limit = FA_secureEncode($limit);
     $query_one = "SELECT id FROM " . DB_ACCOUNTS . " WHERE id NOT IN (SELECT following_id FROM " . DB_FOLLOWERS . " WHERE follower_id=" . $user['id'] . ") AND (id IN (SELECT id FROM " . DB_USERS . " WHERE follow_privacy='everyone') OR id IN (SELECT id FROM " . DB_PAGES . ") OR id IN (SELECT id FROM " . DB_GROUPS . " WHERE group_privacy IN ('open','closed'))) AND type IN ('user','page','group') AND active=1";
     
     if (!empty($search_query)) {
-        $search_query = SK_secureEncode($search_query);
+        $search_query = FA_secureEncode($search_query);
         $query_one .= " AND name LIKE '%$search_query%'";
     }
     
@@ -990,15 +990,15 @@ function SK_getFollowSuggestions($search_query='', $limit=5) {
     
     while ($sql_fetch_one = mysqli_fetch_assoc($sql_query_one)) {
         
-        if (!SK_isBlocked($sql_fetch_one['id'])) {
-            $get[] = SK_getUser($sql_fetch_one['id']);
+        if (!FA_isBlocked($sql_fetch_one['id'])) {
+            $get[] = FA_getUser($sql_fetch_one['id']);
         }
     }
     
     return $get;
 }
 
-function SK_getFollowing($timeline_id=0, $search_query='') {
+function FA_getFollowing($timeline_id=0, $search_query='') {
     global $dbConnect, $user;
     $get = array();
     
@@ -1011,15 +1011,15 @@ function SK_getFollowing($timeline_id=0, $search_query='') {
         $timeline_id = $user['id'];
     }
     
-    if (!is_numeric($timeline_id) or $timeline_id < 1 or SK_isBlocked($timeline_id)) {
+    if (!is_numeric($timeline_id) or $timeline_id < 1 or FA_isBlocked($timeline_id)) {
         return false;
     }
     
-    $timeline_id = SK_secureEncode($timeline_id);
+    $timeline_id = FA_secureEncode($timeline_id);
     $query_text = "SELECT id FROM " . DB_ACCOUNTS . " WHERE id IN (SELECT following_id FROM " . DB_FOLLOWERS . " WHERE follower_id=$timeline_id AND following_id<>$timeline_id AND active=1) AND type='user' AND active=1";
     
     if (!empty($search_query)) {
-        $search_query = SK_secureEncode($search_query);
+        $search_query = FA_secureEncode($search_query);
         $query_text .= " AND name LIKE '%$search_query%'";
     }
     
@@ -1027,13 +1027,13 @@ function SK_getFollowing($timeline_id=0, $search_query='') {
     $sql_query = mysqli_query($dbConnect, $query_text);
     
     while ($sql_fetch = mysqli_fetch_assoc($sql_query)) {
-        $get[] = SK_getUser($sql_fetch['id']);
+        $get[] = FA_getUser($sql_fetch['id']);
     }
     
     return $get;
 }
 
-function SK_getFollowers($timeline_id=0, $search_query='') {
+function FA_getFollowers($timeline_id=0, $search_query='') {
     global $dbConnect, $user;
     $get = array();
     
@@ -1046,15 +1046,15 @@ function SK_getFollowers($timeline_id=0, $search_query='') {
         $timeline_id = $user['id'];
     }
     
-    if (!is_numeric($timeline_id) or $timeline_id < 1 or SK_isBlocked($timeline_id)) {
+    if (!is_numeric($timeline_id) or $timeline_id < 1 or FA_isBlocked($timeline_id)) {
         return false;
     }
     
-    $timeline_id = SK_secureEncode($timeline_id);
+    $timeline_id = FA_secureEncode($timeline_id);
     $query_text = "SELECT id FROM " . DB_ACCOUNTS . " WHERE id IN (SELECT follower_id FROM " . DB_FOLLOWERS . " WHERE follower_id<>$timeline_id AND following_id=$timeline_id AND active=1) AND type='user' AND active=1";
     
     if (!empty($search_query)) {
-        $search_query = SK_secureEncode($search_query);
+        $search_query = FA_secureEncode($search_query);
         $query_text .= " AND name LIKE '%$search_query%'";
     }
     
@@ -1062,13 +1062,13 @@ function SK_getFollowers($timeline_id=0, $search_query='') {
     $sql_query = mysqli_query($dbConnect, $query_text);
     
     while ($sql_fetch = mysqli_fetch_assoc($sql_query)) {
-        $get[] = SK_getUser($sql_fetch['id']);
+        $get[] = FA_getUser($sql_fetch['id']);
     }
     
     return $get;
 }
 
-function SK_getLikedPages($timeline_id=0, $search_query='') {
+function FA_getLikedPages($timeline_id=0, $search_query='') {
     global $dbConnect, $user;
     $get = array();
     
@@ -1081,15 +1081,15 @@ function SK_getLikedPages($timeline_id=0, $search_query='') {
         $timeline_id = $user['id'];
     }
     
-    if (!is_numeric($timeline_id) or $timeline_id < 1 or SK_isBlocked($timeline_id)) {
+    if (!is_numeric($timeline_id) or $timeline_id < 1 or FA_isBlocked($timeline_id)) {
         return false;
     }
     
-    $timeline_id = SK_secureEncode($timeline_id);
+    $timeline_id = FA_secureEncode($timeline_id);
     $query_text = "SELECT id FROM " . DB_ACCOUNTS . " WHERE id IN (SELECT following_id FROM " . DB_FOLLOWERS . " WHERE follower_id=$timeline_id AND following_id<>$timeline_id AND active=1) AND type='page' AND active=1";
     
     if (!empty($search_query)) {
-        $search_query = SK_secureEncode($search_query);
+        $search_query = FA_secureEncode($search_query);
         $query_text .= " AND name LIKE '%$search_query%'";
     }
     
@@ -1097,13 +1097,13 @@ function SK_getLikedPages($timeline_id=0, $search_query='') {
     $sql_query = mysqli_query($dbConnect, $query_text);
     
     while ($sql_fetch = mysqli_fetch_assoc($sql_query)) {
-        $get[] = SK_getUser($sql_fetch['id']);
+        $get[] = FA_getUser($sql_fetch['id']);
     }
     
     return $get;
 }
 
-function SK_getGroupsJoined($timeline_id=0, $search_query='') {
+function FA_getGroupsJoined($timeline_id=0, $search_query='') {
     global $dbConnect, $user;
     $get = array();
     
@@ -1120,11 +1120,11 @@ function SK_getGroupsJoined($timeline_id=0, $search_query='') {
         return false;
     }
     
-    $timeline_id = SK_secureEncode($timeline_id);
+    $timeline_id = FA_secureEncode($timeline_id);
     $query_text = "SELECT id FROM " . DB_ACCOUNTS . " WHERE id IN (SELECT following_id FROM " . DB_FOLLOWERS . " WHERE follower_id=$timeline_id AND following_id<>$timeline_id AND active=1) AND type='group' AND active=1";
     
     if (!empty($search_query)) {
-        $search_query = SK_secureEncode($search_query);
+        $search_query = FA_secureEncode($search_query);
         $query_text .= " AND name LIKE '%$search_query%'";
     }
     
@@ -1132,13 +1132,13 @@ function SK_getGroupsJoined($timeline_id=0, $search_query='') {
     $sql_query = mysqli_query($dbConnect, $query_text);
     
     while ($sql_fetch = mysqli_fetch_assoc($sql_query)) {
-        $get[] = SK_getUser($sql_fetch['id']);
+        $get[] = FA_getUser($sql_fetch['id']);
     }
     
     return $get;
 }
 
-function SK_getFollowRequests($timeline_id=0, $search_query='') {
+function FA_getFollowRequests($timeline_id=0, $search_query='') {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -1154,11 +1154,11 @@ function SK_getFollowRequests($timeline_id=0, $search_query='') {
         return false;
     }
     
-    $timeline_id = SK_secureEncode($timeline_id);
+    $timeline_id = FA_secureEncode($timeline_id);
     $query_text = "SELECT id FROM " . DB_ACCOUNTS . " WHERE id IN (SELECT follower_id FROM " . DB_FOLLOWERS . " WHERE follower_id<>$timeline_id AND following_id=$timeline_id AND active=0) AND type='user' AND active=1";
     
     if (!empty($search_query)) {
-        $search_query = SK_secureEncode($search_query);
+        $search_query = FA_secureEncode($search_query);
         $query_text .= " AND name LIKE '%$search_query%'";
     }
     
@@ -1166,13 +1166,13 @@ function SK_getFollowRequests($timeline_id=0, $search_query='') {
     $sql_query = mysqli_query($dbConnect, $query_text);
     
     while ($sql_fetch = mysqli_fetch_assoc($sql_query)) {
-        $get[] = SK_getUser($sql_fetch['id']);
+        $get[] = FA_getUser($sql_fetch['id']);
     }
     
     return $get;
 }
 
-function SK_getPageAdmins($page_id=0, $search_query='') {
+function FA_getPageAdmins($page_id=0, $search_query='') {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -1184,16 +1184,16 @@ function SK_getPageAdmins($page_id=0, $search_query='') {
         return false;
     }
     
-    $page_id = SK_secureEncode($page_id);
+    $page_id = FA_secureEncode($page_id);
     
-    if (!SK_isPageAdmin($page_id)) {
+    if (!FA_isPageAdmin($page_id)) {
         return false;
     }
     
     $query_text = "SELECT id FROM " . DB_ACCOUNTS . " WHERE id IN (SELECT admin_id FROM " . DB_PAGE_ADMINS . " WHERE page_id=$page_id AND active=1) AND active=1";
     
     if (!empty($search_query)) {
-        $search_query = SK_secureEncode($search_query);
+        $search_query = FA_secureEncode($search_query);
         $query_text .= " AND name LIKE '%$search_query%'";
     }
     
@@ -1201,13 +1201,13 @@ function SK_getPageAdmins($page_id=0, $search_query='') {
     $sql_query = mysqli_query($dbConnect, $query_text);
     
     while ($sql_fetch = mysqli_fetch_assoc($sql_query)) {
-        $get[] = SK_getUser($sql_fetch['id']);
+        $get[] = FA_getUser($sql_fetch['id']);
     }
     
     return $get;
 }
 
-function SK_getGroupAdmins($group_id=0, $search_query='') {
+function FA_getGroupAdmins($group_id=0, $search_query='') {
     global $dbConnect;
     $get = array();
     
@@ -1215,7 +1215,7 @@ function SK_getGroupAdmins($group_id=0, $search_query='') {
         return false;
     }
     
-    $group_id = SK_secureEncode($group_id);
+    $group_id = FA_secureEncode($group_id);
     $query_text = "SELECT id FROM " . DB_ACCOUNTS . " WHERE id IN (SELECT admin_id FROM " . DB_GROUP_ADMINS . " WHERE group_id=$group_id AND active=1) AND active=1";
     
     if (!empty($search_query)) {
@@ -1226,13 +1226,13 @@ function SK_getGroupAdmins($group_id=0, $search_query='') {
     $sql_query = mysqli_query($dbConnect, $query_text);
     
     while ($sql_fetch = mysqli_fetch_assoc($sql_query)) {
-        $get[] = SK_getUser($sql_fetch['id']);
+        $get[] = FA_getUser($sql_fetch['id']);
     }
     
     return $get;
 }
 
-function SK_getManagedPages() {
+function FA_getManagedPages() {
     if ($GLOBALS['logged'] !== true) {
         return array();
     }
@@ -1243,13 +1243,13 @@ function SK_getManagedPages() {
     $sql_query_one = mysqli_query($dbConnect, $query_one);
     
     while ($sql_fetch_one = mysqli_fetch_assoc($sql_query_one)) {
-        $get[] = SK_getUser($sql_fetch_one['id']);
+        $get[] = FA_getUser($sql_fetch_one['id']);
     }
     
     return $get;
 }
 
-function SK_getManagedGroups() {
+function FA_getManagedGroups() {
     if ($GLOBALS['logged'] !== true) {
         return array();
     }
@@ -1260,13 +1260,13 @@ function SK_getManagedGroups() {
     $sql_query_one = mysqli_query($dbConnect, $query_one);
     
     while ($sql_fetch_one = mysqli_fetch_assoc($sql_query_one)) {
-        $get[] = SK_getUser($sql_fetch_one['id']);
+        $get[] = FA_getUser($sql_fetch_one['id']);
     }
     
     return $get;
 }
 
-function SK_getOnlines($timeline_id=0, $search_query='') {
+function FA_getOnlines($timeline_id=0, $search_query='') {
     if ($GLOBALS['logged'] !== true) {
         return array();
     }
@@ -1279,7 +1279,7 @@ function SK_getOnlines($timeline_id=0, $search_query='') {
         $timeline_id = $user['id'];
     }
     
-    if (!is_numeric($timeline_id) or $timeline_id < 1 or SK_isBlocked($timeline_id)) {
+    if (!is_numeric($timeline_id) or $timeline_id < 1 or FA_isBlocked($timeline_id)) {
         return false;
     }
     
@@ -1293,7 +1293,7 @@ function SK_getOnlines($timeline_id=0, $search_query='') {
     $sql_query_one = mysqli_query($dbConnect, $query_text_one);
     
     while ($sql_fetch_one = mysqli_fetch_assoc($sql_query_one)) {
-        $get[] = SK_getUser($sql_fetch_one['id']);
+        $get[] = FA_getUser($sql_fetch_one['id']);
         $excludes[] = $sql_fetch_one['id'];
     }
     
@@ -1323,13 +1323,13 @@ function SK_getOnlines($timeline_id=0, $search_query='') {
     $sql_query_two = mysqli_query($dbConnect, $query_two);
     
     while ($sql_fetch_two=mysqli_fetch_assoc($sql_query_two)) {
-        $get[] = SK_getUser($sql_fetch_two['id']);
+        $get[] = FA_getUser($sql_fetch_two['id']);
     }
     
     return $get;
 }
 
-function SK_getMessageRecipients($timeline_id=0, $search_query='', $new=false) {
+function FA_getMessageRecipients($timeline_id=0, $search_query='', $new=false) {
     if ($GLOBALS['logged'] !== true) {
         return array();
     }
@@ -1342,12 +1342,12 @@ function SK_getMessageRecipients($timeline_id=0, $search_query='', $new=false) {
         $timeline_id = $user['id'];
     }
     
-    if (!is_numeric($timeline_id) or $timeline_id < 1 or SK_isBlocked($timeline_id)) {
+    if (!is_numeric($timeline_id) or $timeline_id < 1 or FA_isBlocked($timeline_id)) {
         return false;
     }
     
     if (!empty($search_query)) {
-        $search_query = SK_secureEncode($search_query);
+        $search_query = FA_secureEncode($search_query);
         $query_one = "SELECT DISTINCT id FROM " . DB_ACCOUNTS . " WHERE (id IN (SELECT timeline_id FROM " . DB_POSTS . " WHERE type1='message' AND recipient_id=$timeline_id AND active=1";
         
         if (isset($new) && $new == true) {
@@ -1382,7 +1382,7 @@ function SK_getMessageRecipients($timeline_id=0, $search_query='', $new=false) {
     if (mysqli_num_rows($sql_query_one) > 0) {
         
         while ($sql_fetch_one=mysqli_fetch_assoc($sql_query_one)) {
-            $get[] = SK_getUser($sql_fetch_one['id']);
+            $get[] = FA_getUser($sql_fetch_one['id']);
             $excludes[] = $sql_fetch_one['id'];
         }
     }
@@ -1413,13 +1413,13 @@ function SK_getMessageRecipients($timeline_id=0, $search_query='', $new=false) {
     $sql_query_two = mysqli_query($dbConnect, $query_two);
     
     while ($sql_fetch_two=mysqli_fetch_assoc($sql_query_two)) {
-        $get[] = SK_getUser($sql_fetch_two['id']);
+        $get[] = FA_getUser($sql_fetch_two['id']);
     }
     
     return $get;
 }
 
-function SK_getSearch($search_query='', $from_row=0, $limit=10) {
+function FA_getSearch($search_query='', $from_row=0, $limit=10) {
     global $dbConnect;
     $get = array();
     
@@ -1443,23 +1443,23 @@ function SK_getSearch($search_query='', $from_row=0, $limit=10) {
         return $get;
     }
     
-    $search_query = SK_secureEncode($search_query);
-    $from_row = SK_secureEncode($from_row);
-    $limit = SK_secureEncode($limit);
+    $search_query = FA_secureEncode($search_query);
+    $from_row = FA_secureEncode($from_row);
+    $limit = FA_secureEncode($limit);
     $query_one = "SELECT id FROM " . DB_ACCOUNTS . " WHERE name LIKE '%$search_query%' AND (id IN (SELECT id FROM " . DB_USERS . ") OR id IN (SELECT id FROM " . DB_PAGES . ") OR id IN (SELECT id FROM " . DB_GROUPS . " WHERE group_privacy IN ('open','closed'))) AND type IN ('user','page','group') AND active=1 ORDER BY name ASC LIMIT $from_row,$limit";
     $sql_query_one = mysqli_query($dbConnect, $query_one);
     
     if (mysqli_num_rows($sql_query_one) > 0) {
         
         while ($sql_fetch_one = mysqli_fetch_assoc($sql_query_one)) {
-            $get[] = SK_getUser($sql_fetch_one['id']);
+            $get[] = FA_getUser($sql_fetch_one['id']);
         }
     }
     
     return $get;
 }
 
-function SK_getFollowButton($timeline_id=0) {
+function FA_getFollowButton($timeline_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -1470,12 +1470,12 @@ function SK_getFollowButton($timeline_id=0) {
         return false;
     }
     
-    if ($timeline_id == $user['id'] or SK_isBlocked($timeline_id)) {
+    if ($timeline_id == $user['id'] or FA_isBlocked($timeline_id)) {
         return false;
     }
     
-    $timeline_id = SK_secureEncode($timeline_id);
-    $account = $sk['follow'] = SK_getUser($timeline_id);
+    $timeline_id = FA_secureEncode($timeline_id);
+    $account = $sk['follow'] = FA_getUser($timeline_id);
     
     if (!isset($account['id'])) {
         return false;
@@ -1523,46 +1523,46 @@ function SK_getFollowButton($timeline_id=0) {
         }
     }
     
-    if (SK_isFollowing($timeline_id)) {
-        return SK_getPage($unfollow_button);
+    if (FA_isFollowing($timeline_id)) {
+        return FA_getPage($unfollow_button);
     } else {
         
-        if (SK_isFollowRequested($timeline_id)) {
-            return SK_getPage($request_button);
+        if (FA_isFollowRequested($timeline_id)) {
+            return FA_getPage($request_button);
         } else {
             
             if ($account['type'] == "user") {
                 
                 if ($account['follow_privacy'] == "following") {
                     
-                    if (SK_isFollowing($user['id'], $timeline_id)) {
-                        return SK_getPage($follow_button);
+                    if (FA_isFollowing($user['id'], $timeline_id)) {
+                        return FA_getPage($follow_button);
                     }
                 } elseif ($account['follow_privacy'] == "everyone") {
-                    return SK_getPage($follow_button);
+                    return FA_getPage($follow_button);
                 }
             } elseif ($account['type'] == "page") {
-                return SK_getPage($follow_button);
+                return FA_getPage($follow_button);
             } elseif ($account['type'] == "group") {
-                return SK_getPage($follow_button);
+                return FA_getPage($follow_button);
             }
         }
     }
 }
 
-function SK_getMessageButton($timeline_id=0) {
+function FA_getMessageButton($timeline_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
     
     global $dbConnect, $user;
     
-    if (!is_numeric($timeline_id) or $timeline_id < 0 && SK_isBlocked($timeline_id)) {
+    if (!is_numeric($timeline_id) or $timeline_id < 0 && FA_isBlocked($timeline_id)) {
         return false;
     }
     
     if ($timeline_id != $user['id']) {
-        $account = SK_getUser($timeline_id);
+        $account = FA_getUser($timeline_id);
         
         if (!isset($account['id'])) {
             return false;
@@ -1573,15 +1573,15 @@ function SK_getMessageButton($timeline_id=0) {
             $sql_query_one = mysqli_query($dbConnect, $query);
             
             if (mysqli_num_rows($sql_query_one) == 1) {
-                return SK_getPage('global/buttons/message');
+                return FA_getPage('global/buttons/message');
             }
         } elseif ($account['message_privacy'] == "everyone") {
-            return SK_getPage('global/buttons/message');
+            return FA_getPage('global/buttons/message');
         }
     }
 }
 
-function SK_getMessages($data=array()) {
+function FA_getMessages($data=array()) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -1593,8 +1593,8 @@ function SK_getMessages($data=array()) {
         return false;
     }
     
-    $data['recipient_id'] = SK_secureEncode($data['recipient_id']);
-    $recipient = SK_getUser($data['recipient_id']);
+    $data['recipient_id'] = FA_secureEncode($data['recipient_id']);
+    $recipient = FA_getUser($data['recipient_id']);
     
     if (!isset($recipient['id'])) {
         return false;
@@ -1603,10 +1603,10 @@ function SK_getMessages($data=array()) {
     $query_one = "SELECT id,active,media_id,recipient_id,seen,text,time,timeline_id,type1 FROM " . DB_POSTS . " WHERE active=1";
     
     if (!empty($data['message_id']) && is_numeric($data['message_id']) && $data['message_id'] > 0) {
-        $data['message_id'] = SK_secureEncode($data['message_id']);
+        $data['message_id'] = FA_secureEncode($data['message_id']);
         $query_one .= " AND id=" . $data['message_id'];
     } elseif (!empty($data['before_message_id']) && is_numeric($data['before_message_id']) && $data['before_message_id'] > 0) {
-        $data['before_message_id'] = SK_secureEncode($data['before_message_id']);
+        $data['before_message_id'] = FA_secureEncode($data['before_message_id']);
         $query_one .= " AND id<" . $data['before_message_id'];
     }
     
@@ -1621,8 +1621,8 @@ function SK_getMessages($data=array()) {
     if ($data['timeline_id'] == $user['id']) {
         $timeline = $user;
     } else {
-        $data['timeline_id'] = SK_secureEncode($data['timeline_id']);
-        $timeline = SK_getUser($data['timeline_id']);
+        $data['timeline_id'] = FA_secureEncode($data['timeline_id']);
+        $timeline = FA_getUser($data['timeline_id']);
     }
     
     if (!isset($timeline['id'])) {
@@ -1631,7 +1631,7 @@ function SK_getMessages($data=array()) {
     
     if ($timeline['type'] == "user" && $timeline['id'] != $user['id']) {
         return false;
-    } elseif ($timeline['type'] == "page" && !SK_isPageAdmin($timeline['id'])) {
+    } elseif ($timeline['type'] == "page" && !FA_isPageAdmin($timeline['id'])) {
         return false;
     } elseif ($timeline['type'] == "group") {
         return false;
@@ -1663,20 +1663,20 @@ function SK_getMessages($data=array()) {
     }
     
     while ($sql_fetch = mysqli_fetch_assoc($sql_query_two)) {
-        $sql_fetch['account'] = SK_getUser($sql_fetch['timeline_id']);
+        $sql_fetch['account'] = FA_getUser($sql_fetch['timeline_id']);
         $sql_fetch['owner'] = false;
         
         if ($sql_fetch['account']['type'] == "user" && $sql_fetch['account']['id'] == $user['id']) {
             $sql_fetch['owner'] = true;
-        } elseif ($sql_fetch['account']['type'] == "page" && SK_isPageAdmin($sql_fetch['account']['id'])) {
+        } elseif ($sql_fetch['account']['type'] == "page" && FA_isPageAdmin($sql_fetch['account']['id'])) {
             $sql_fetch['owner'] = true;
         }
         
-        $sql_fetch['text'] = SK_emoticonize($sql_fetch['text']);
-        $sql_fetch['text'] = SK_getMarkup($sql_fetch['text']);
+        $sql_fetch['text'] = FA_emoticonize($sql_fetch['text']);
+        $sql_fetch['text'] = FA_getMarkup($sql_fetch['text']);
         
         if (!empty($sql_fetch['media_id']) && $sql_fetch['media_id'] > 0) {
-            $sql_fetch['media'] = SK_getMedia($sql_fetch['media_id']);
+            $sql_fetch['media'] = FA_getMedia($sql_fetch['media_id']);
         }
         
         if ($sql_fetch['recipient_id'] == $timeline['id'] && $sql_fetch['seen'] == 0) {
@@ -1689,7 +1689,7 @@ function SK_getMessages($data=array()) {
     return $get;
 }
 
-function SK_getStoryPublisherBox($timeline_id=0, $recipient_id=0, $placeholder='') {
+function FA_getStoryPublisherBox($timeline_id=0, $recipient_id=0, $placeholder='') {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -1708,8 +1708,8 @@ function SK_getStoryPublisherBox($timeline_id=0, $recipient_id=0, $placeholder='
     if ($timeline_id == $user['id']) {
         $timeline = $user;
     } else {
-        $timeline_id = SK_secureEncode($timeline_id);
-        $timeline = SK_getUser($timeline_id);
+        $timeline_id = FA_secureEncode($timeline_id);
+        $timeline = FA_getUser($timeline_id);
     }
     
     if (!isset($recipient_id) or empty($recipient_id)) {
@@ -1720,9 +1720,9 @@ function SK_getStoryPublisherBox($timeline_id=0, $recipient_id=0, $placeholder='
         return false;
     }
     
-    $recipient_id = SK_secureEncode($recipient_id);
+    $recipient_id = FA_secureEncode($recipient_id);
     
-    if (SK_isBlocked($recipient_id)) {
+    if (FA_isBlocked($recipient_id)) {
         return false;
     }
     
@@ -1731,7 +1731,7 @@ function SK_getStoryPublisherBox($timeline_id=0, $recipient_id=0, $placeholder='
     }
     
     if ($recipient_id > 0) {
-        $recipient = SK_getUser($recipient_id, true);
+        $recipient = FA_getUser($recipient_id, true);
         
         if (!isset($recipient['id'])) {
             return false;
@@ -1741,7 +1741,7 @@ function SK_getStoryPublisherBox($timeline_id=0, $recipient_id=0, $placeholder='
             
             if ($recipient['timeline_post_privacy'] == "following") {
                 
-                if (!SK_isFollowing($user['id'], $recipient_id)) {
+                if (!FA_isFollowing($user['id'], $recipient_id)) {
                     $continue = false;
                 }
             } elseif ($recipient['timeline_post_privacy'] == "none") {
@@ -1751,7 +1751,7 @@ function SK_getStoryPublisherBox($timeline_id=0, $recipient_id=0, $placeholder='
             
             if ($recipient['timeline_post_privacy'] != "everyone") {
                 
-                if (!SK_isPageAdmin($recipient_id)) {
+                if (!FA_isPageAdmin($recipient_id)) {
                     $continue = false;
                 }
             }
@@ -1759,12 +1759,12 @@ function SK_getStoryPublisherBox($timeline_id=0, $recipient_id=0, $placeholder='
             
             if ($recipient['timeline_post_privacy'] == "members") {
                 
-                if (!SK_isFollowing($recipient_id)) {
+                if (!FA_isFollowing($recipient_id)) {
                     $continue = false;
                 }
             } elseif ($recipient['timeline_post_privacy'] == "admins") {
                 
-                if (!SK_isGroupAdmin($recipient_id)) {
+                if (!FA_isGroupAdmin($recipient_id)) {
                     $continue = false;
                 }
             }
@@ -1780,11 +1780,11 @@ function SK_getStoryPublisherBox($timeline_id=0, $recipient_id=0, $placeholder='
     if ($continue == true) {
         $sk['input']['timeline'] = $timeline;
         $sk['input']['placeholder'] = $placeholder;
-        return SK_getPage('story/publisher-box/content');
+        return FA_getPage('story/publisher-box/content');
     }
 }
 
-function SK_getStories($data=array( 'type' => 'all', 'after_post_id' => 0, 'publisher_id' => 0, 'limit' => 5, 'exclude_activity' => false)) {
+function FA_getStories($data=array( 'type' => 'all', 'after_post_id' => 0, 'publisher_id' => 0, 'limit' => 5, 'exclude_activity' => false)) {
     global $dbConnect, $sk, $user;
     
     if (empty($data['type'])) {
@@ -1794,21 +1794,21 @@ function SK_getStories($data=array( 'type' => 'all', 'after_post_id' => 0, 'publ
     $subquery_one = "id>0";
     
     if (!empty($data['after_post_id']) && is_numeric($data['after_post_id']) && $data['after_post_id'] > 0) {
-        $data['after_post_id'] = SK_secureEncode($data['after_post_id']);
+        $data['after_post_id'] = FA_secureEncode($data['after_post_id']);
         $subquery_one = "id<" . $data['after_post_id'] . " AND post_id<>" . $data['after_post_id'];
     } elseif (!empty($data['before_post_id']) && is_numeric($data['before_post_id']) && $data['before_post_id'] > 0) {
-        $data['before_post_id'] = SK_secureEncode($data['before_post_id']);
+        $data['before_post_id'] = FA_secureEncode($data['before_post_id']);
         $subquery_one = "id>" . $data['before_post_id'] . " AND post_id<>" . $data['before_post_id'];
     }
     
     if (!empty($data['publisher_id']) && is_numeric($data['publisher_id']) && $data['publisher_id'] > 0) {
-        $data['publisher_id'] = SK_secureEncode($data['publisher_id']);
+        $data['publisher_id'] = FA_secureEncode($data['publisher_id']);
         
-        if (SK_isBlocked($data['publisher_id'])) {
+        if (FA_isBlocked($data['publisher_id'])) {
             return array();
         }
         
-        $sk_publisher = SK_getUser($data['publisher_id'], true);
+        $sk_publisher = FA_getUser($data['publisher_id'], true);
     }
     
     $query_text = "SELECT id FROM " . DB_POSTS . " AS p1 WHERE " . $subquery_one;
@@ -1817,7 +1817,7 @@ function SK_getStories($data=array( 'type' => 'all', 'after_post_id' => 0, 'publ
         
         if ($sk_publisher['type'] == "user") {
 
-            if ($sk_publisher['post_privacy'] == "following" && $sk_publisher['id'] != $user['id'] && !SK_isFollowing($sk_publisher['id'])) {
+            if ($sk_publisher['post_privacy'] == "following" && $sk_publisher['id'] != $user['id'] && !FA_isFollowing($sk_publisher['id'])) {
 
                 if ($GLOBALS['logged'] != true) {
                     return array();
@@ -2012,7 +2012,7 @@ function SK_getStories($data=array( 'type' => 'all', 'after_post_id' => 0, 'publ
         $sql_query = mysqli_query($dbConnect, $query_text);
         
         while ($sql_fetch = mysqli_fetch_assoc($sql_query) ) {
-            $story = SK_getStory($sql_fetch['id']);
+            $story = FA_getStory($sql_fetch['id']);
             
             if (is_array($story)) {
                 $get[] = $story;
@@ -2023,22 +2023,22 @@ function SK_getStories($data=array( 'type' => 'all', 'after_post_id' => 0, 'publ
     return $get;
 }
 
-function SK_getStory($story_id=0, $view_all_comments=false) {
+function FA_getStory($story_id=0, $view_all_comments=false) {
     global $dbConnect, $user, $sk;
     
     if (empty($story_id) or !is_numeric($story_id) or $story_id < 1) {
         return false;
     }
     
-    $story_id = SK_secureEncode($story_id);
+    $story_id = FA_secureEncode($story_id);
     $query_one = "SELECT id,active,activity_text,google_map_name,hidden,link_title,link_url,media_id,post_id,recipient_id,soundcloud_title,soundcloud_uri,text,time,timeline_id,type1,type2,youtube_video_id,youtube_title FROM " . DB_POSTS . " WHERE id=$story_id AND type1='story' AND active=1";
     $sql_query_one = mysqli_query($dbConnect, $query_one);
     
     if (mysqli_num_rows($sql_query_one) == 1) {
         $post = mysqli_fetch_assoc($sql_query_one);
-        $post['publisher'] = SK_getUser($post['timeline_id']);
+        $post['publisher'] = FA_getUser($post['timeline_id']);
         
-        if ( SK_isBlocked($post['timeline_id']) ) {
+        if ( FA_isBlocked($post['timeline_id']) ) {
             return false;
         }
         
@@ -2054,14 +2054,14 @@ function SK_getStory($story_id=0, $view_all_comments=false) {
             
             $sql_fetch_two = mysqli_fetch_assoc($sql_query_two);
             $story = $sql_fetch_two;
-            $story['publisher'] = SK_getUser($story['timeline_id']);
+            $story['publisher'] = FA_getUser($story['timeline_id']);
         }
 
         if ($story['publisher']['type'] == "user") {
 
             if ($story['publisher']['post_privacy'] == "following") {
 
-                if (!SK_isFollowing($user['id'], $story['publisher']['id'])) {
+                if (!FA_isFollowing($user['id'], $story['publisher']['id'])) {
                     return false;
                 }
             }
@@ -2073,7 +2073,7 @@ function SK_getStory($story_id=0, $view_all_comments=false) {
         
         if ($story['recipient_id'] > 0) {
             $story['recipient_exists'] = true;
-            $story['recipient'] = SK_getUser($story['recipient_id']);
+            $story['recipient'] = FA_getUser($story['recipient_id']);
         }
         
         // Admin Rights
@@ -2089,12 +2089,12 @@ function SK_getStory($story_id=0, $view_all_comments=false) {
                 }
             } elseif ($story['publisher']['type'] == "page") {
                 
-                if (SK_isPageAdmin($story['publisher']['id'])) {
+                if (FA_isPageAdmin($story['publisher']['id'])) {
                     $story['admin'] = true;
                 }
             } elseif ($story['publisher']['type'] == "group") {
                 
-                if (SK_isGroupAdmin($story['publisher']['id'])) {
+                if (FA_isGroupAdmin($story['publisher']['id'])) {
                     $story['admin'] = true;
                 }
             }
@@ -2109,12 +2109,12 @@ function SK_getStory($story_id=0, $view_all_comments=false) {
                     }
                 } elseif ($story['recipient']['type'] == "page") {
                     
-                    if (SK_isPageAdmin($story['recipient']['id'])) {
+                    if (FA_isPageAdmin($story['recipient']['id'])) {
                         $story['admin'] = true;
                     }
                 } elseif ($story['recipient']['type'] == "group") {
                     
-                    if (SK_isGroupAdmin($story['recipient']['id'])) {
+                    if (FA_isGroupAdmin($story['recipient']['id'])) {
                         $story['admin'] = true;
                     }
                 }
@@ -2129,13 +2129,13 @@ function SK_getStory($story_id=0, $view_all_comments=false) {
             $album_query = "SELECT id,name FROM " . DB_MEDIA . " WHERE id=" . $album_id;
             $album_sql_query = mysqli_query($dbConnect, $album_query);
             $album_sql_fetch = mysqli_fetch_assoc($album_sql_query);
-            $activity_text_replace = '<a href="' . SK_smoothLink('index.php?tab1=album&tab2=' . $album_sql_fetch['id']) . '" data-href="?tab1=album&tab2=' . $album_sql_fetch['id'] . '">' . $album_sql_fetch['name'] . '</a>';
+            $activity_text_replace = '<a href="' . FA_smoothLink('index.php?tab1=album&tab2=' . $album_sql_fetch['id']) . '" data-href="?tab1=album&tab2=' . $album_sql_fetch['id'] . '">' . $album_sql_fetch['name'] . '</a>';
             $story['activity_text'] = str_replace($activity_text_matches[0], $activity_text_replace, $story['activity_text']);
         }
         
         // Emoticons
-        $story['text'] = SK_emoticonize($story['text']);
-        $story['text'] = SK_getMarkup($story['text']);
+        $story['text'] = FA_emoticonize($story['text']);
+        $story['text'] = FA_getMarkup($story['text']);
         
         // Media (Photos || Youtube || Soundcloud)
         $story['media_exists'] = false;
@@ -2152,14 +2152,14 @@ function SK_getStory($story_id=0, $view_all_comments=false) {
             $sql_fetch_four = mysqli_fetch_assoc($sql_query_four);
             
             if ($sql_fetch_four['type'] == "photo") {
-                $sql_fetch_four = SK_getMedia($sql_fetch_four['id']);
+                $sql_fetch_four = FA_getMedia($sql_fetch_four['id']);
                 $story['media_num'] = 1;
                 
                 $story['media'][] = array(
                     'id' => $sql_fetch_four['id'],
                     'url' => $sk['config']['site_url'] . '/' . $sql_fetch_four['url'] . '.' . $sql_fetch_four['extension'],
                     'post_id' => $story['id'],
-                    'post_url' => SK_smoothLink('index.php?tab1=story&id=' . $story['id'])
+                    'post_url' => FA_smoothLink('index.php?tab1=story&id=' . $story['id'])
                 );
             } elseif ($sql_fetch_four['type'] == "album") {
                 $query_five = "SELECT id FROM " . DB_MEDIA . " WHERE album_id=" . $sql_fetch_four['id'] . " AND active=1 ORDER BY id DESC";
@@ -2173,7 +2173,7 @@ function SK_getStory($story_id=0, $view_all_comments=false) {
                 $story['media_num'] = $sql_numrows_fives;
                 
                 while ($sql_fetch_five = mysqli_fetch_assoc($sql_query_five) ) {
-                    $sql_fetch_five = SK_getMedia($sql_fetch_five['id']);
+                    $sql_fetch_five = FA_getMedia($sql_fetch_five['id']);
                     
                     $story['media'][] = array(
                         'id' => $sql_fetch_five['id'],
@@ -2216,7 +2216,7 @@ function SK_getStory($story_id=0, $view_all_comments=false) {
         
         // View all comments link, if applicable
         $story['view_all_comments'] = false;
-        $comment_num = SK_countPostComments($story_id);
+        $comment_num = FA_countPostComments($story_id);
         
         if ($view_all_comments == false) {
             
@@ -2230,8 +2230,8 @@ function SK_getStory($story_id=0, $view_all_comments=false) {
         // Comments
         $comment_html = '';
         
-        foreach (SK_getComments($story['id'], $comment_num) as $sk['comment']) {
-            $comment_html .= SK_getPage('comment/content');
+        foreach (FA_getComments($story['id'], $comment_num) as $sk['comment']) {
+            $comment_html .= FA_getPage('comment/content');
         }
         
         $story['comments'] = $comment_html;
@@ -2244,23 +2244,23 @@ function SK_getStory($story_id=0, $view_all_comments=false) {
             
             if ($story['publisher']['comment_privacy'] == "following") {
                 
-                if (!SK_isFollowing($user['id'], $story['publisher']['id'])) {
+                if (!FA_isFollowing($user['id'], $story['publisher']['id'])) {
                     $show_comment_publisher_box = false;
                 }
             }
         } elseif ($story['publisher']['type'] == "group") {
             
-            if (!SK_isFollowing($story['publisher']['id'], $user['id'])) {
+            if (!FA_isFollowing($story['publisher']['id'], $user['id'])) {
                 $show_comment_publisher_box = false;
             }
         }
         
         if ($show_comment_publisher_box == true) {
             
-            if ($story['publisher']['type'] == "page" && SK_isPageAdmin($story['publisher']['id'])) {
-                $story['comment']['publisher_box'] = SK_getCommentPublisherBox($story['id'], $story['publisher']['id']);
+            if ($story['publisher']['type'] == "page" && FA_isPageAdmin($story['publisher']['id'])) {
+                $story['comment']['publisher_box'] = FA_getCommentPublisherBox($story['id'], $story['publisher']['id']);
             } else {
-                $story['comment']['publisher_box'] = SK_getCommentPublisherBox($story['id']);
+                $story['comment']['publisher_box'] = FA_getCommentPublisherBox($story['id']);
             }
         }
         
@@ -2268,14 +2268,14 @@ function SK_getStory($story_id=0, $view_all_comments=false) {
     }
 }
 
-function SK_getPostType($post_id=0) {
+function FA_getPostType($post_id=0) {
     global $dbConnect;
     
     if (empty($post_id) or !is_numeric($post_id) or $post_id < 1) {
         return false;
     }
     
-    $post_id = SK_secureEncode($post_id);
+    $post_id = FA_secureEncode($post_id);
     $query_one = "SELECT id,type1,type2 FROM " . DB_POSTS . " WHERE id=$post_id AND active=1";
     $sql_query_one = mysqli_query($dbConnect, $query_one);
     
@@ -2291,14 +2291,14 @@ function SK_getPostType($post_id=0) {
     }
 }
 
-function SK_getPostTimelineId($post_id=0) {
+function FA_getPostTimelineId($post_id=0) {
     global $dbConnect;
     
     if (empty($post_id) or !is_numeric($post_id) or $post_id < 1) {
         return false;
     }
     
-    $post_id = SK_secureEncode($post_id);
+    $post_id = FA_secureEncode($post_id);
     $query_one = "SELECT timeline_id FROM " . DB_POSTS . " WHERE id=$post_id AND active=1";
     $sql_query_one = mysqli_query($dbConnect, $query_one);
     
@@ -2308,14 +2308,14 @@ function SK_getPostTimelineId($post_id=0) {
     }
 }
 
-function SK_getPostRecipientId($post_id=0) {
+function FA_getPostRecipientId($post_id=0) {
     global $dbConnect;
     
     if (empty($post_id) or !is_numeric($post_id) or $post_id < 1) {
         return false;
     }
     
-    $post_id = SK_secureEncode($post_id);
+    $post_id = FA_secureEncode($post_id);
     $query_one = "SELECT recipient_id FROM " . DB_POSTS . " WHERE id=$post_id AND active=1";
     $sql_query_one = mysqli_query($dbConnect, $query_one);
     
@@ -2325,7 +2325,7 @@ function SK_getPostRecipientId($post_id=0) {
     }
 }
 
-function SK_getPostLikes($post_id=0) {
+function FA_getPostLikes($post_id=0) {
     global $dbConnect;
     $get = array();
     
@@ -2333,21 +2333,21 @@ function SK_getPostLikes($post_id=0) {
         return false;
     }
     
-    $post_id = SK_secureEncode($post_id);
+    $post_id = FA_secureEncode($post_id);
     $query_one = "SELECT id,timeline_id FROM " . DB_POSTS . " WHERE post_id=$post_id AND type1 IN ('story','comment') AND type2='like' AND active=1";
     $sql_query_one = mysqli_query($dbConnect, $query_one);
     
     if (mysqli_num_rows($sql_query_one) > 0) {
         
         while ($sql_fetch_one = mysqli_fetch_assoc($sql_query_one)) {
-            $get[] = SK_getUser($sql_fetch_one['timeline_id']);
+            $get[] = FA_getUser($sql_fetch_one['timeline_id']);
         }
     }
     
     return $get;
 }
 
-function SK_getPostShares($post_id=0) {
+function FA_getPostShares($post_id=0) {
     global $dbConnect;
     $get = array();
     
@@ -2355,21 +2355,21 @@ function SK_getPostShares($post_id=0) {
         return false;
     }
     
-    $post_id = SK_secureEncode($post_id);
+    $post_id = FA_secureEncode($post_id);
     $query_one = "SELECT id,timeline_id FROM " . DB_POSTS . " WHERE post_id=$post_id AND type1='story' AND type2='share' AND active=1";
     $sql_query_one = mysqli_query($dbConnect, $query_one);
     
     if (mysqli_num_rows($sql_query_one) > 0) {
         
         while ($sql_fetch_one = mysqli_fetch_assoc($sql_query_one)) {
-            $get[] = SK_getUser($sql_fetch_one['timeline_id']);
+            $get[] = FA_getUser($sql_fetch_one['timeline_id']);
         }
     }
     
     return $get;
 }
 
-function SK_getPostFollowers($post_id=0) {
+function FA_getPostFollowers($post_id=0) {
     global $dbConnect;
     $get = array();
     
@@ -2377,21 +2377,21 @@ function SK_getPostFollowers($post_id=0) {
         return false;
     }
     
-    $post_id = SK_secureEncode($post_id);
+    $post_id = FA_secureEncode($post_id);
     $query_one = "SELECT id,timeline_id FROM " . DB_POSTS . " WHERE post_id=$post_id AND type1='story' AND type2='follow' AND active=1";
     $sql_query_one = mysqli_query($dbConnect, $query_one);
     
     if (mysqli_num_rows($sql_query_one) > 0) {
         
         while ($sql_fetch_one = mysqli_fetch_assoc($sql_query_one)) {
-            $get[] = SK_getUser($sql_fetch_one['timeline_id']);
+            $get[] = FA_getUser($sql_fetch_one['timeline_id']);
         }
     }
     
     return $get;
 }
 
-function SK_getComments($post_id=0, $limit=3) {
+function FA_getComments($post_id=0, $limit=3) {
     global $dbConnect;
     $get = array();
     
@@ -2403,10 +2403,10 @@ function SK_getComments($post_id=0, $limit=3) {
         $limit = 3;
     }
     
-    $post_id = SK_secureEncode($post_id);
+    $post_id = FA_secureEncode($post_id);
     $query_one = "SELECT id FROM " . DB_POSTS . " WHERE post_id=$post_id AND type1='story' AND type2='comment' AND active=1";
     
-    if (($comments_num = SK_countPostComments($post_id)) > $limit) {
+    if (($comments_num = FA_countPostComments($post_id)) > $limit) {
         $query_one .= " LIMIT " . ($comments_num-$limit) . ",$limit";
     }
     
@@ -2415,14 +2415,14 @@ function SK_getComments($post_id=0, $limit=3) {
     if (mysqli_num_rows($sql_query_one) > 0) {
         
         while ($sql_fetch_one = mysqli_fetch_assoc($sql_query_one)) {
-            $get[] = SK_getComment($sql_fetch_one['id']);
+            $get[] = FA_getComment($sql_fetch_one['id']);
         }
     }
     
     return $get;
 }
 
-function SK_getComment($comment_id=0) {
+function FA_getComment($comment_id=0) {
     global $dbConnect, $user;
     $get = array();
     
@@ -2430,16 +2430,16 @@ function SK_getComment($comment_id=0) {
         return $get;
     }
     
-    $comment_id = SK_secureEncode($comment_id);
+    $comment_id = FA_secureEncode($comment_id);
     $query_one = "SELECT id,active,post_id,text,time,timeline_id,type1,type2 FROM " . DB_POSTS . " WHERE id=$comment_id AND type1='story' AND type2='comment' AND active=1";
     $sql_query_one = mysqli_query($dbConnect, $query_one);
     
     if (mysqli_num_rows($sql_query_one) == 1) {
         $sql_fetch_one = mysqli_fetch_assoc($sql_query_one);
-        $sql_fetch_one['publisher'] = SK_getUser($sql_fetch_one['timeline_id']);
+        $sql_fetch_one['publisher'] = FA_getUser($sql_fetch_one['timeline_id']);
         
-        $sql_fetch_one['text'] = SK_emoticonize($sql_fetch_one['text']);
-        $sql_fetch_one['text'] = SK_getMarkup($sql_fetch_one['text']);
+        $sql_fetch_one['text'] = FA_emoticonize($sql_fetch_one['text']);
+        $sql_fetch_one['text'] = FA_getMarkup($sql_fetch_one['text']);
         
         // Admin rights
         if ($GLOBALS['logged'] == true) {
@@ -2447,9 +2447,9 @@ function SK_getComment($comment_id=0) {
             
             if ($sql_fetch_one['publisher']['type'] == "user" && $sql_fetch_one['publisher']['id'] == $user['id']) {
                 $sql_fetch_one['admin'] = true;
-            } elseif ($sql_fetch_one['publisher']['type'] == "page" && SK_isPageAdmin($sql_fetch_one['publisher']['id'])) {
+            } elseif ($sql_fetch_one['publisher']['type'] == "page" && FA_isPageAdmin($sql_fetch_one['publisher']['id'])) {
                 $sql_fetch_one['admin'] = true;
-            } elseif ($sql_fetch_one['publisher']['type'] == "group" && SK_isGroupAdmin($sql_fetch_one['publisher']['id'])) {
+            } elseif ($sql_fetch_one['publisher']['type'] == "group" && FA_isGroupAdmin($sql_fetch_one['publisher']['id'])) {
                 $sql_fetch_one['admin'] = true;
             }
         }
@@ -2460,30 +2460,30 @@ function SK_getComment($comment_id=0) {
     return $get;
 }
 
-function SK_getCommentPublisherBox($post_id=0, $timeline_id=0) {
+function FA_getCommentPublisherBox($post_id=0, $timeline_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
     
     global $sk, $user;
     $continue = true;
-    $post_id = SK_secureEncode($post_id);
+    $post_id = FA_secureEncode($post_id);
     
-    if (($post_timeline_id = SK_getPostTimelineId($post_id)) == false) {
+    if (($post_timeline_id = FA_getPostTimelineId($post_id)) == false) {
         return false;
     }
     
-    if (SK_isBlocked($post_timeline_id)) {
+    if (FA_isBlocked($post_timeline_id)) {
         return false;
     }
     
-    $post_timeline = SK_getUser($post_timeline_id);
+    $post_timeline = FA_getUser($post_timeline_id);
     
     if ($post_timeline['type'] == "user" && $post_timeline['id'] != $user['id']) {
         
         if ($post_timeline['comment_privacy'] == "following") {
             
-            if (!SK_isFollowing($post_timeline['id'], $user['id'])) {
+            if (!FA_isFollowing($post_timeline['id'], $user['id'])) {
                 $continue = false;
             }
         }
@@ -2500,11 +2500,11 @@ function SK_getCommentPublisherBox($post_id=0, $timeline_id=0) {
     if ($timeline_id == $user['id']) {
         $timeline = $user;
     } else {
-        $timeline = SK_getUser($timeline_id);
+        $timeline = FA_getUser($timeline_id);
         
-        if ($timeline['type'] == "page" && !SK_isPageAdmin($timeline['id'])) {
+        if ($timeline['type'] == "page" && !FA_isPageAdmin($timeline['id'])) {
             $continue = false;
-        } elseif ($timeline['type'] == "group" && !SK_isGroupAdmin($timeline['id'])) {
+        } elseif ($timeline['type'] == "group" && !FA_isGroupAdmin($timeline['id'])) {
             $continue = false;
         }
     }
@@ -2515,18 +2515,18 @@ function SK_getCommentPublisherBox($post_id=0, $timeline_id=0) {
     
     $sk['input']['post']['id'] = $post_id;
     $sk['input']['timeline'] = $timeline;
-    return SK_getPage('comment/publisher-box/content');
+    return FA_getPage('comment/publisher-box/content');
 }
 
-function SK_getPostLikeButton($post_id=0) {
+function FA_getPostLikeButton($post_id=0) {
     global $sk;
     
     if (empty($post_id) or !is_numeric($post_id) or $post_id < 1) {
         return false;
     }
     
-    $post_id = SK_secureEncode($post_id);
-    $story_type = SK_getPostType($post_id);
+    $post_id = FA_secureEncode($post_id);
+    $story_type = FA_getPostType($post_id);
     
     if (!preg_match('/(story|comment)/', $story_type)) {
         return false;
@@ -2535,75 +2535,75 @@ function SK_getPostLikeButton($post_id=0) {
     if ($story_type == "story") {
         $sk['story']['id'] = $post_id;
         
-        if (SK_isPostLiked($post_id)) {
-            return SK_getPage('story/unlike-button');
+        if (FA_isPostLiked($post_id)) {
+            return FA_getPage('story/unlike-button');
         } else {
-            return SK_getPage('story/like-button');
+            return FA_getPage('story/like-button');
         }
     } elseif ($story_type == "comment") {
         $sk['comment']['id'] = $post_id;
         
-        if (SK_isPostLiked($post_id)) {
-            return SK_getPage('comment/unlike-button');
+        if (FA_isPostLiked($post_id)) {
+            return FA_getPage('comment/unlike-button');
         } else {
-            return SK_getPage('comment/like-button');
+            return FA_getPage('comment/like-button');
         }
     }
 }
 
-function SK_getPostShareButton($post_id=0) {
+function FA_getPostShareButton($post_id=0) {
     global $sk;
     
     if (empty($post_id) or !is_numeric($post_id) or $post_id < 1) {
         return false;
     }
     
-    $post_id = SK_secureEncode($post_id);
+    $post_id = FA_secureEncode($post_id);
     
-    if (SK_getPostType($post_id) != "story") {
+    if (FA_getPostType($post_id) != "story") {
         return false;
     }
     
     $sk['story']['id'] = $post_id;
     
-    if (SK_isPostShared($post_id)) {
-        return SK_getPage('story/unshare-button');
+    if (FA_isPostShared($post_id)) {
+        return FA_getPage('story/unshare-button');
     } else {
-        return SK_getPage('story/share-button');
+        return FA_getPage('story/share-button');
     }
 }
 
-function SK_getPostFollowButton($post_id=0) {
+function FA_getPostFollowButton($post_id=0) {
     global $sk;
     
     if (empty($post_id) or !is_numeric($post_id) or $post_id < 1) {
         return false;
     }
     
-    $post_id = SK_secureEncode($post_id);
+    $post_id = FA_secureEncode($post_id);
     
-    if (SK_getPostType($post_id) != "story") {
+    if (FA_getPostType($post_id) != "story") {
         return '';
     }
     
     $sk['story']['id'] = $post_id;
     
-    if (SK_isPostFollowed($post_id) ) {
-        return SK_getPage('story/unfollow-button');
+    if (FA_isPostFollowed($post_id) ) {
+        return FA_getPage('story/unfollow-button');
     } else {
-        return SK_getPage('story/follow-button');
+        return FA_getPage('story/follow-button');
     }
 }
 
-function SK_getPostLikeActivityButton($post_id=0) {
+function FA_getPostLikeActivityButton($post_id=0) {
     global $sk;
     
     if (empty($post_id) or !is_numeric($post_id) or $post_id < 1) {
         return false;
     }
     
-    $post_id = SK_secureEncode($post_id);
-    $story_type = SK_getPostType($post_id);
+    $post_id = FA_secureEncode($post_id);
+    $story_type = FA_getPostType($post_id);
     
     if (!preg_match('/(story|comment)/', $story_type)) {
         return '';
@@ -2611,84 +2611,84 @@ function SK_getPostLikeActivityButton($post_id=0) {
     
     if ($story_type == "story") {
         $sk['story']['id'] = $post_id;
-        return SK_getPage('story/like-activity');
+        return FA_getPage('story/like-activity');
     } elseif ($story_type == "comment") {
         $sk['comment']['id'] = $post_id;
-        return SK_getPage('comment/like-activity');
+        return FA_getPage('comment/like-activity');
     }
 }
 
-function SK_getPostCommentActivityButton($post_id=0) {
+function FA_getPostCommentActivityButton($post_id=0) {
     global $sk;
     
     if (empty($post_id) or !is_numeric($post_id) or $post_id < 1) {
         return false;
     }
     
-    $post_id = SK_secureEncode($post_id);
+    $post_id = FA_secureEncode($post_id);
     
-    if (SK_getPostType($post_id) != "story") {
+    if (FA_getPostType($post_id) != "story") {
         return false;
     }
     
     $sk['story']['id'] = $post_id;
-    return SK_getPage('story/comment-activity');
+    return FA_getPage('story/comment-activity');
 }
 
-function SK_getPostShareActivityButton($post_id=0) {
+function FA_getPostShareActivityButton($post_id=0) {
     global $sk;
     
     if (empty($post_id) or !is_numeric($post_id) or $post_id < 1) {
         return false;
     }
     
-    $post_id = SK_secureEncode($post_id);
+    $post_id = FA_secureEncode($post_id);
     
-    if (SK_getPostType($post_id) != "story") {
+    if (FA_getPostType($post_id) != "story") {
         return false;
     }
     
     $sk['story']['id'] = $post_id;
-    return SK_getPage('story/share-activity');
+    return FA_getPage('story/share-activity');
 }
 
-function SK_getPostFollowActivityButton($post_id=0) {
+function FA_getPostFollowActivityButton($post_id=0) {
     global $sk;
     
     if (!isset($post_id) or !is_numeric($post_id) or $post_id < 1) {
         return false;
     }
     
-    $post_id = SK_secureEncode($post_id);
+    $post_id = FA_secureEncode($post_id);
     
-    if (SK_getPostType($post_id) != "story") {
+    if (FA_getPostType($post_id) != "story") {
         return false;
     }
     
     $sk['story']['id'] = $post_id;
-    return SK_getPage('story/follow-activity');
+    return FA_getPage('story/follow-activity');
 }
 
-function SK_getMedia($file_id=0) {
+function FA_getMedia($file_id=0) {
     global $dbConnect, $sk;
     
     if (empty($file_id) or !is_numeric($file_id) or $file_id < 1) {
         return false;
     }
     
-    $file_id = SK_secureEncode($file_id);
+    $file_id = FA_secureEncode($file_id);
     $query_one = "SELECT id,active,album_id,extension,name,post_id,temp,timeline_id,type,url FROM " . DB_MEDIA . " WHERE id=$file_id";
     $sql_query_one = mysqli_query($dbConnect, $query_one);
     
     if (mysqli_num_rows($sql_query_one) == 1) {
         $sql_fetch_one = mysqli_fetch_assoc($sql_query_one);
         $sql_fetch_one['complete_url'] = $sk['config']['site_url'] . '/' . $sql_fetch_one['url'] . '.' . $sql_fetch_one['extension'];
-        $sql_fetch_one['post_url'] = SK_smoothLink('index.php?tab1=story&id=' . $sql_fetch_one['post_id']);
+        $sql_fetch_one['post_url'] = FA_smoothLink('index.php?tab1=story&id=' . $sql_fetch_one['post_id']);
         return $sql_fetch_one;
     }
 }
 
-function SK_getPageCategories($main_category=0, $check_only=false) {
+function FA_getPageCategories($main_category=0, $check_only=false) {
     if ($GLOBALS['logged'] !== true) {
         return array();
     }
@@ -2700,7 +2700,7 @@ function SK_getPageCategories($main_category=0, $check_only=false) {
         $main_category = 0;
     }
     
-    $main_category = SK_secureEncode($main_category);
+    $main_category = FA_secureEncode($main_category);
     
     if ($check_only == true) {
         $query = "SELECT id FROM " . DB_PAGE_CATEGORIES . " WHERE id=$main_category AND active=1";
@@ -2718,14 +2718,14 @@ function SK_getPageCategories($main_category=0, $check_only=false) {
     return $get;
 }
 
-function SK_getPageCategoryData($category_id=0) {
+function FA_getPageCategoryData($category_id=0) {
     global $dbConnect;
     
     if (empty($category_id) or !is_numeric($category_id) or $category_id < 1) {
         return false;
     }
     
-    $category_id = SK_secureEncode($category_id);
+    $category_id = FA_secureEncode($category_id);
     $query = "SELECT id,category_id,name FROM " . DB_PAGE_CATEGORIES . " WHERE id=$category_id AND active=1";
     $sql_query = mysqli_query($dbConnect, $query);
     
@@ -2735,7 +2735,7 @@ function SK_getPageCategoryData($category_id=0) {
     }
 }
 
-function SK_getMarkup($text, $link=true, $hashtag=true, $mention=true) {
+function FA_getMarkup($text, $link=true, $hashtag=true, $mention=true) {
     global $dbConnect;
     
     if ($link == true) {
@@ -2766,10 +2766,10 @@ function SK_getMarkup($text, $link=true, $hashtag=true, $mention=true) {
         foreach ($matches[1] as $match) {
             $hashtag = $matches[1][$match_i];
             $hashkey = $matches[2][$match_i];
-            $hashdata = SK_getHashtag($hashkey);
+            $hashdata = FA_getHashtag($hashkey);
             
             if (is_array($hashdata)) {
-                $hashlink = '<a href="' . SK_smoothLink('index.php?tab1=hashtag&query=' . $hashdata['tag']) . '" data-href="?tab1=hashtag&query=' . $hashdata['tag'] . '">#' . $hashdata['tag'] . '</a>';
+                $hashlink = '<a href="' . FA_smoothLink('index.php?tab1=hashtag&query=' . $hashdata['tag']) . '" data-href="?tab1=hashtag&query=' . $hashdata['tag'] . '">#' . $hashdata['tag'] . '</a>';
                 $text = str_replace($hashtag, $hashlink, $text);
             }
             
@@ -2784,8 +2784,8 @@ function SK_getMarkup($text, $link=true, $hashtag=true, $mention=true) {
         if (preg_match_all($mention_regex, $text, $matches)) {
             
             foreach ($matches[1] as $match) {
-                $match = SK_secureEncode($match);
-                $match_user = SK_getUser($match);
+                $match = FA_secureEncode($match);
+                $match_user = FA_getUser($match);
                 
                 $match_search = '@[' . $match . ']';
                 $match_replace = '<a href="' . $match_user['url'] . '" data-href="?tab1=timeline&id=' . $match_user['username'] . '">' . $match_user['name'] . '</a>';
@@ -2800,7 +2800,7 @@ function SK_getMarkup($text, $link=true, $hashtag=true, $mention=true) {
     return $text;
 }
 
-function SK_getEmoticons() {
+function FA_getEmoticons() {
     global $config, $emo;
     $emoticon = array();
     
@@ -2815,7 +2815,7 @@ function SK_getEmoticons() {
     return array_unique($emoticon);
 }
 
-function SK_getMonths() {
+function FA_getMonths() {
     global $lang;
     $months[1] = array('january', $lang['january']);
     $months[2] = array('february', $lang['february']);
@@ -2832,7 +2832,7 @@ function SK_getMonths() {
     return $months;
 }
 
-function SK_countAnnouncements() {
+function FA_countAnnouncements() {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -2847,7 +2847,7 @@ function SK_countAnnouncements() {
     return $sql_fetch['count'];
 }
 
-function SK_countNotifications($data=array()) {
+function FA_countNotifications($data=array()) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -2865,8 +2865,8 @@ function SK_countNotifications($data=array()) {
     }
     
     if ($data['account_id'] != $user['id']) {
-        $data['account_id'] = SK_secureEncode($data['account_id']);
-        $account = SK_getUser($data['account_id']);
+        $data['account_id'] = FA_secureEncode($data['account_id']);
+        $account = FA_getUser($data['account_id']);
     }
     
     $query_one = "SELECT COUNT(id) AS count FROM " . DB_NOTIFICATIONS . " WHERE timeline_id=" . $account['id'] . " AND active=1";
@@ -2882,7 +2882,7 @@ function SK_countNotifications($data=array()) {
     return $sql_fetch_one['count'];
 }
 
-function SK_countFollowing($timeline_id=0) {
+function FA_countFollowing($timeline_id=0) {
     global $dbConnect, $user;
     
     if (empty($timeline_id) or $timeline_id == 0) {
@@ -2896,7 +2896,7 @@ function SK_countFollowing($timeline_id=0) {
         return false;
     }
     
-    $timeline_id = SK_secureEncode($timeline_id);
+    $timeline_id = FA_secureEncode($timeline_id);
     $query = "SELECT COUNT(id) AS count FROM " . DB_ACCOUNTS . " WHERE id IN (SELECT following_id FROM " . DB_FOLLOWERS . " WHERE follower_id=$timeline_id AND following_id<>$timeline_id AND active=1) AND type='user' AND active=1";
     $sql_query = mysqli_query($dbConnect, $query);
     $sql_fetch = mysqli_fetch_assoc($sql_query);
@@ -2904,7 +2904,7 @@ function SK_countFollowing($timeline_id=0) {
     return $sql_fetch['count'];
 }
 
-function SK_countFollowers($timeline_id=0) {
+function FA_countFollowers($timeline_id=0) {
     global $dbConnect, $user;
     
     if (empty($timeline_id) or $timeline_id == 0) {
@@ -2918,7 +2918,7 @@ function SK_countFollowers($timeline_id=0) {
         return false;
     }
     
-    $timeline_id = SK_secureEncode($timeline_id);
+    $timeline_id = FA_secureEncode($timeline_id);
     $query = "SELECT COUNT(id) AS count FROM " . DB_ACCOUNTS . " WHERE id IN (SELECT follower_id FROM " . DB_FOLLOWERS . " WHERE following_id=$timeline_id AND follower_id<>$timeline_id AND active=1) AND active=1";
     $sql_query = mysqli_query($dbConnect, $query);
     $sql_fetch = mysqli_fetch_assoc($sql_query);
@@ -2926,7 +2926,7 @@ function SK_countFollowers($timeline_id=0) {
     return $sql_fetch['count'];
 }
 
-function SK_countPageLikes($timeline_id=0) {
+function FA_countPageLikes($timeline_id=0) {
     global $dbConnect, $user;
     
     if (empty($timeline_id) or $timeline_id == 0) {
@@ -2940,7 +2940,7 @@ function SK_countPageLikes($timeline_id=0) {
         return false;
     }
     
-    $timeline_id = SK_secureEncode($timeline_id);
+    $timeline_id = FA_secureEncode($timeline_id);
     $query = "SELECT COUNT(id) AS count FROM " . DB_ACCOUNTS . " WHERE id IN (SELECT following_id FROM " . DB_FOLLOWERS . " WHERE follower_id=$timeline_id AND following_id<>$timeline_id AND active=1) AND type='page' AND active=1";
     $sql_query = mysqli_query($dbConnect, $query);
     $sql_fetch = mysqli_fetch_assoc($sql_query);
@@ -2948,7 +2948,7 @@ function SK_countPageLikes($timeline_id=0) {
     return $sql_fetch['count'];
 }
 
-function SK_countGroupJoined($timeline_id=0) {
+function FA_countGroupJoined($timeline_id=0) {
     global $dbConnect, $user;
     
     if (empty($timeline_id) or $timeline_id == 0) {
@@ -2962,7 +2962,7 @@ function SK_countGroupJoined($timeline_id=0) {
         return false;
     }
     
-    $timeline_id = SK_secureEncode($timeline_id);
+    $timeline_id = FA_secureEncode($timeline_id);
     $query = "SELECT COUNT(id) AS count FROM " . DB_ACCOUNTS . " WHERE id IN (SELECT following_id FROM " . DB_FOLLOWERS . " WHERE follower_id=$timeline_id AND following_id<>$timeline_id AND active=1) AND type='group' AND active=1";
     $sql_query = mysqli_query($dbConnect, $query);
     $sql_fetch = mysqli_fetch_assoc($sql_query);
@@ -2970,7 +2970,7 @@ function SK_countGroupJoined($timeline_id=0) {
     return $sql_fetch['count'];
 }
 
-function SK_countFollowRequests($timeline_id=0) {
+function FA_countFollowRequests($timeline_id=0) {
     global $dbConnect, $user;
     
     if (empty($timeline_id) or $timeline_id == 0) {
@@ -2984,7 +2984,7 @@ function SK_countFollowRequests($timeline_id=0) {
         return false;
     }
     
-    $timeline_id = SK_secureEncode($timeline_id);
+    $timeline_id = FA_secureEncode($timeline_id);
     $query = "SELECT COUNT(id) AS count FROM " . DB_ACCOUNTS . " WHERE id IN (SELECT follower_id FROM " . DB_FOLLOWERS . " WHERE following_id=$timeline_id AND follower_id<>$timeline_id AND active=0) AND active=1";
     $sql_query = mysqli_query($dbConnect, $query);
     $sql_fetch = mysqli_fetch_assoc($sql_query);
@@ -2992,14 +2992,14 @@ function SK_countFollowRequests($timeline_id=0) {
     return $sql_fetch['count'];
 }
 
-function SK_countPageAdmins($page_id=0) {
+function FA_countPageAdmins($page_id=0) {
     global $dbConnect;
     
     if (!isset($page_id) or empty($page_id) or !is_numeric($page_id) or $page_id < 1) {
         return false;
     }
     
-    $page_id = SK_secureEncode($page_id);
+    $page_id = FA_secureEncode($page_id);
     $query = "SELECT COUNT(DISTINCT admin_id) AS count FROM " . DB_PAGE_ADMINS . " WHERE page_id=$page_id AND active=1";
     $sql_query = mysqli_query($dbConnect, $query);
     $sql_fetch = mysqli_fetch_assoc($sql_query);
@@ -3007,14 +3007,14 @@ function SK_countPageAdmins($page_id=0) {
     return $sql_fetch['count'];
 }
 
-function SK_countGroupAdmins($group_id=0) {
+function FA_countGroupAdmins($group_id=0) {
     global $dbConnect;
     
     if (!isset($group_id) or empty($group_id) or !is_numeric($group_id) or $group_id < 1) {
         return false;
     }
     
-    $group_id = SK_secureEncode($group_id);
+    $group_id = FA_secureEncode($group_id);
     $query = "SELECT COUNT(DISTINCT admin_id) AS count FROM " . DB_GROUP_ADMINS . " WHERE group_id=$group_id AND active=1";
     $sql_query = mysqli_query($dbConnect, $query);
     $sql_fetch = mysqli_fetch_assoc($sql_query);
@@ -3022,7 +3022,7 @@ function SK_countGroupAdmins($group_id=0) {
     return $sql_fetch['count'];
 }
 
-function SK_countManagedPages() {
+function FA_countManagedPages() {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -3037,7 +3037,7 @@ function SK_countManagedPages() {
     return $sql_fetch['count'];
 }
 
-function SK_countManagedGroups() {
+function FA_countManagedGroups() {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -3052,7 +3052,7 @@ function SK_countManagedGroups() {
     return $sql_fetch['count'];
 }
 
-function SK_countOnlines($timeline_id=0) {
+function FA_countOnlines($timeline_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -3075,7 +3075,7 @@ function SK_countOnlines($timeline_id=0) {
     return $sql_fetch['count'];
 }
 
-function SK_countMessages($data=array()) {
+function FA_countMessages($data=array()) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -3090,8 +3090,8 @@ function SK_countMessages($data=array()) {
         return false;
     }
     
-    $data['timeline_id'] = SK_secureEncode($data['timeline_id']);
-    $timeline = SK_getUser($data['timeline_id']);
+    $data['timeline_id'] = FA_secureEncode($data['timeline_id']);
+    $timeline = FA_getUser($data['timeline_id']);
     
     if (empty($timeline['id'])) {
         return false;
@@ -3099,14 +3099,14 @@ function SK_countMessages($data=array()) {
     
     if ($timeline['type'] == "user" && $timeline['id'] != $user['id']) {
         return false;
-    } elseif ($timeline['type'] == "page" && !SK_isPageAdmin($timeline['id'])) {
+    } elseif ($timeline['type'] == "page" && !FA_isPageAdmin($timeline['id'])) {
         return false;
     } elseif ($timeline['type'] == "group") {
         return false;
     }
     
     if (isset($data['recipient_id']) && is_numeric($data['recipient_id']) && $data['recipient_id'] > 0) {
-        $data['recipient_id'] = SK_secureEncode($data['recipient_id']);
+        $data['recipient_id'] = FA_secureEncode($data['recipient_id']);
         
         if (isset($data['new']) && $data['new'] == true) {
             $query = "SELECT COUNT(id) AS count FROM " . DB_POSTS . " WHERE type1='message' AND active=1 AND timeline_id=" . $data['recipient_id'] . " AND recipient_id=" . $timeline['id'];
@@ -3127,7 +3127,7 @@ function SK_countMessages($data=array()) {
     return $sql_fetch['count'];
 }
 
-function SK_countPosts($timeline_id=0) {
+function FA_countPosts($timeline_id=0) {
     global $dbConnect, $user;
     
     if (empty($timeline_id) or $timeline_id == 0) {
@@ -3143,8 +3143,8 @@ function SK_countPosts($timeline_id=0) {
         return false;
     }
     
-    $timeline_id = SK_secureEncode($timeline_id);
-    $timeline = SK_getUser($timeline_id);
+    $timeline_id = FA_secureEncode($timeline_id);
+    $timeline = FA_getUser($timeline_id);
     
     if (!isset($timeline['id'])) {
         return false;
@@ -3163,11 +3163,11 @@ function SK_countPosts($timeline_id=0) {
     return $sql_fetch['count'];
 }
 
-function SK_countPostLikes($post_id=0) {
+function FA_countPostLikes($post_id=0) {
     global $dbConnect;
     $get = array();
     
-    if (!preg_match('/(story|comment)/', SK_getPostType($post_id))) {
+    if (!preg_match('/(story|comment)/', FA_getPostType($post_id))) {
         return $get;
     }
     
@@ -3178,11 +3178,11 @@ function SK_countPostLikes($post_id=0) {
     return $sql_fetch['count'];
 }
 
-function SK_countPostComments($post_id=0) {
+function FA_countPostComments($post_id=0) {
     global $dbConnect;
     $get = array();
     
-    if (SK_getPostType($post_id) != "story") {
+    if (FA_getPostType($post_id) != "story") {
         return $get;
     }
     
@@ -3193,11 +3193,11 @@ function SK_countPostComments($post_id=0) {
     return $sql_fetch['count'];
 }
 
-function SK_countPostCommenters($post_id=0) {
+function FA_countPostCommenters($post_id=0) {
     global $dbConnect;
     $get = array();
     
-    if (SK_getPostType($post_id) != "story") {
+    if (FA_getPostType($post_id) != "story") {
         return $get;
     }
     
@@ -3208,11 +3208,11 @@ function SK_countPostCommenters($post_id=0) {
     return $sql_fetch['count'];
 }
 
-function SK_countPostShares($post_id=0) {
+function FA_countPostShares($post_id=0) {
     global $dbConnect;
     $get = array();
     
-    if (SK_getPostType($post_id) != "story") {
+    if (FA_getPostType($post_id) != "story") {
         return $get;
     }
     
@@ -3223,11 +3223,11 @@ function SK_countPostShares($post_id=0) {
     return $sql_fetch['count'];
 }
 
-function SK_countPostFollows($post_id=0) {
+function FA_countPostFollows($post_id=0) {
     global $dbConnect;
     $get = array();
     
-    if (SK_getPostType($post_id) != "story") {
+    if (FA_getPostType($post_id) != "story") {
         return $get;
     }
     
@@ -3239,7 +3239,7 @@ function SK_countPostFollows($post_id=0) {
 }
 
 /* Register functions */
-function SK_registerNotification($data=array()) {
+function FA_registerNotification($data=array()) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -3269,8 +3269,8 @@ function SK_registerNotification($data=array()) {
     if ($data['notifier_id'] == $user['id']) {
         $notifier = $user;
     } else {
-        $data['notifier_id'] = SK_secureEncode($data['notifier_id']);
-        $notifier = SK_getUser($data['notifier_id']);
+        $data['notifier_id'] = FA_secureEncode($data['notifier_id']);
+        $notifier = FA_getUser($data['notifier_id']);
         
         if (!isset($notifier['id'])) {
             return false;
@@ -3279,9 +3279,9 @@ function SK_registerNotification($data=array()) {
     
     if ($notifier['type'] == "user" && $notifier['id'] != $user['id']) {
         return false;
-    } elseif ($notifier['type'] == "page" && !SK_isPageAdmin($notifier['id'])) {
+    } elseif ($notifier['type'] == "page" && !FA_isPageAdmin($notifier['id'])) {
         return false;
-    } elseif ($notifier['type'] == "group" && !SK_isGroupAdmin($notifier['id'])) {
+    } elseif ($notifier['type'] == "group" && !FA_isGroupAdmin($notifier['id'])) {
         return false;
     }
     
@@ -3301,22 +3301,22 @@ function SK_registerNotification($data=array()) {
         return false;
     }
     
-    $data['recipient_id'] = SK_secureEncode($data['recipient_id']);
-    $data['post_id'] = SK_secureEncode($data['post_id']);
-    $data['notifier_id'] = SK_secureEncode($data['notifier_id']);
-    $text = SK_secureEncode($data['text']);
-    $type = SK_secureEncode($data['type']);
+    $data['recipient_id'] = FA_secureEncode($data['recipient_id']);
+    $data['post_id'] = FA_secureEncode($data['post_id']);
+    $data['notifier_id'] = FA_secureEncode($data['notifier_id']);
+    $text = FA_secureEncode($data['text']);
+    $type = FA_secureEncode($data['type']);
     $url = $data['url'];
-    $recipient = SK_getUser($data['recipient_id']);
+    $recipient = FA_getUser($data['recipient_id']);
     
     if (!isset($recipient['id'])) {
         return false;
     }
     
     if ($data['post_id'] > 0) {
-        $post = SK_getStory($data['post_id']);
+        $post = FA_getStory($data['post_id']);
         
-        if (!preg_match('/(story|comment)/', SK_getPostType($post['id']))) {
+        if (!preg_match('/(story|comment)/', FA_getPostType($post['id']))) {
             return false;
         }
     }
@@ -3324,12 +3324,12 @@ function SK_registerNotification($data=array()) {
     if (empty($text)) {
         
         if (isset($post['id'])) {
-            $post['text'] = SK_secureEncode(strip_tags($post['text']));
+            $post['text'] = FA_secureEncode(strip_tags($post['text']));
             
             if ($type == "like") {
-                $count = SK_countPostLikes($post['id']);
+                $count = FA_countPostLikes($post['id']);
                 
-                if (SK_isPostLiked($post['id'])) {
+                if (FA_isPostLiked($post['id'])) {
                     $count = $count - 1;
                 }
                 
@@ -3343,7 +3343,7 @@ function SK_registerNotification($data=array()) {
             }
             
             if ($type == "comment") {
-                $count = SK_countPostCommenters($post['id']);
+                $count = FA_countPostCommenters($post['id']);
                 
                 if ($count > 1) {
                     $text .= str_replace('{count}', ($count-1), $lang['notif_other_people']) . ' ';
@@ -3352,7 +3352,7 @@ function SK_registerNotification($data=array()) {
                 if ($post['timeline_id'] == $recipient['id']) {
                     $text .= str_replace('{post}', substr($post['text'], 0, 45), $lang['commented_on_post']);
                 } else {
-                    $post['timeline'] = SK_getUser($post['timeline_id']);
+                    $post['timeline'] = FA_getUser($post['timeline_id']);
                     $text .= str_replace(
                         array(
                             '{user}',
@@ -3368,9 +3368,9 @@ function SK_registerNotification($data=array()) {
             }
             
             if ($type == "share") {
-                $count = SK_countPostShares($post['id']);
+                $count = FA_countPostShares($post['id']);
                 
-                if (SK_isPostShared($post['id'])) {
+                if (FA_isPostShared($post['id'])) {
                     $count = $count - 1;
                 }
                 
@@ -3385,7 +3385,7 @@ function SK_registerNotification($data=array()) {
         } else {
             
             if ($type == "following") {
-                $count = SK_countFollowers($recipient['id']);
+                $count = FA_countFollowers($recipient['id']);
                 
                 if ($count > 1) {
                     $text .= str_replace('{count}', ($count-1), $lang['following_you_plural']);
@@ -3418,7 +3418,7 @@ function SK_registerNotification($data=array()) {
     }
 }
 
-function SK_registerUser($data=0) {
+function FA_registerUser($data=0) {
     if ($GLOBALS['logged'] == true) {
         return false;
     }
@@ -3430,18 +3430,18 @@ function SK_registerUser($data=0) {
     }
     
     if (!empty($data['name']) && !empty($data['username']) && !empty($data['email']) && !empty($data['password']) && !empty($data['gender'])) {
-        $name = SK_secureEncode($data['name']);
-        $username = SK_secureEncode($data['username']);
-        $email = SK_secureEncode($data['email']);
+        $name = FA_secureEncode($data['name']);
+        $username = FA_secureEncode($data['username']);
+        $email = FA_secureEncode($data['email']);
         $password = trim($data['password']);
         $md5_password = md5($password);
-        $gender = SK_secureEncode($data['gender']);
+        $gender = FA_secureEncode($data['gender']);
         $birthday = '1-1-1990';
         $current_city = '';
         $hometown = '';
         $about = '';
         
-        if (!SK_validateUsername($username)) {
+        if (!FA_validateUsername($username)) {
             return false;
         }
         
@@ -3449,7 +3449,7 @@ function SK_registerUser($data=0) {
             return false;
         }
         
-        if (!SK_validateEmail($email)) {
+        if (!FA_validateEmail($email)) {
             return false;
         }
         
@@ -3458,22 +3458,22 @@ function SK_registerUser($data=0) {
         }
 
         if (isset($data['birthday']) && is_array($data['birthday'])) {
-            $birthday = SK_secureEncode(implode('-', $data['birthday']));
+            $birthday = FA_secureEncode(implode('-', $data['birthday']));
         }
         
         if (!empty($data['current_city'])) {
-            $current_city = SK_secureEncode($data['current_city']);
+            $current_city = FA_secureEncode($data['current_city']);
         }
 
         if (!empty($data['hometown'])) {
-            $hometown = SK_secureEncode($data['hometown']);
+            $hometown = FA_secureEncode($data['hometown']);
         }
 
         if (!empty($data['about'])) {
-            $about = SK_secureEncode($data['about']);
+            $about = FA_secureEncode($data['about']);
         }
 
-        $query_one = "INSERT INTO " . DB_ACCOUNTS . " (active,about,cover_id,email,email_verification_key,name,password,time,type,username) VALUES (1,'$about',0,'$email','" . md5(SK_generateKey()) . "','$name','$md5_password'," . time() . ",'user','$username')";
+        $query_one = "INSERT INTO " . DB_ACCOUNTS . " (active,about,cover_id,email,email_verification_key,name,password,time,type,username) VALUES (1,'$about',0,'$email','" . md5(FA_generateKey()) . "','$name','$md5_password'," . time() . ",'user','$username')";
         $sql_query_one = mysqli_query($dbConnect, $query_one);
         
         if ($sql_query_one) {
@@ -3482,14 +3482,14 @@ function SK_registerUser($data=0) {
             $sql_query_two = mysqli_query($dbConnect, $query_two);
             
             if ($sql_query_two) {
-                $get = SK_getUser($user_id, true);
+                $get = FA_getUser($user_id, true);
                 return $get;
             }
         }
     }
 }
 
-function SK_registerPage($data=0) {
+function FA_registerPage($data=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -3501,20 +3501,20 @@ function SK_registerPage($data=0) {
     }
     
     if (!empty($data['name']) && !empty($data['username']) &&!empty($data['about']) && !empty($data['category_id'])) {
-        $name = SK_secureEncode($data['name']);
-        $username = SK_secureEncode($data['username']);
-        $about = SK_secureEncode($data['about']);
-        $category_id = SK_secureEncode($data['category_id']);
+        $name = FA_secureEncode($data['name']);
+        $username = FA_secureEncode($data['username']);
+        $about = FA_secureEncode($data['about']);
+        $category_id = FA_secureEncode($data['category_id']);
         
-        if (!SK_validateUsername($username)) {
+        if (!FA_validateUsername($username)) {
             return false;
         }
         
-        if (!SK_getPageCategories($category_id, true)) {
+        if (!FA_getPageCategories($category_id, true)) {
             return false;
         }
         
-        $query_one = "INSERT INTO ". DB_ACCOUNTS ." (about,active,cover_id,email,name,password,time,type,username) VALUES ('$about',1,0,'$username','$name','" . md5(SK_generateKey()) . "'," . time() . ",'page','$username')";
+        $query_one = "INSERT INTO ". DB_ACCOUNTS ." (about,active,cover_id,email,name,password,time,type,username) VALUES ('$about',1,0,'$username','$name','" . md5(FA_generateKey()) . "'," . time() . ",'page','$username')";
         $sql_query_one = mysqli_query($dbConnect,$query_one);
         
         if ($sql_query_one) {
@@ -3523,7 +3523,7 @@ function SK_registerPage($data=0) {
             $sql_query_two = mysqli_query($dbConnect, $query_two);
             
             if ($sql_query_two) {
-                SK_registerFollow($page_id);
+                FA_registerFollow($page_id);
                 $query_three = "INSERT INTO " . DB_PAGE_ADMINS . " (active,admin_id,page_id,role) VALUES (1," . $user['id'] . ",$page_id,'admin')";
                 mysqli_query($dbConnect, $query_three);
                 $get = array(
@@ -3536,7 +3536,7 @@ function SK_registerPage($data=0) {
     }
 }
 
-function SK_registerGroup($data=0) {
+function FA_registerGroup($data=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -3548,12 +3548,12 @@ function SK_registerGroup($data=0) {
     }
     
     if (!empty($data['name']) && !empty($data['username']) && !empty($data['about']) && !empty($data['privacy'])) {
-        $name = SK_secureEncode($data['name']);
-        $username = SK_secureEncode($data['username']);
-        $about = SK_secureEncode($data['about']);
-        $privacy = SK_secureEncode($data['privacy']);
+        $name = FA_secureEncode($data['name']);
+        $username = FA_secureEncode($data['username']);
+        $about = FA_secureEncode($data['about']);
+        $privacy = FA_secureEncode($data['privacy']);
         
-        if (!SK_validateUsername($username)) {
+        if (!FA_validateUsername($username)) {
             return false;
         }
         
@@ -3561,7 +3561,7 @@ function SK_registerGroup($data=0) {
             return false;
         }
         
-        $query_one = "INSERT INTO " . DB_ACCOUNTS . " (about,active,cover_id,email,name,password,time,type,username) VALUES ('$about',1,0,'$username','$name','" . md5(SK_generateKey()) . "'," . time() . ",'group','$username')";
+        $query_one = "INSERT INTO " . DB_ACCOUNTS . " (about,active,cover_id,email,name,password,time,type,username) VALUES ('$about',1,0,'$username','$name','" . md5(FA_generateKey()) . "'," . time() . ",'group','$username')";
         $sql_query_one = mysqli_query($dbConnect, $query_one);
         
         if ($sql_query_one) {
@@ -3570,7 +3570,7 @@ function SK_registerGroup($data=0) {
             $sql_query_two = mysqli_query($dbConnect,$query_two);
             
             if ($sql_query_two) {
-                SK_registerFollow($group_id);
+                FA_registerFollow($group_id);
                 $query_three = "INSERT INTO " . DB_GROUP_ADMINS . " (active,admin_id,group_id) VALUES (1," . $user['id'] . ",$group_id)";
                 $sql_query_three = mysqli_query($dbConnect, $query_three);
                 
@@ -3586,7 +3586,7 @@ function SK_registerGroup($data=0) {
     }
 }
 
-function SK_registerFollow($following_id=0, $timeline_id=0) {
+function FA_registerFollow($following_id=0, $timeline_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -3597,8 +3597,8 @@ function SK_registerFollow($following_id=0, $timeline_id=0) {
         return false;
     }
     
-    $following_id = SK_secureEncode($following_id);
-    $following = SK_getUser($following_id);
+    $following_id = FA_secureEncode($following_id);
+    $following = FA_getUser($following_id);
     
     if (!isset($following['id'])) {
         return false;
@@ -3615,12 +3615,12 @@ function SK_registerFollow($following_id=0, $timeline_id=0) {
     if ($timeline_id == $user['id']) {
         $timeline = $user;
         
-        if (SK_isBlocked($following_id)) {
+        if (FA_isBlocked($following_id)) {
             return false;
         }
     } else {
-        $timeline_id = SK_secureEncode($timeline_id);
-        $timeline = SK_getUser($timeline_id);
+        $timeline_id = FA_secureEncode($timeline_id);
+        $timeline = FA_getUser($timeline_id);
         
         if (!isset($timeline['id'])) {
             return false;
@@ -3629,20 +3629,20 @@ function SK_registerFollow($following_id=0, $timeline_id=0) {
     
     if ($timeline['type'] == "user" && $timeline['id'] !== $user['id']) {
         return false;
-    } elseif ($timeline['type'] == "page" && !SK_isPageAdmin($timeline['id'])) {
+    } elseif ($timeline['type'] == "page" && !FA_isPageAdmin($timeline['id'])) {
         return false;
-    } elseif ($timeline['type'] == "group" && !SK_isGroupAdmin($timeline['id'])) {
+    } elseif ($timeline['type'] == "group" && !FA_isGroupAdmin($timeline['id'])) {
         return false;
     }
     
-    if (SK_isFollowing($following['id'], $timeline_id)) {
+    if (FA_isFollowing($following['id'], $timeline_id)) {
         return false;
     }
 
     $active = 1;
     $can_follow = true;
     
-    if ($following['type'] == "user" && $following['follow_privacy'] == "following" && !SK_isFollowing($timeline['id'], $following['id']) ) {
+    if ($following['type'] == "user" && $following['follow_privacy'] == "following" && !FA_isFollowing($timeline['id'], $following['id']) ) {
         $can_follow = false;
     }
     
@@ -3666,7 +3666,7 @@ function SK_registerFollow($following_id=0, $timeline_id=0) {
 
         if ($following['group_privacy'] == "closed") {
             
-            if (SK_isGroupAdmin($following['id'])) {
+            if (FA_isGroupAdmin($following['id'])) {
                 $active = 1;
             } else {
                 $active = 0;
@@ -3675,7 +3675,7 @@ function SK_registerFollow($following_id=0, $timeline_id=0) {
 
         if ($following['group_privacy'] == "secret") {
             
-            if (SK_isGroupAdmin($following['id'])) {
+            if (FA_isGroupAdmin($following['id'])) {
                 $active = 1;
             } else {
                 return false;
@@ -3696,7 +3696,7 @@ function SK_registerFollow($following_id=0, $timeline_id=0) {
                     'url' => 'index.php?tab1=timeline&tab2=followers&id=' . $following['username']
                 );
 
-                SK_registerNotification($notification_data_array);
+                FA_registerNotification($notification_data_array);
             }
             
             return true;
@@ -3704,7 +3704,7 @@ function SK_registerFollow($following_id=0, $timeline_id=0) {
     }
 }
 
-function SK_registerPageAdmin($page_id=0, $admin_id=0, $admin_role='') {
+function FA_registerPageAdmin($page_id=0, $admin_id=0, $admin_role='') {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -3723,28 +3723,28 @@ function SK_registerPageAdmin($page_id=0, $admin_id=0, $admin_role='') {
         return false;
     }
     
-    $page_id = SK_secureEncode($page_id);
-    $admin_id = SK_secureEncode($admin_id);
-    $admin_role = SK_secureEncode($admin_role);
+    $page_id = FA_secureEncode($page_id);
+    $admin_id = FA_secureEncode($admin_id);
+    $admin_role = FA_secureEncode($admin_role);
     
     if (!preg_match('/(admin|editor)/', $admin_role)) {
         return false;
     }
     
-    if (SK_isPageAdmin($page_id) != "admin") {
+    if (FA_isPageAdmin($page_id) != "admin") {
         return false;
     }
     
-    if (!SK_isFollowing($user['id'], $admin_id)) {
+    if (!FA_isFollowing($user['id'], $admin_id)) {
         return false;
     }
     
-    if (SK_isBlocked($page_id) or SK_isBlocked($admin_id)) {
+    if (FA_isBlocked($page_id) or FA_isBlocked($admin_id)) {
         return false;
     }
     
-    $page = SK_getUser($page_id);
-    $admin = SK_getUser($admin_id);
+    $page = FA_getUser($page_id);
+    $admin = FA_getUser($admin_id);
     
     if (!isset($page['id']) or $page['type'] != "page") {
         return false;
@@ -3754,7 +3754,7 @@ function SK_registerPageAdmin($page_id=0, $admin_id=0, $admin_role='') {
         return false;
     }
     
-    if (SK_isPageAdmin($page_id, $admin_id)) {
+    if (FA_isPageAdmin($page_id, $admin_id)) {
         $query_one = "UPDATE " . DB_PAGE_ADMINS . " SET role='$admin_role' WHERE page_id=$page_id AND admin_id=$admin_id AND active=1";
         $sql_query_one = mysqli_query($dbConnect, $query_one);
         
@@ -3773,14 +3773,14 @@ function SK_registerPageAdmin($page_id=0, $admin_id=0, $admin_role='') {
                 'text' => $lang['made_page_admin'],
                 'url' => 'index.php?tab1=timeline&id=' . $page['username']
             );
-            SK_registerNotification($notification_data_array);
+            FA_registerNotification($notification_data_array);
             
             return true;
         }
     }
 }
 
-function SK_registerGroupMember($group_id=0, $member_id=0) {
+function FA_registerGroupMember($group_id=0, $member_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -3795,9 +3795,9 @@ function SK_registerGroupMember($group_id=0, $member_id=0) {
         return false;
     }
     
-    $group_id = SK_secureEncode($group_id);
-    $member_id = SK_secureEncode($member_id);
-    $group = SK_getUser($group_id, true);
+    $group_id = FA_secureEncode($group_id);
+    $member_id = FA_secureEncode($member_id);
+    $group = FA_getUser($group_id, true);
     $continue = false;
     
     if (!isset($group['id']) or $group['type'] != "group") {
@@ -3807,32 +3807,32 @@ function SK_registerGroupMember($group_id=0, $member_id=0) {
     if ($member_id == $user['id']) {
         $member = $user;
     } else {
-        $member = SK_getUser($member_id);
+        $member = FA_getUser($member_id);
     }
     
     if (!isset($member['id']) or $member['type'] != "user") {
         return false;
     }
     
-    if (SK_isFollowing($group['id'], $member['id'])) {
+    if (FA_isFollowing($group['id'], $member['id'])) {
         return false;
     }
     
     if ($group['add_privacy'] == "admins") {
         
-        if (SK_isGroupAdmin($group['id'])) {
+        if (FA_isGroupAdmin($group['id'])) {
             $continue = true;
         }
     } elseif ($group['add_privacy'] == "members") {
         
-        if (SK_isFollowing($group['id'])) {
+        if (FA_isFollowing($group['id'])) {
             $continue = true;
         }
     }
     
     if ($continue == true) {
         
-        if (SK_isFollowRequested($group['id'], $member['id'])) {
+        if (FA_isFollowRequested($group['id'], $member['id'])) {
             $query_one = "UPDATE " . DB_FOLLOWERS . " SET active=1 WHERE follower_id=" . $member['id'] . " AND following_id=" . $group['id'] . " AND active=0";
             $sql_query_one = mysqli_query($dbConnect, $query_one);
             
@@ -3843,7 +3843,7 @@ function SK_registerGroupMember($group_id=0, $member_id=0) {
                     'type' => 'accepted_group_member',
                     'url' => 'index.php?tab1=timeline&id=' . $group['username']
                 );
-                SK_registerNotification($notification_data_array);
+                FA_registerNotification($notification_data_array);
                 
                 return true;
             }
@@ -3858,7 +3858,7 @@ function SK_registerGroupMember($group_id=0, $member_id=0) {
                     'type' => 'made_group_member',
                     'url' => 'index.php?tab1=timeline&id=' . $group['username']
                 );
-                SK_registerNotification($notification_data_array);
+                FA_registerNotification($notification_data_array);
                 
                 return true;
             }
@@ -3866,7 +3866,7 @@ function SK_registerGroupMember($group_id=0, $member_id=0) {
     }
 }
 
-function SK_registerGroupAdmin($group_id=0, $admin_id=0) {
+function FA_registerGroupAdmin($group_id=0, $admin_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -3881,9 +3881,9 @@ function SK_registerGroupAdmin($group_id=0, $admin_id=0) {
         return false;
     }
     
-    $group_id = SK_secureEncode($group_id);
-    $admin_id = SK_secureEncode($admin_id);
-    $group = SK_getUser($group_id);
+    $group_id = FA_secureEncode($group_id);
+    $admin_id = FA_secureEncode($admin_id);
+    $group = FA_getUser($group_id);
     
     if (!isset($group['id']) or $group['type'] != "group") {
         return false;
@@ -3892,18 +3892,18 @@ function SK_registerGroupAdmin($group_id=0, $admin_id=0) {
     if ($admin_id == $user['id']) {
         $admin = $user;
     } else {
-        $admin = SK_getUser($admin_id);
+        $admin = FA_getUser($admin_id);
     }
     
     if (!isset($admin['id']) or $admin['type'] != "user") {
         return false;
     }
     
-    if (!SK_isGroupAdmin($group['id'])) {
+    if (!FA_isGroupAdmin($group['id'])) {
         return false;
     }
     
-    if (SK_isGroupAdmin($group['id'], $admin['id'])) {
+    if (FA_isGroupAdmin($group['id'], $admin['id'])) {
         return false;
     }
     
@@ -3917,13 +3917,13 @@ function SK_registerGroupAdmin($group_id=0, $admin_id=0) {
             'type' => 'made_group_admin',
             'url' => 'index.php?tab1=timeline&id=' . $group['username']
         );
-        SK_registerNotification($notification_data_array);
+        FA_registerNotification($notification_data_array);
         
         return true;
     }
 }
 
-function SK_registerPost($data=array()) {
+function FA_registerPost($data=array()) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -3943,13 +3943,13 @@ function SK_registerPost($data=array()) {
     if ($data['timeline_id'] == $user['id']) {
         $timeline = $user;
     } else {
-        $data['timeline_id'] = SK_secureEncode($data['timeline_id']);
-        $timeline = SK_getUser($data['timeline_id'], true);
+        $data['timeline_id'] = FA_secureEncode($data['timeline_id']);
+        $timeline = FA_getUser($data['timeline_id'], true);
     }
     
     if ($timeline['type'] == "user" && $timeline['id'] != $user['id']) {
         return false;
-    } elseif ($timeline['type'] == "page" && !SK_isPageAdmin($timeline['id'])) {
+    } elseif ($timeline['type'] == "page" && !FA_isPageAdmin($timeline['id'])) {
         return false;
     } elseif ($timeline['type'] == "group") {
         return false;
@@ -4022,7 +4022,7 @@ function SK_registerPost($data=array()) {
         foreach ($matches[1] as $match) {
             
             if (!is_numeric($match)) {
-                $hashdata = SK_getHashtag($match);
+                $hashdata = FA_getHashtag($match);
                 
                 if (is_array($hashdata)) {
                     $match_search = '#' . $match;
@@ -4039,8 +4039,8 @@ function SK_registerPost($data=array()) {
         preg_match_all($mention_regex, $text, $matches);
         
         foreach ($matches[1] as $match) {
-            $match = SK_secureEncode($match);
-            $match_user = SK_getUser($match);
+            $match = FA_secureEncode($match);
+            $match_user = FA_getUser($match);
             
             $match_search = '@' . $match;
             $match_replace = '@[' . $match_user['id'] . ']';
@@ -4051,16 +4051,16 @@ function SK_registerPost($data=array()) {
             }
         }
         
-        $text = SK_secureEncode($text);
+        $text = FA_secureEncode($text);
         $post_ability = true;
     }
     
     if (!empty($data['recipient_id']) && is_numeric($data['recipient_id']) && $data['recipient_id'] > 0) {
-        $recipient_id = SK_secureEncode($data['recipient_id']);
+        $recipient_id = FA_secureEncode($data['recipient_id']);
     }
     
     if ($recipient_id > 0) {
-        $recipient = SK_getUser($recipient_id, true);
+        $recipient = FA_getUser($recipient_id, true);
         
         if (empty($recipient['id'])) {
             return false;
@@ -4076,7 +4076,7 @@ function SK_registerPost($data=array()) {
                 
                 if ($recipient['timeline_post_privacy'] == "following") {
                     
-                    if (!SK_isFollowing($timeline['id'], $recipient['id'])) {
+                    if (!FA_isFollowing($timeline['id'], $recipient['id'])) {
                         return false;
                     }
                 } elseif ($recipient['timeline_post_privacy'] == "none") {
@@ -4084,7 +4084,7 @@ function SK_registerPost($data=array()) {
                 }
             } elseif ($type1 == "message" && $recipient['message_privacy'] == "following") {
                 
-                if (!SK_isFollowing($timeline['id'], $recipient['id'])) {
+                if (!FA_isFollowing($timeline['id'], $recipient['id'])) {
                     return false;
                 }
             }
@@ -4092,7 +4092,7 @@ function SK_registerPost($data=array()) {
             
             if ($type1 == "story" && $recipient['timeline_post_privacy'] != "everyone") {
                 
-                if (!SK_isPageAdmin($recipient['id'])) {
+                if (!FA_isPageAdmin($recipient['id'])) {
                     return false;
                 }
             } elseif ($type1 == "message" && $recipient['message_privacy'] != "everyone") {
@@ -4104,12 +4104,12 @@ function SK_registerPost($data=array()) {
                 
                 if ($recipient['timeline_post_privacy'] == "members") {
                     
-                    if (!SK_isFollowing($recipient['id'])) {
+                    if (!FA_isFollowing($recipient['id'])) {
                         return false;
                     }
                 } elseif ($recipient['timeline_post_privacy'] == "admins") {
                     
-                    if (!SK_isGroupAdmin($recipient['id'])) {
+                    if (!FA_isGroupAdmin($recipient['id'])) {
                         return false;
                     }
                 }
@@ -4127,7 +4127,7 @@ function SK_registerPost($data=array()) {
                 'name' => $data['photos']['name'][0],
                 'size' => $data['photos']['size'][0]
             );
-            $photo_data = SK_registerMedia($photo_param);
+            $photo_data = FA_registerMedia($photo_param);
             
             if (isset($photo_data['id'])) {
                 $media_id = $photo_data['id'];
@@ -4135,7 +4135,7 @@ function SK_registerPost($data=array()) {
                 $post_ability = true;
             }
         } else {
-            $query_one = "INSERT INTO " . DB_MEDIA . " (timeline_id,active,name,type) VALUES (" . $timeline['id'] . ",1,'temp_" . SK_generateKey() . "','album')";
+            $query_one = "INSERT INTO " . DB_MEDIA . " (timeline_id,active,name,type) VALUES (" . $timeline['id'] . ",1,'temp_" . FA_generateKey() . "','album')";
             $sql_query_one = mysqli_query($dbConnect, $query_one);
             
             if ($sql_query_one) {
@@ -4147,7 +4147,7 @@ function SK_registerPost($data=array()) {
                         'name' => $data['photos']['name'][$i],
                         'size' => $data['photos']['size'][$i]
                     );
-                    $photo_data = SK_registerMedia($photo_param, $media_id);
+                    $photo_data = FA_registerMedia($photo_param, $media_id);
                     
                     if (!empty($photo_data['id'])) {
                         $query_one = "INSERT INTO " . DB_POSTS . " (active,google_map_name,hidden,media_id,time,timeline_id,recipient_id,type1,type2) VALUES (1,'$google_map_name',1," . $photo_data['id'] . "," . time() . "," . $timeline['id'] . ",$recipient_id,'$type1','$type2')";
@@ -4158,7 +4158,7 @@ function SK_registerPost($data=array()) {
                             
                             mysqli_query($dbConnect, "UPDATE " . DB_POSTS . " SET post_id=id WHERE id=$media_story_id");
                             mysqli_query($dbConnect, "UPDATE " . DB_MEDIA . " SET post_id=$media_story_id WHERE id=" . $photo_data['id']);
-                            SK_registerPostFollow($media_story_id);
+                            FA_registerPostFollow($media_story_id);
                         }
                     }
                 }
@@ -4168,12 +4168,12 @@ function SK_registerPost($data=array()) {
             }
         }
     } elseif (!empty($data['soundcloud_uri']) && !empty($data['soundcloud_title'])) {
-        $soundcloud_uri = SK_secureEncode($data['soundcloud_uri']);
-        $soundcloud_title = SK_secureEncode($data['soundcloud_title']);
+        $soundcloud_uri = FA_secureEncode($data['soundcloud_uri']);
+        $soundcloud_title = FA_secureEncode($data['soundcloud_title']);
         $post_ability = true;
         $other_media = true;
     } elseif (!empty($data['youtube_video_id'])) {
-        $youtube_video_id = SK_secureEncode($data['youtube_video_id']);
+        $youtube_video_id = FA_secureEncode($data['youtube_video_id']);
         $post_ability = true;
         $other_media = true;
         
@@ -4193,12 +4193,12 @@ function SK_registerPost($data=array()) {
         }
         
         if (!empty($data['youtube_title'])) {
-            $youtube_title = SK_secureEncode($data['youtube_title']);
+            $youtube_title = FA_secureEncode($data['youtube_title']);
         }
     }
     
     if (!empty($data['google_map_name'])) {
-        $google_map_name = SK_secureEncode($data['google_map_name']);
+        $google_map_name = FA_secureEncode($data['google_map_name']);
         
         if ($other_media == false) {
             $post_ability = true;
@@ -4213,7 +4213,7 @@ function SK_registerPost($data=array()) {
             $post_id = mysqli_insert_id($dbConnect);
             $query_two = "UPDATE " . DB_POSTS . " SET post_id=$post_id WHERE id=$post_id";
             $sql_query_two = mysqli_query($dbConnect, $query_two);
-            SK_registerPostFollow($post_id);
+            FA_registerPostFollow($post_id);
             
             if ($sql_query_two) {
                 
@@ -4225,7 +4225,7 @@ function SK_registerPost($data=array()) {
                         'type' => 'timeline_wall_post',
                         'url' => 'index.php?tab1=story&id=' . $post_id
                     );
-                    SK_registerNotification($notification_data_array);
+                    FA_registerNotification($notification_data_array);
                 }
                 
                 if (isset($mentions) && is_array($mentions) && $type1 == "story") {
@@ -4238,7 +4238,7 @@ function SK_registerPost($data=array()) {
                             'type' => 'post_mention',
                             'url' => 'index.php?tab1=story&id=' . $post_id
                         );
-                        SK_registerNotification($notification_data_array);
+                        FA_registerNotification($notification_data_array);
                     }
                 }
                 
@@ -4248,7 +4248,7 @@ function SK_registerPost($data=array()) {
     }
 }
 
-function SK_registerPostLike($post_id=0) {
+function FA_registerPostLike($post_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -4259,19 +4259,19 @@ function SK_registerPostLike($post_id=0) {
         return false;
     }
     
-    $post_id = SK_secureEncode($post_id);
-    $post_type = SK_getPostType($post_id);
-    $post_timeline_id = SK_getPostTimelineId($post_id);
+    $post_id = FA_secureEncode($post_id);
+    $post_type = FA_getPostType($post_id);
+    $post_timeline_id = FA_getPostTimelineId($post_id);
     
     if (!preg_match('/(story|comment)/', $post_type)) {
         return false;
     }
     
-    if (empty($post_timeline_id) or SK_isBlocked($post_timeline_id)) {
+    if (empty($post_timeline_id) or FA_isBlocked($post_timeline_id)) {
         return false;
     }
     
-    if (SK_isPostLiked($post_id)) {
+    if (FA_isPostLiked($post_id)) {
         $query_two = "DELETE FROM " . DB_POSTS . " WHERE post_id=$post_id AND timeline_id=" . $user['id'] . " AND type1='$post_type' AND type2='like' AND active=1";
         $sql_query_two = mysqli_query($dbConnect, $query_two);
         
@@ -4288,7 +4288,7 @@ function SK_registerPostLike($post_id=0) {
     }
 }
 
-function SK_registerPostShare($post_id=0) {
+function FA_registerPostShare($post_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -4299,19 +4299,19 @@ function SK_registerPostShare($post_id=0) {
         return false;
     }
     
-    $post_id = SK_secureEncode($post_id);
-    $post_type = SK_getPostType($post_id);
-    $post_timeline_id = SK_getPostTimelineId($post_id);
+    $post_id = FA_secureEncode($post_id);
+    $post_type = FA_getPostType($post_id);
+    $post_timeline_id = FA_getPostTimelineId($post_id);
     
-    if (($post_type = SK_getPostType($post_id)) != "story") {
+    if (($post_type = FA_getPostType($post_id)) != "story") {
         return false;
     }
     
-    if (empty($post_timeline_id) or SK_isBlocked($post_timeline_id)) {
+    if (empty($post_timeline_id) or FA_isBlocked($post_timeline_id)) {
         return false;
     }
     
-    if (SK_isPostShared($post_id)) {
+    if (FA_isPostShared($post_id)) {
         $query_two = "DELETE FROM " . DB_POSTS . " WHERE post_id=$post_id AND timeline_id=" . $user['id'] . " AND type1='$post_type' AND type2='share' AND active=1";
         $sql_query_two = mysqli_query($dbConnect, $query_two);
         
@@ -4328,7 +4328,7 @@ function SK_registerPostShare($post_id=0) {
     }
 }
 
-function SK_registerPostFollow($post_id=0) {
+function FA_registerPostFollow($post_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -4339,19 +4339,19 @@ function SK_registerPostFollow($post_id=0) {
         return false;
     }
     
-    $post_id = SK_secureEncode($post_id);
-    $post_type = SK_getPostType($post_id);
-    $post_timeline_id = SK_getPostTimelineId($post_id);
+    $post_id = FA_secureEncode($post_id);
+    $post_type = FA_getPostType($post_id);
+    $post_timeline_id = FA_getPostTimelineId($post_id);
     
-    if (($post_type = SK_getPostType($post_id)) != "story") {
+    if (($post_type = FA_getPostType($post_id)) != "story") {
         return false;
     }
     
-    if (SK_isBlocked($post_timeline_id)) {
+    if (FA_isBlocked($post_timeline_id)) {
         return false;
     }
     
-    if (SK_isPostFollowed($post_id)) {
+    if (FA_isPostFollowed($post_id)) {
         $query_two = "DELETE FROM " . DB_POSTS . " WHERE post_id=$post_id AND timeline_id=" . $user['id'] . " AND type1='$post_type' AND type2='follow' AND active=1";
         $sql_query_two = mysqli_query($dbConnect, $query_two);
         
@@ -4368,7 +4368,7 @@ function SK_registerPostFollow($post_id=0) {
     }
 }
 
-function SK_registerPostComment($post_id=0, $timeline_id=0, $text='') {
+function FA_registerPostComment($post_id=0, $timeline_id=0, $text='') {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -4379,13 +4379,13 @@ function SK_registerPostComment($post_id=0, $timeline_id=0, $text='') {
         return false;
     }
     
-    $post_id = SK_secureEncode($post_id);
-    $post_type = SK_getPostType($post_id);
-    $post_timeline_id = SK_getPostTimelineId($post_id);
-    $post_timeline = SK_getUser($post_timeline_id);
+    $post_id = FA_secureEncode($post_id);
+    $post_type = FA_getPostType($post_id);
+    $post_timeline_id = FA_getPostTimelineId($post_id);
+    $post_timeline = FA_getUser($post_timeline_id);
     $continue = true;
     
-    if (($post_type = SK_getPostType($post_id)) != "story") {
+    if (($post_type = FA_getPostType($post_id)) != "story") {
         return false;
     }
     
@@ -4393,7 +4393,7 @@ function SK_registerPostComment($post_id=0, $timeline_id=0, $text='') {
         return false;
     }
     
-    if (SK_isBlocked($post_timeline['id'])) {
+    if (FA_isBlocked($post_timeline['id'])) {
         return false;
     }
     
@@ -4408,15 +4408,15 @@ function SK_registerPostComment($post_id=0, $timeline_id=0, $text='') {
     if ($timeline_id == $user['id']) {
         $timeline = $user;
     } else {
-        $timeline_id = SK_secureEncode($timeline_id);
-        $timeline = SK_getUser($timeline_id);
+        $timeline_id = FA_secureEncode($timeline_id);
+        $timeline = FA_getUser($timeline_id);
     }
     
     if ($timeline['type'] == "user" && $timeline['id'] != $user['id']) {
         return false;
-    } elseif ($timeline['type'] == "page" && !SK_isPageAdmin($timeline['id'])) {
+    } elseif ($timeline['type'] == "page" && !FA_isPageAdmin($timeline['id'])) {
         return false;
-    } elseif ($timeline['type'] == "group" && !SK_isGroupAdmin($timeline['id'])) {
+    } elseif ($timeline['type'] == "group" && !FA_isGroupAdmin($timeline['id'])) {
         return false;
     }
     
@@ -4424,13 +4424,13 @@ function SK_registerPostComment($post_id=0, $timeline_id=0, $text='') {
         
         if ($post_timeline['comment_privacy'] == "following") {
             
-            if (!SK_isFollowing($timeline['id'], $post_timeline['id'])) {
+            if (!FA_isFollowing($timeline['id'], $post_timeline['id'])) {
                 $continue = false;
             }
         }
     } elseif ($post_timeline['type'] == "group") {
         
-        if (!SK_isFollowing($timeline['id'], $post_timeline['id'])) {
+        if (!FA_isFollowing($timeline['id'], $post_timeline['id'])) {
             $continue = false;
         }
     }
@@ -4462,7 +4462,7 @@ function SK_registerPostComment($post_id=0, $timeline_id=0, $text='') {
     preg_match_all($hashtag_regex, $text, $matches);
     
     foreach ($matches[1] as $match) {
-        $hashdata = SK_getHashtag($match);
+        $hashdata = FA_getHashtag($match);
         
         if (is_array($hashdata)) {
             $match_search = '#' . $match;
@@ -4476,8 +4476,8 @@ function SK_registerPostComment($post_id=0, $timeline_id=0, $text='') {
     preg_match_all($mention_regex, $text, $matches);
     
     foreach ($matches[1] as $match) {
-        $match = SK_secureEncode($match);
-        $match_user = SK_getUser($match);
+        $match = FA_secureEncode($match);
+        $match_user = FA_getUser($match);
         
         $match_search = '@' . $match;
         $match_replace = '@[' . $match_user['id'] . ']';
@@ -4488,7 +4488,7 @@ function SK_registerPostComment($post_id=0, $timeline_id=0, $text='') {
         }
     }
     
-    $text = SK_secureEncode($text);
+    $text = FA_secureEncode($text);
     
     if ($continue == false) {
         return false;
@@ -4500,11 +4500,11 @@ function SK_registerPostComment($post_id=0, $timeline_id=0, $text='') {
     if ($sql_query_two) {
         $comment_id = mysqli_insert_id($dbConnect);
         
-        if (!SK_isPostFollowed($post_id)) {
-            SK_registerPostFollow($post_id);
+        if (!FA_isPostFollowed($post_id)) {
+            FA_registerPostFollow($post_id);
         }
         
-        foreach (SK_getPostFollowers($post_id) as $follower) {
+        foreach (FA_getPostFollowers($post_id) as $follower) {
             
             if ($follower['id'] != $post_timeline_id) {
                 $notification_data_array = array(
@@ -4513,7 +4513,7 @@ function SK_registerPostComment($post_id=0, $timeline_id=0, $text='') {
                     'type' => 'comment',
                     'url' => 'index.php?tab1=story&id=' . $post_id
                 );
-                SK_registerNotification($notification_data_array);
+                FA_registerNotification($notification_data_array);
             }
         }
         
@@ -4527,7 +4527,7 @@ function SK_registerPostComment($post_id=0, $timeline_id=0, $text='') {
                     'type' => 'post_mention',
                     'url' => 'index.php?tab1=story&id=' . $post_id . '#comment_' . $comment_id
                 );
-                SK_registerNotification($notification_data_array);
+                FA_registerNotification($notification_data_array);
             }
         }
         
@@ -4535,7 +4535,7 @@ function SK_registerPostComment($post_id=0, $timeline_id=0, $text='') {
     }
 }
 
-function SK_updateTimeline($data=array()) {
+function FA_updateTimeline($data=array()) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -4553,8 +4553,8 @@ function SK_updateTimeline($data=array()) {
     if ($data['timeline_id'] == $user['id']) {
         $timeline = $user;
     } else {
-        $data['timeline_id'] = SK_secureEncode($data['timeline_id']);
-        $timeline = SK_getUser($data['timeline_id']);
+        $data['timeline_id'] = FA_secureEncode($data['timeline_id']);
+        $timeline = FA_getUser($data['timeline_id']);
         
         if (!isset($timeline['id'])) {
             return false;
@@ -4563,25 +4563,25 @@ function SK_updateTimeline($data=array()) {
     
     if ($timeline['type'] == "user" && $timeline['id'] != $user['id']) {
         return false;
-    } elseif ($timeline['type'] == "page" && !SK_isPageAdmin($timeline['id'])) {
+    } elseif ($timeline['type'] == "page" && !FA_isPageAdmin($timeline['id'])) {
         return false;
-    } elseif ($timeline['type'] == "group" && !SK_isGroupAdmin($timeline['id'])) {
+    } elseif ($timeline['type'] == "group" && !FA_isGroupAdmin($timeline['id'])) {
         return false;
     }
     
     $update_query_one = "UPDATE " . DB_ACCOUNTS . " SET ";
     
     if (!empty($data['name'])) {
-        $data['name'] = SK_secureEncode($data['name']);
+        $data['name'] = FA_secureEncode($data['name']);
         $update_query_one .= "name='" . $data['name'] . "',";
     }
     
     if (!empty($data['username'])) {
         
-        if (SK_validateUsername($data['username']) && SK_getUsernameStatus($data['username'], $timeline['id']) == 200) {
-            $data['username'] = SK_secureEncode($data['username']);
+        if (FA_validateUsername($data['username']) && FA_getUsernameStatus($data['username'], $timeline['id']) == 200) {
+            $data['username'] = FA_secureEncode($data['username']);
             $update_query_one .= "username='" . $data['username'] . "',";
-        } elseif (SK_getUsernameStatus($data['username'], $timeline['id']) == 201) {
+        } elseif (FA_getUsernameStatus($data['username'], $timeline['id']) == 201) {
             // do nothing!
         } else {
             return false;
@@ -4589,20 +4589,20 @@ function SK_updateTimeline($data=array()) {
     }
     
     if (!empty($data['about'])) {
-        $data['about'] = SK_secureEncode($data['about']);
+        $data['about'] = FA_secureEncode($data['about']);
         $update_query_one .= "about='" . $data['about'] . "',";
     }
     
     if ($timeline['type'] == "user") {
         
         if (!empty($data['email'])) {
-            $data['email'] = SK_secureEncode($data['email']);
+            $data['email'] = FA_secureEncode($data['email']);
             $update_query_one .= "email='" . $data['email'] . "',";
         }
         
         if (isset($data['timezone'])) {
-            $data['timezone'] = SK_secureEncode($data['timezone']);
-            $timezones = SK_getTimezones();
+            $data['timezone'] = FA_secureEncode($data['timezone']);
+            $timezones = FA_getTimezones();
             
             if (!empty($timezones[$data['timezone']])) {
                 $update_query_one .= "timezone='" . $data['timezone'] . "',";
@@ -4631,7 +4631,7 @@ function SK_updateTimeline($data=array()) {
     }
     
     if (isset($data['avatar']['name'])) {
-        $avatar_data = SK_registerMedia($data['avatar']);
+        $avatar_data = FA_registerMedia($data['avatar']);
         
         if (isset($avatar_data['id'])) {
             $update_query_one .= "avatar_id=" . $avatar_data['id'] . ",";
@@ -4639,7 +4639,7 @@ function SK_updateTimeline($data=array()) {
     }
     
     if (isset($data['cover']['name'])) {
-        $cover_data = SK_registerMedia($data['cover']);
+        $cover_data = FA_registerMedia($data['cover']);
         
         if (isset($cover_data['id'])) {
             $update_query_one .= "cover_id=" . $cover_data['id'] . ",";
@@ -4657,12 +4657,12 @@ function SK_updateTimeline($data=array()) {
         $update_query_two = "UPDATE " . DB_USERS . " SET ";
         
         if (isset($data['birthday']) && is_array($data['birthday'])) {
-            $birthday = SK_secureEncode(implode('-', $data['birthday']));
+            $birthday = FA_secureEncode(implode('-', $data['birthday']));
             $update_query_two .= "birthday='$birthday',";
         }
         
         if (!empty($data['gender'])) {
-            $data['gender'] = SK_secureEncode($data['gender']);
+            $data['gender'] = FA_secureEncode($data['gender']);
             
             if (preg_match('/(male|female)/', $data['gender'])) {
                 $update_query_two .= "gender='" . $data['gender'] . "',";
@@ -4672,42 +4672,42 @@ function SK_updateTimeline($data=array()) {
         }
         
         if (isset($data['current_city'])) {
-            $data['current_city'] = SK_secureEncode($data['current_city']);
+            $data['current_city'] = FA_secureEncode($data['current_city']);
             $update_query_two .= "current_city='" . $data['current_city'] . "',";
         }
         
         if (isset($data['hometown'])) {
-            $data['hometown'] = SK_secureEncode($data['hometown']);
+            $data['hometown'] = FA_secureEncode($data['hometown']);
             $update_query_two .= "hometown='" . $data['hometown'] . "',";
         }
         
         if (isset($data['confirm_followers']) && preg_match('/(0|1)/', $data['confirm_followers'])) {
-            $data['confirm_followers'] = SK_secureEncode($data['confirm_followers']);
+            $data['confirm_followers'] = FA_secureEncode($data['confirm_followers']);
             $update_query_two .= "confirm_followers=" . $data['confirm_followers'] . ",";
         }
         
         if (isset($data['follow_privacy']) && preg_match('/(everyone|following)/', $data['follow_privacy'])) {
-            $data['follow_privacy'] = SK_secureEncode($data['follow_privacy']);
+            $data['follow_privacy'] = FA_secureEncode($data['follow_privacy']);
             $update_query_two .= "follow_privacy='" . $data['follow_privacy'] . "',";
         }
         
         if (isset($data['comment_privacy']) && preg_match('/(everyone|following)/', $data['comment_privacy'])) {
-            $data['comment_privacy'] = SK_secureEncode($data['comment_privacy']);
+            $data['comment_privacy'] = FA_secureEncode($data['comment_privacy']);
             $update_query_two .= "comment_privacy='" . $data['comment_privacy'] . "',";
         }
         
         if (isset($data['message_privacy']) && preg_match('/(everyone|following)/', $data['message_privacy'])) {
-            $data['message_privacy'] = SK_secureEncode($data['message_privacy']);
+            $data['message_privacy'] = FA_secureEncode($data['message_privacy']);
             $update_query_two .= "message_privacy='" . $data['message_privacy'] . "',";
         }
         
         if (isset($data['timeline_post_privacy']) && preg_match('/(everyone|following|none)/', $data['timeline_post_privacy'])) {
-            $data['timeline_post_privacy'] = SK_secureEncode($data['timeline_post_privacy']);
+            $data['timeline_post_privacy'] = FA_secureEncode($data['timeline_post_privacy']);
             $update_query_two .= "timeline_post_privacy='" . $data['timeline_post_privacy'] . "',";
         }
 
         if (isset($data['post_privacy']) && preg_match('/(everyone|following)/', $data['post_privacy'])) {
-            $data['post_privacy'] = SK_secureEncode($data['post_privacy']);
+            $data['post_privacy'] = FA_secureEncode($data['post_privacy']);
             $update_query_two .= "post_privacy='" . $data['post_privacy'] . "',";
         }
         
@@ -4721,37 +4721,37 @@ function SK_updateTimeline($data=array()) {
         $update_query_two = "UPDATE " . DB_PAGES . " SET ";
         
         if (!empty($data['timeline_post_privacy'])) {
-            $data['timeline_post_privacy'] = SK_secureEncode($data['timeline_post_privacy']);
+            $data['timeline_post_privacy'] = FA_secureEncode($data['timeline_post_privacy']);
             $update_query_two .= "timeline_post_privacy='" . $data['timeline_post_privacy'] . "',";
         }
         
         if (!empty($data['message_privacy'])) {
-            $data['message_privacy'] = SK_secureEncode($data['message_privacy']);
+            $data['message_privacy'] = FA_secureEncode($data['message_privacy']);
             $update_query_two .= "message_privacy='" . $data['message_privacy'] . "',";
         }
         
         if (isset($data['address'])) {
-            $data['address'] = SK_secureEncode($data['address']);
+            $data['address'] = FA_secureEncode($data['address']);
             $update_query_two .= "address='" . $data['address'] . "',";
         }
         
         if (isset($data['awards'])) {
-            $data['awards'] = SK_secureEncode($data['awards']);
+            $data['awards'] = FA_secureEncode($data['awards']);
             $update_query_two .= "awards='" . $data['awards'] . "',";
         }
         
         if (isset($data['phone'])) {
-            $data['phone'] = SK_secureEncode($data['phone']);
+            $data['phone'] = FA_secureEncode($data['phone']);
             $update_query_two .= "phone='" . $data['phone'] . "',";
         }
         
         if (isset($data['products'])) {
-            $data['products'] = SK_secureEncode($data['products']);
+            $data['products'] = FA_secureEncode($data['products']);
             $update_query_two .= "products='" . $data['products'] . "',";
         }
         
         if (isset($data['website'])) {
-            $data['website'] = SK_secureEncode($data['website']);
+            $data['website'] = FA_secureEncode($data['website']);
             $update_query_two .= "website='" . $data['website'] . "',";
         }
         
@@ -4765,17 +4765,17 @@ function SK_updateTimeline($data=array()) {
         $update_query_two = "UPDATE ". DB_GROUPS ." SET ";
         
         if (!empty($data['group_privacy']) && preg_match('/(open|closed|secret)/', $data['group_privacy'])) {
-            $data['group_privacy'] = SK_secureEncode($data['group_privacy']);
+            $data['group_privacy'] = FA_secureEncode($data['group_privacy']);
             $update_query_two .= "group_privacy='" . $data['group_privacy'] . "',";
         }
         
         if (!empty($data['add_privacy']) && preg_match('/(members|admins)/', $data['add_privacy'])) {
-            $data['add_privacy'] = SK_secureEncode($data['add_privacy']);
+            $data['add_privacy'] = FA_secureEncode($data['add_privacy']);
             $update_query_two .= "add_privacy='" . $data['add_privacy'] . "',";
         }
         
         if (!empty($data['timeline_post_privacy'])) {
-            $data['timeline_post_privacy'] = SK_secureEncode($data['timeline_post_privacy']);
+            $data['timeline_post_privacy'] = FA_secureEncode($data['timeline_post_privacy']);
             $update_query_two .= "timeline_post_privacy='" . $data['timeline_post_privacy'] . "',";
         }
         
@@ -4788,7 +4788,7 @@ function SK_updateTimeline($data=array()) {
     }
 }
 
-function SK_registerMedia($upload, $album_id=0) {
+function FA_registerMedia($upload, $album_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -4807,7 +4807,7 @@ function SK_registerMedia($upload, $album_id=0) {
     $photo_dir = 'photos/' . date('Y') . '/' . date('m');
     
     if (is_uploaded_file($upload['tmp_name'])) {
-        $upload['name'] = SK_secureEncode($upload['name']);
+        $upload['name'] = FA_secureEncode($upload['name']);
         $name = preg_replace('/([^A-Za-z0-9_\-\.]+)/i', '', $upload['name']);
         $ext = strtolower(substr($upload['name'], strrpos($upload['name'], '.') + 1, strlen($upload['name']) - strrpos($upload['name'], '.')));
         
@@ -4822,7 +4822,7 @@ function SK_registerMedia($upload, $album_id=0) {
                 
                 if ($sql_query_one) {
                     $sql_id = mysqli_insert_id($dbConnect);
-                    $original_file_name = $photo_dir . '/' . SK_generateKey() . '_' . $sql_id . '_' . md5($sql_id);
+                    $original_file_name = $photo_dir . '/' . FA_generateKey() . '_' . $sql_id . '_' . md5($sql_id);
                     $original_file = $original_file_name . '.' . $ext;
                     
                     if (move_uploaded_file($upload['tmp_name'], $original_file)) {
@@ -4861,10 +4861,10 @@ function SK_registerMedia($upload, $album_id=0) {
                         
                         foreach ($imageSizes as $ratio => $data) {
                             $save_file = $data['name'] . '.' . $ext;
-                            SK_processMedia($data['type'], $original_file, $save_file, $data['width'], $data['height']);
+                            FA_processMedia($data['type'], $original_file, $save_file, $data['width'], $data['height']);
                         }
                         
-                        SK_processMedia('resize', $original_file, $original_file, $min_size, 0);
+                        FA_processMedia('resize', $original_file, $original_file, $min_size, 0);
                         mysqli_query($dbConnect, "UPDATE " . DB_MEDIA . " SET album_id=$album_id,url='$original_file_name',temp=0,active=1 WHERE id=$sql_id");
                         $get = array(
                             'id' => $sql_id,
@@ -4883,7 +4883,7 @@ function SK_registerMedia($upload, $album_id=0) {
 }
 
 /* Register Cover Image */
-function SK_registerCoverImage($upload, $pos=0) {
+function FA_registerCoverImage($upload, $pos=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -4902,7 +4902,7 @@ function SK_registerCoverImage($upload, $pos=0) {
     $photo_dir = 'photos/' . date('Y') . '/' . date('m');
     
     if (is_uploaded_file($upload['tmp_name'])) {
-        $upload['name'] = SK_secureEncode($upload['name']);
+        $upload['name'] = FA_secureEncode($upload['name']);
         $name = preg_replace('/([^A-Za-z0-9_\-\.]+)/i', '', $upload['name']);
         $ext = strtolower(substr($upload['name'], strrpos($upload['name'], '.') + 1, strlen($upload['name']) - strrpos($upload['name'], '.')));
         
@@ -4917,11 +4917,11 @@ function SK_registerCoverImage($upload, $pos=0) {
                 
                 if ($sql_query_one) {
                     $sql_id = mysqli_insert_id($dbConnect);
-                    $original_file_name = $photo_dir . '/' . SK_generateKey() . '_' . $sql_id . '_' . md5($sql_id);
+                    $original_file_name = $photo_dir . '/' . FA_generateKey() . '_' . $sql_id . '_' . md5($sql_id);
                     $original_file = $original_file_name . '.' . $ext;
                     
                     if (move_uploaded_file($upload['tmp_name'], $original_file)) {
-                        SK_processMedia('resize', $original_file, $original_file, $width, 0, 100);
+                        FA_processMedia('resize', $original_file, $original_file, $width, 0, 100);
 
                         $img = $original_file;
                         $cover_img_url = $original_file_name . '_cover.' . $ext;
@@ -4935,7 +4935,7 @@ function SK_registerCoverImage($upload, $pos=0) {
                         $src_h = $dst_h;
                         
                         if (!empty($pos) && is_numeric($pos) && $pos < $width) {
-                            $pos = SK_secureEncode($pos);
+                            $pos = FA_secureEncode($pos);
                             $src_y = $width * $pos;
                         }
                         
@@ -4962,7 +4962,7 @@ function SK_registerCoverImage($upload, $pos=0) {
     }
 }
 
-function SK_createCover($cover_id=0, $pos=0) {
+function FA_createCover($cover_id=0, $pos=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -4973,7 +4973,7 @@ function SK_createCover($cover_id=0, $pos=0) {
         return false;
     }
     
-    $cover_id = SK_secureEncode($cover_id);
+    $cover_id = FA_secureEncode($cover_id);
     $query_one = "SELECT * FROM " . DB_MEDIA . " WHERE id=$cover_id";
     $sql_query_one = mysqli_query($dbConnect, $query_one);
     
@@ -4992,7 +4992,7 @@ function SK_createCover($cover_id=0, $pos=0) {
         $src_h = $dst_h;
         
         if (!empty($pos) && is_numeric($pos) && $pos < $width) {
-            $pos = SK_secureEncode($pos);
+            $pos = FA_secureEncode($pos);
             $src_y = $width * $pos;
         }
         
@@ -5005,7 +5005,7 @@ function SK_createCover($cover_id=0, $pos=0) {
 }
 
 /* Delete functions */
-function SK_deleteFollow($following_id=0) {
+function FA_deleteFollow($following_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -5016,15 +5016,15 @@ function SK_deleteFollow($following_id=0) {
         return false;
     }
     
-    $following_id = SK_secureEncode($following_id);
-    $following = SK_getUser($following_id);
+    $following_id = FA_secureEncode($following_id);
+    $following = FA_getUser($following_id);
     $active = 1;
     
     if (!isset($following['id'])) {
         return false;
     }
     
-    if (SK_isBlocked($following['id'])) {
+    if (FA_isBlocked($following['id'])) {
         return false;
     }
     
@@ -5044,9 +5044,9 @@ function SK_deleteFollow($following_id=0) {
         $sql_query_two = mysqli_query($dbConnect, $query_two);
     }
     
-    if ($following['type'] == "group" && SK_isGroupAdmin($following['id'])) {
+    if ($following['type'] == "group" && FA_isGroupAdmin($following['id'])) {
         
-        if (SK_countGroupAdmins($following['id']) > 1) {
+        if (FA_countGroupAdmins($following['id']) > 1) {
             $query_two = "DELETE FROM " . DB_GROUP_ADMINS . " WHERE admin_id=" . $user['id'] . " AND group_id=" . $following['id'];
             mysqli_query($dbConnect, $query_two);
         }
@@ -5055,7 +5055,7 @@ function SK_deleteFollow($following_id=0) {
     return true;
 }
 
-function SK_deletePageAdmin($page_id=0, $admin_id=0) {
+function FA_deletePageAdmin($page_id=0, $admin_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -5070,9 +5070,9 @@ function SK_deletePageAdmin($page_id=0, $admin_id=0) {
         return false;
     }
     
-    $page_id = SK_secureEncode($page_id);
-    $admin_id = SK_secureEncode($admin_id);
-    $page = SK_getUser($page_id);
+    $page_id = FA_secureEncode($page_id);
+    $admin_id = FA_secureEncode($admin_id);
+    $page = FA_getUser($page_id);
     
     if (!isset($page['id']) or $page['type'] != "page") {
         return false;
@@ -5081,14 +5081,14 @@ function SK_deletePageAdmin($page_id=0, $admin_id=0) {
     if ($admin_id == $user['id']) {
         $admin = $user;
     } else {
-        $admin = SK_getUser($admin_id);
+        $admin = FA_getUser($admin_id);
     }
     
     if (!isset($admin['id']) or $admin['type'] != "user") {
         return false;
     }
     
-    if (SK_isPageAdmin($page['id']) != "admin") {
+    if (FA_isPageAdmin($page['id']) != "admin") {
         return false;
     }
     
@@ -5100,7 +5100,7 @@ function SK_deletePageAdmin($page_id=0, $admin_id=0) {
     }
 }
 
-function SK_deleteGroupMember($group_id=0, $member_id=0) {
+function FA_deleteGroupMember($group_id=0, $member_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -5115,9 +5115,9 @@ function SK_deleteGroupMember($group_id=0, $member_id=0) {
         return false;
     }
     
-    $group_id = SK_secureEncode($group_id);
-    $member_id = SK_secureEncode($member_id);
-    $group = SK_getUser($group_id);
+    $group_id = FA_secureEncode($group_id);
+    $member_id = FA_secureEncode($member_id);
+    $group = FA_getUser($group_id);
     
     if (!isset($group['id']) or $group['type'] != "group") {
         return false;
@@ -5126,14 +5126,14 @@ function SK_deleteGroupMember($group_id=0, $member_id=0) {
     if ($member_id == $user['id']) {
         $member = $user;
     } else {
-        $member = SK_getUser($member_id);
+        $member = FA_getUser($member_id);
     }
     
     if (!isset($member['id']) or $member['type'] != "user") {
         return false;
     }
     
-    if ($member['id'] == $user['id'] or SK_isGroupAdmin($group['id'])) {
+    if ($member['id'] == $user['id'] or FA_isGroupAdmin($group['id'])) {
         $query_one = "DELETE FROM " . DB_FOLLOWERS . " WHERE follower_id=" . $member['id'] . " AND following_id=" . $group['id'];
         $sql_query_one = mysqli_query($dbConnect, $query_one);
         
@@ -5146,7 +5146,7 @@ function SK_deleteGroupMember($group_id=0, $member_id=0) {
     }
 }
 
-function SK_deleteGroupAdmin($group_id=0, $admin_id=0) {
+function FA_deleteGroupAdmin($group_id=0, $admin_id=0) {
     if ($GLOBALS['logged'] !== true) {
         return false;
     }
@@ -5161,9 +5161,9 @@ function SK_deleteGroupAdmin($group_id=0, $admin_id=0) {
         return false;
     }
     
-    $group_id = SK_secureEncode($group_id);
-    $admin_id = SK_secureEncode($admin_id);
-    $group = SK_getUser($group_id);
+    $group_id = FA_secureEncode($group_id);
+    $admin_id = FA_secureEncode($admin_id);
+    $group = FA_getUser($group_id);
     
     if (!isset($group['id']) or $group['type'] != "group") {
         return false;
@@ -5172,14 +5172,14 @@ function SK_deleteGroupAdmin($group_id=0, $admin_id=0) {
     if ($admin_id == $user['id']) {
         $admin = $user;
     } else {
-        $admin = SK_getUser($admin_id);
+        $admin = FA_getUser($admin_id);
     }
     
     if (!isset($admin['id']) or $admin['type'] != "user") {
         return false;
     }
     
-    if (!SK_isGroupAdmin($group['id'])) {
+    if (!FA_isGroupAdmin($group['id'])) {
         return false;
     }
     
@@ -5192,7 +5192,7 @@ function SK_deleteGroupAdmin($group_id=0, $admin_id=0) {
 }
 
 /* Other functions */
-function SK_smoothLink($query='') {
+function FA_smoothLink($query='') {
     global $config;
     
     if ($config['smooth_links'] == 1) {
@@ -5242,13 +5242,13 @@ function SK_smoothLink($query='') {
     return $query;
 }
 
-function SK_emoticonize($string='') {
+function FA_emoticonize($string='') {
     global $config, $emo;
     $dir = str_replace(array('http://', 'https://'), '//', $config['site_url']);
     $dir .= '/themes/' . $config['theme'] . '/emoticons';
     
     foreach ($emo as $code => $img) {
-        $code = SK_secureEncode($code);
+        $code = FA_secureEncode($code);
         $img = '<img src="' . $dir . '/' . $img . '" class="emoticon">';
         $string = str_replace($code, $img, $string);
     }
@@ -5257,7 +5257,7 @@ function SK_emoticonize($string='') {
     return $string;
 }
 
-function SK_processMedia($run, $photo_src, $save_src, $width=0, $height=0, $quality=80) {
+function FA_processMedia($run, $photo_src, $save_src, $width=0, $height=0, $quality=80) {
     
     if (!is_numeric($quality) or $quality < 0 or $quality > 100) {
         $quality = 80;
@@ -5342,7 +5342,7 @@ function SK_processMedia($run, $photo_src, $save_src, $width=0, $height=0, $qual
 
                         switch ($ort) {
                             case 2:
-                                SK_orientImage($dimg);
+                                FA_orientImage($dimg);
                             break;
 
                             case 3:
@@ -5350,11 +5350,11 @@ function SK_processMedia($run, $photo_src, $save_src, $width=0, $height=0, $qual
                             break;
 
                             case 4:
-                                SK_orientImage($dimg);
+                                FA_orientImage($dimg);
                             break;
 
                             case 5:
-                                SK_orientImage($crop_image);
+                                FA_orientImage($crop_image);
                                 $crop_image = imagerotate($crop_image, -90, -1);
                             break;
 
@@ -5363,7 +5363,7 @@ function SK_processMedia($run, $photo_src, $save_src, $width=0, $height=0, $qual
                             break;
 
                             case 7:
-                                SK_orientImage($crop_image);
+                                FA_orientImage($crop_image);
                                 $crop_image = imagerotate($crop_image, -90, -1);
                             break;
 
@@ -5413,7 +5413,7 @@ function SK_processMedia($run, $photo_src, $save_src, $width=0, $height=0, $qual
 
                         switch ($ort) {
                             case 2:
-                                SK_orientImage($dimg);
+                                FA_orientImage($dimg);
                             break;
                             
                             case 3:
@@ -5421,11 +5421,11 @@ function SK_processMedia($run, $photo_src, $save_src, $width=0, $height=0, $qual
                             break;
                             
                             case 4:
-                                SK_orientImage($dimg);
+                                FA_orientImage($dimg);
                             break;
                             
                             case 5:
-                                SK_orientImage($resize_image);
+                                FA_orientImage($resize_image);
                                 $resize_image = imagerotate($resize_image, -90, -1);
                             break;
                             
@@ -5434,7 +5434,7 @@ function SK_processMedia($run, $photo_src, $save_src, $width=0, $height=0, $qual
                             break;
                             
                             case 7:
-                                SK_orientImage($resize_image);
+                                FA_orientImage($resize_image);
                                 $resize_image = imagerotate($resize_image, -90, -1);
                             break;
                             
@@ -5476,7 +5476,7 @@ function SK_processMedia($run, $photo_src, $save_src, $width=0, $height=0, $qual
                     
                     switch ($ort) {
                         case 2:
-                            SK_orientImage($dimg);
+                            FA_orientImage($dimg);
                         break;
                         
                         case 3:
@@ -5484,11 +5484,11 @@ function SK_processMedia($run, $photo_src, $save_src, $width=0, $height=0, $qual
                         break;
                         
                         case 4:
-                            SK_orientImage($dimg);
+                            FA_orientImage($dimg);
                         break;
                         
                         case 5:
-                            SK_orientImage($scale_image);
+                            FA_orientImage($scale_image);
                             $scale_image = imagerotate($scale_image, -90, -1);
                         break;
                         
@@ -5497,7 +5497,7 @@ function SK_processMedia($run, $photo_src, $save_src, $width=0, $height=0, $qual
                         break;
                         
                         case 7:
-                            SK_orientImage($scale_image);
+                            FA_orientImage($scale_image);
                             $scale_image = imagerotate($scale_image, -90, -1);
                         break;
                         
@@ -5515,7 +5515,7 @@ function SK_processMedia($run, $photo_src, $save_src, $width=0, $height=0, $qual
     }
 }
 
-function SK_orientImage(&$image) {
+function FA_orientImage(&$image) {
     $x = 0;
     $y = 0;
     $height = null;
@@ -5547,7 +5547,7 @@ function SK_orientImage(&$image) {
     return true;
 }
 
-function SK_generateKey($minlength=5, $maxlength=5, $uselower=true, $useupper=true, $usenumbers=true, $usespecial=false) {
+function FA_generateKey($minlength=5, $maxlength=5, $uselower=true, $useupper=true, $usenumbers=true, $usespecial=false) {
     $charset = '';
     
     if ($uselower) {
@@ -5581,7 +5581,7 @@ function SK_generateKey($minlength=5, $maxlength=5, $uselower=true, $useupper=tr
     return $key;
 }
 
-function SK_createCaptcha() {
+function FA_createCaptcha() {
     $image = '';
     $image = @imagecreatetruecolor(80, 30);
     $background_color = @imagecolorallocate($image, 87, 143, 209);
@@ -5593,7 +5593,7 @@ function SK_createCaptcha() {
         @imagesetpixel($image, rand() % 80, rand() % 30, $pixel_color);
     }
     
-    $key = SK_generateKey(6, 6, false, false, true);
+    $key = FA_generateKey(6, 6, false, false, true);
     $_SESSION['captcha_key'] = $key;
     @imagestring($image, 7, 13, 8, $key, $text_color);
     $images = glob('photos/captcha_*.png');
@@ -5613,7 +5613,7 @@ function SK_createCaptcha() {
     return $get;
 }
 
-function SK_getTime($unix, $details=false) {
+function FA_getTime($unix, $details=false) {
     global $time;
     
     if ($details == true) {

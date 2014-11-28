@@ -5,14 +5,14 @@
             
             <?php echo $lang['chat_label']; ?> 
             
-            (<span class="online-count"><?php echo SK_countOnlines(); ?></span>)
+            (<span class="online-count"><?php echo FA_countOnlines(); ?></span>)
             
             <span class="update-alert hidden"><?php echo $lang['chat_new_update_alert']; ?></span>
         </div>
         <div class="online-content-toggler">
             <div class="online-list">
                 <?php
-                if (SK_countOnlines() == 0) {
+                if (FA_countOnlines() == 0) {
                     
                     if ($sk['config']['friends'] == true) {
                         $no_onlines_label = '<div class="no-wrapper" align="center">None of your friends are online right now.</div>';
@@ -23,14 +23,14 @@
                     echo $no_onlines_label;
                 } else {
                     
-                    foreach (SK_getOnlines() as $sk['list']) {
-                        echo SK_getPage('chat/online-column');
+                    foreach (FA_getOnlines() as $sk['list']) {
+                        echo FA_getPage('chat/online-column');
                     }
                 }
                 ?>
             </div>
             <div class="online-search">
-                <input type="text" placeholder="<?php echo $lang['chat_search_label']; ?>" onkeyup="SK_getOnlineList(this.value);">
+                <input type="text" placeholder="<?php echo $lang['chat_search_label']; ?>" onkeyup="FA_getOnlineList(this.value);">
             </div>
         </div>
     </div>
@@ -39,14 +39,14 @@
 initial_creq_time = 5000;
 
 // Update online list
-function SK_updateOnlineList() {
+function FA_updateOnlineList() {
     chat_container = $('.chat-container');
     
     if (chat_container.length == 1) {
     
         if ( $('.online-search input').val().length == 0 ) {
             
-            $.get (SK_source(), {t: 'search', a: 'online'}, function (data) {
+            $.get (FA_source(), {t: 'search', a: 'online'}, function (data) {
                 
                 if (data.status == 200) {
                     
@@ -65,17 +65,17 @@ function SK_updateOnlineList() {
 }
 
 // Search online list
-function SK_getOnlineList(query) {
+function FA_getOnlineList(query) {
     
     if (query.length == 0) {
-        SK_updateOnlineList();
+        FA_updateOnlineList();
     }
     else {
         chat_container = $('.chat-container');
         
         if (chat_container.length == 1) {
             
-            $.get (SK_source(), {t: 'search', a: 'online', q: query}, function (data) {
+            $.get (FA_source(), {t: 'search', a: 'online', q: query}, function (data) {
                 
                 if (data.html.length == 0) {
                     $('.online-list').html('<div class="no-wrapper" align="center">Search did not match any results.</div>');
@@ -119,7 +119,7 @@ function loadNewChatMessages() {
     if (typeof($(document.body).attr('data-chat-recipient')) == "string") {
         recipient_id = $(document.body).attr('data-chat-recipient');
         
-        $.get(SK_source(), {t: 'chat', a: 'load_new_messages', recipient_id: recipient_id}, function (data) {
+        $.get(FA_source(), {t: 'chat', a: 'load_new_messages', recipient_id: recipient_id}, function (data) {
             
             if (data.status == 200) {
                 initial_creq_time = 5000;
@@ -135,7 +135,7 @@ function loadNewChatMessages() {
                     document.title = '(<?php echo $lang['chat_new_update_alert']; ?>) ' + document_title;
                 }
                 
-                SK_intervalUpdates();
+                FA_intervalUpdates();
             } else {
                 initial_creq_time = initial_creq_time + 2000;
             }
@@ -152,7 +152,7 @@ function loadNewChatMessages() {
             
             if (cfrnd_online == true) {
                 $('.chat-header').find('.online-icon').addClass('active');
-                SK_updateOnlineList();
+                FA_updateOnlineList();
             } else {
                 $('.chat-header').find('.online-icon').removeClass('active');
             }
@@ -165,7 +165,7 @@ function loadNewChatMessages() {
 }
 
 // Send chat message
-function SK_sendChatMessage(text,recipient_id,e) {
+function FA_sendChatMessage(text,recipient_id,e) {
     document.title = document_title;
     textarea_wrapper = $('.chat-textarea');
     chat_messages_wrapper = $('.chat-messages');
@@ -175,7 +175,7 @@ function SK_sendChatMessage(text,recipient_id,e) {
         textarea_wrapper.find('textarea').val('');
         chat_messages_wrapper.append('<div class="chat-text align-right temp-text" align="right"><div class="text-wrapper float-right">' + text + '<div class="marker-out"><div class="marker-in"></div></div></div><div class="float-clear"></div></div>');
         
-        $.post(SK_source() + '?t=chat&a=send_message', {text: text, recipient_id: recipient_id}, function (data) {
+        $.post(FA_source() + '?t=chat&a=send_message', {text: text, recipient_id: recipient_id}, function (data) {
             chat_messages_wrapper
                 .append(data.html)
                 .scrollTop(chat_messages_wrapper.prop('scrollHeight'))
@@ -186,18 +186,18 @@ function SK_sendChatMessage(text,recipient_id,e) {
 }
 
 // Focus on chat
-function SK_focusChat() {
+function FA_focusChat() {
     document.title = document_title;
 }
 
 // Close chat
-function SK_closeChat() {
+function FA_closeChat() {
     $('.chat-wrapper').remove();
     $(document.body).removeAttr('data-chat-recipient');
-    $.get(SK_source(), {t: 'chat', a: 'close'});
+    $.get(FA_source(), {t: 'chat', a: 'close'});
 }
 
-setInterval('SK_updateOnlineList();', 40000);
+setInterval('FA_updateOnlineList();', 40000);
 setTimeout(function() {
     loadNewChatMessages();
 }, initial_creq_time);

@@ -1,5 +1,5 @@
 <?php
-if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['timeline']['id'])) {
+if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && FA_isPageAdmin($sk['timeline']['id'])) {
     
     if (empty($_GET['tab3'])) {
         $_GET['tab3'] = 'general_settings';
@@ -8,7 +8,7 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
 <div class="page-margin"></div>
 <div class="float-left span25">
     <div class="list-wrapper">
-        <a class="list-column column-hover" href="<?php echo SK_smoothLink('index.php?tab1=timeline&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&id=<?php echo $sk['timeline']['username']; ?>" align="center">
+        <a class="list-column column-hover" href="<?php echo FA_smoothLink('index.php?tab1=timeline&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&id=<?php echo $sk['timeline']['username']; ?>" align="center">
             <?php
             echo $sk['timeline']['name'];
             ?>
@@ -22,35 +22,35 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
             ?>
         </div>
         
-        <a class="list-column column-hover" href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=settings&tab3=general_settings&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&tab3=general_settings&id=<?php echo $sk['timeline']['username']; ?>">
+        <a class="list-column column-hover" href="<?php echo FA_smoothLink('index.php?tab1=timeline&tab2=settings&tab3=general_settings&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&tab3=general_settings&id=<?php echo $sk['timeline']['username']; ?>">
             <?php
             echo $lang['general_settings_label'];
             ?>
         </a>
         
-        <a class="list-column column-hover" href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=settings&tab3=privacy&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&tab3=privacy&id=<?php echo $sk['timeline']['username']; ?>">
+        <a class="list-column column-hover" href="<?php echo FA_smoothLink('index.php?tab1=timeline&tab2=settings&tab3=privacy&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&tab3=privacy&id=<?php echo $sk['timeline']['username']; ?>">
             <?php
             echo $lang['privacy_settings_label'];
             ?>
         </a>
         
         <?php
-        if (SK_isPageAdmin($sk['timeline']['id']) == "admin") {
+        if (FA_isPageAdmin($sk['timeline']['id']) == "admin") {
         ?>
-        <a class="list-column column-hover" href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=settings&tab3=admins&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&tab3=admins&id=<?php echo $sk['timeline']['username']; ?>">
+        <a class="list-column column-hover" href="<?php echo FA_smoothLink('index.php?tab1=timeline&tab2=settings&tab3=admins&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&tab3=admins&id=<?php echo $sk['timeline']['username']; ?>">
             <?php echo $lang['pages_admin_roles_label']; ?>
         </a>
         <?php
         }
         
-        $message_count = SK_countMessages(
+        $message_count = FA_countMessages(
             array(
                 'new' => true,
                 'timeline_id' => $sk['timeline']['id']
             )
         );
         ?>
-        <a class="list-column column-hover" href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=settings&tab3=messages&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&tab3=messages&id=<?php echo $sk['timeline']['username']; ?>">
+        <a class="list-column column-hover" href="<?php echo FA_smoothLink('index.php?tab1=timeline&tab2=settings&tab3=messages&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&tab3=messages&id=<?php echo $sk['timeline']['username']; ?>">
             <?php
             echo $lang['messages_label'];
             
@@ -66,7 +66,7 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
             ?>
         </a>
         
-        <a class="list-column column-hover" href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=settings&tab3=likes&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&tab3=likes&id=<?php echo $sk['timeline']['username']; ?>">
+        <a class="list-column column-hover" href="<?php echo FA_smoothLink('index.php?tab1=timeline&tab2=settings&tab3=likes&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&tab3=likes&id=<?php echo $sk['timeline']['username']; ?>">
             <?php
             echo $lang['pages_likes_label'];
             ?>
@@ -92,7 +92,7 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
                 ?>:
             </label>
             <div class="input float-left span70">
-                <input type="text" name="username" value="<?php echo $sk['timeline']['username']; ?>" autocomplete="off" onkeyup="SK_checkUsername(this.value,<?php echo $sk['timeline']['id']; ?>,'.check-username-result',true);">
+                <input type="text" name="username" value="<?php echo $sk['timeline']['username']; ?>" autocomplete="off" onkeyup="FA_checkUsername(this.value,<?php echo $sk['timeline']['id']; ?>,'.check-username-result',true);">
                 <div class="check-username-result ajax-result"></div>
             </div>
             <div class="float-clear"></div>
@@ -185,7 +185,7 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
     $ (function () {
         
         $('form.update-general-settings').ajaxForm({
-            url: SK_source() + '?t=page&a=update',
+            url: FA_source() + '?t=page&a=update',
             
             success: function (responseText) {
                 
@@ -283,7 +283,7 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
     $ (function () {
         
         $('form.update-page-privacy').ajaxForm({
-            url: SK_source() + '?t=page&a=update',
+            url: FA_source() + '?t=page&a=update',
             
             success: function (responseText) {
                 
@@ -303,7 +303,7 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
     });
     </script>
     <?php
-    } elseif (isset($_GET['tab3']) && $_GET['tab3'] == "admins" && SK_isPageAdmin($sk['timeline']['id']) == "admin") {
+    } elseif (isset($_GET['tab3']) && $_GET['tab3'] == "admins" && FA_isPageAdmin($sk['timeline']['id']) == "admin") {
     ?>
     <div class="list-wrapper list-admins">
         <div class="list-header">
@@ -312,13 +312,13 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
             ?>
         </div>
         <?php
-        if (SK_countPageAdmins($sk['timeline']['id']) == 0) {
+        if (FA_countPageAdmins($sk['timeline']['id']) == 0) {
         ?>
         <div class="no-wrapper"><?php echo $lang['no_admins']; ?></div>
         <?php
         } else {
             
-            foreach (SK_getPageAdmins($sk['timeline']['id']) as $admin) {
+            foreach (FA_getPageAdmins($sk['timeline']['id']) as $admin) {
         ?>
         <div class="list-column page-admin-<?php echo $admin['id']; ?>">
         <table border="0" width="100%" cellspacing="0" cellpadding="0">
@@ -336,11 +336,11 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
             </td>
             
             <td align="right" valign="middle">
-                <select onchange="SK_changeAdminRole(<?php echo $sk['timeline']['id']; ?>,<?php echo $admin['id']; ?>,this.value);">
+                <select onchange="FA_changeAdminRole(<?php echo $sk['timeline']['id']; ?>,<?php echo $admin['id']; ?>,this.value);">
                     <?php
                     $is_admin_selected_attr = '';
                     $is_editor_selected_attr = '';
-                    $admin_role = SK_isPageAdmin($sk['timeline']['id'], $admin['id']);
+                    $admin_role = FA_isPageAdmin($sk['timeline']['id'], $admin['id']);
                     
                     if ($admin_role == "admin") {
                         $is_admin_selected_attr = ' selected';
@@ -351,7 +351,7 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
                     <option value="admin"<?php echo $is_admin_selected_attr; ?>><?php echo $lang['admin']; ?></option>
                     <option value="editor"<?php echo $is_editor_selected_attr; ?>><?php echo $lang['editor']; ?></option>
                 </select>
-                <input class="column-btn remove-btn" type="submit" value="<?php echo $lang['remove']; ?>" onclick="SK_removeAdmin(<?php echo $sk['timeline']['id']; ?>,<?php echo $admin['id']; ?>);">
+                <input class="column-btn remove-btn" type="submit" value="<?php echo $lang['remove']; ?>" onclick="FA_removeAdmin(<?php echo $sk['timeline']['id']; ?>,<?php echo $admin['id']; ?>);">
             </td>
         </tr>
         </table>
@@ -371,7 +371,7 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
             ?>
         </div>
         <?php
-        if (SK_countFollowing($sk['user']['id']) == 0) {
+        if (FA_countFollowing($sk['user']['id']) == 0) {
         ?>
         <div class="no-wrapper">
             <?php
@@ -386,9 +386,9 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
         } else {
             $nonadmin_followings = 0;
             
-            foreach (SK_getFollowing($sk['user']['id']) as $potential) {
+            foreach (FA_getFollowing($sk['user']['id']) as $potential) {
                 
-                if (!SK_isPageAdmin($sk['timeline']['id'], $potential['id'])) {
+                if (!FA_isPageAdmin($sk['timeline']['id'], $potential['id'])) {
                 $nonadmin_followings++;
         ?>
         <div class="list-column potential-admin-<?php echo $potential['id']; ?>">
@@ -411,7 +411,7 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
                     <option value="admin"><?php echo $lang['admin']; ?></option>
                     <option value="editor"><?php echo $lang['editor']; ?></option>
                 </select>
-                <input class="column-btn add-btn" type="submit" value="<?php echo $lang['add']; ?>" onclick="SK_addAdmin(<?php echo $sk['timeline']['id']; ?>,<?php echo $potential['id']; ?>);">
+                <input class="column-btn add-btn" type="submit" value="<?php echo $lang['add']; ?>" onclick="FA_addAdmin(<?php echo $sk['timeline']['id']; ?>,<?php echo $potential['id']; ?>);">
             </td>
             </tr>
         </table>
@@ -437,9 +437,9 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
         ?>
     </div>
     <script>
-    function SK_changeAdminRole(page_id, admin_id, admin_role) {
+    function FA_changeAdminRole(page_id, admin_id, admin_role) {
         
-        $.post(SK_source() + '?t=page&a=add_admin', {page_id: page_id, admin_id: admin_id, admin_role: admin_role}, function (data) {
+        $.post(FA_source() + '?t=page&a=add_admin', {page_id: page_id, admin_id: admin_id, admin_role: admin_role}, function (data) {
             
             if (data.status == 200) {
                 
@@ -457,11 +457,11 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
         });
     }
     
-    function SK_addAdmin(page_id, admin_id) {
+    function FA_addAdmin(page_id, admin_id) {
         admin_role = $('.potential-admin-'+admin_id).find('select.admin-role').val();
         $('.potential-admin-'+admin_id).find('.add-btn').val('<?php echo $lang['adding']; ?>...');
         
-        $.post(SK_source() + '?t=page&a=add_admin', {page_id: page_id, admin_id: admin_id, admin_role: admin_role}, function (data) {
+        $.post(FA_source() + '?t=page&a=add_admin', {page_id: page_id, admin_id: admin_id, admin_role: admin_role}, function (data) {
             
             if (data.status == 200) {
                 $('.potential-admin-'+admin_id).find('.add-btn').val('<?php echo $lang['added']; ?>');
@@ -474,10 +474,10 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
         });
     }
     
-    function SK_removeAdmin(page_id, admin_id) {
+    function FA_removeAdmin(page_id, admin_id) {
         $('.page-admin-'+admin_id).find('.remove-btn').val('<?php echo $lang['removing']; ?>...');
         
-        $.post(SK_source() + '?t=page&a=remove_admin', {page_id: page_id, admin_id: admin_id},function (data) {
+        $.post(FA_source() + '?t=page&a=remove_admin', {page_id: page_id, admin_id: admin_id},function (data) {
             
             if (data.status == 200) {
                 $('.page-admin-' + admin_id).slideUp(function () {
@@ -488,11 +488,11 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
     }
     </script>
     <?php
-    } elseif (isset($_GET['tab3']) && $_GET['tab3'] == "messages" && SK_isPageAdmin($sk['timeline']['id'])) {
+    } elseif (isset($_GET['tab3']) && $_GET['tab3'] == "messages" && FA_isPageAdmin($sk['timeline']['id'])) {
         
         if (!empty($_GET['recipient_id'])) {
-            $recipient_id = SK_secureEncode($_GET['recipient_id']);
-            $recipient = SK_getUser($recipient_id);
+            $recipient_id = FA_secureEncode($_GET['recipient_id']);
+            $recipient = FA_getUser($recipient_id);
     ?>
     <div class="message-container">
         <div class="container-header">
@@ -525,7 +525,7 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
         </div>
         
         <div class="text-messages-container">
-            <div class="view-more-wrapper cursor-hand bold-500 <?php echo $hidden_class; ?>" align="center" onclick="SK_getPreviousMessages(<?php echo $recipient['id']; ?>,<?php echo $sk['timeline']['id']; ?>);">
+            <div class="view-more-wrapper cursor-hand bold-500 <?php echo $hidden_class; ?>" align="center" onclick="FA_getPreviousMessages(<?php echo $recipient['id']; ?>,<?php echo $sk['timeline']['id']; ?>);">
                 <?php
                 echo $lang['view_previous_messages_label'];
                 ?>
@@ -536,13 +536,13 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
             $no_messages = false;
             
             if (isset($recipient['id'])) {
-                $messages = SK_getMessages(
+                $messages = FA_getMessages(
                     array(
                         'recipient_id' => $recipient['id'],
                         'timeline_id' => $sk['timeline']['id']
                     )
                 );
-                $count_messages = SK_countMessages(
+                $count_messages = FA_countMessages(
                     array(
                         'recipient_id' => $recipient['id'],
                         'timeline_id' => $sk['timeline']['id']
@@ -554,7 +554,7 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
                 } else {
                     
                     foreach ($messages as $sk['message']) {
-                        echo SK_getPage('message/text-list');
+                        echo FA_getPage('message/text-list');
                     }
                 }
             } else {
@@ -584,8 +584,8 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
                     $hidden_class = ' hidden';
                 }
                 ?>
-                <textarea class="message-textarea auto-grow-input" name="text" placeholder="<?php echo $label; ?>.." onkeyup="SK_sendMessageForm(event);" onfocus="SK_sendMessageForm(event);" <?php echo $disabled_attr; ?>></textarea>
-                <input class="message-photo-input hidden" name="photos[]" type="file" accept="image/jpeg,image/png" onchange="SK_uploadMessageForm();">
+                <textarea class="message-textarea auto-grow-input" name="text" placeholder="<?php echo $label; ?>.." onkeyup="FA_sendMessageForm(event);" onfocus="FA_sendMessageForm(event);" <?php echo $disabled_attr; ?>></textarea>
+                <input class="message-photo-input hidden" name="photos[]" type="file" accept="image/jpeg,image/png" onchange="FA_uploadMessageForm();">
                 <?php
                 $recipient_value = '';
                 
@@ -603,11 +603,11 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
     </div>
     <script>
     $(function () {
-        setInterval('SK_getNewMessages(<?php echo $sk['timeline']['id']; ?>);',500);
+        setInterval('FA_getNewMessages(<?php echo $sk['timeline']['id']; ?>);',500);
         $('.text-messages-container').scrollTop($('.text-messages-container').prop('scrollHeight'));
         
         $('form.send-message-form').ajaxForm({
-            url: SK_source() + '?t=message&a=send_message',
+            url: FA_source() + '?t=message&a=send_message',
             
             beforeSend: function() {
                 $('.message-textarea').attr('disabled', true);
@@ -623,19 +623,19 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
                 $('form.send-message-form').clearForm();
                 $('.message-textarea').val('').attr('disabled',false).keyup().focus();
                 
-                SK_progressIconLoader($('.textarea-container').find('.options-wrapper'));
+                FA_progressIconLoader($('.textarea-container').find('.options-wrapper'));
             }
         });
     });
     
-    function SK_getNewMessages(timeline_id) {
+    function FA_getNewMessages(timeline_id) {
         text_messages_container = $('.text-messages-container');
         text_messages_wrapper = $('.text-messages-wrapper');
         textarea_wrapper = $('.message-textarea');
         
         recipient_id = $('#recipient-id').val();
         
-        $.get(SK_source(), {t: 'message', a: 'load_new_messages', recipient_id: recipient_id, timeline_id: timeline_id}, function (data) {
+        $.get(FA_source(), {t: 'message', a: 'load_new_messages', recipient_id: recipient_id, timeline_id: timeline_id}, function (data) {
             
             if (data.status == 200) {
                 text_messages_wrapper.append(data.html);
@@ -648,14 +648,14 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
         });
     }
 
-    function SK_getPreviousMessages(recipient_id,timeline_id) {
+    function FA_getPreviousMessages(recipient_id,timeline_id) {
         view_more_wrapper = $('.view-more-wrapper');
         
         before_message_id = $('.text-message-wrapper:first').attr('data-message-id');
         
-        SK_progressIconLoader(view_more_wrapper);
+        FA_progressIconLoader(view_more_wrapper);
         
-        $.get(SK_source(), {t: 'message', a: 'load_previous_messages', recipient_id: recipient_id, timeline_id: timeline_id, before_message_id: before_message_id}, function (data) {
+        $.get(FA_source(), {t: 'message', a: 'load_previous_messages', recipient_id: recipient_id, timeline_id: timeline_id, before_message_id: before_message_id}, function (data) {
             
             if (data.status == 200) {
                 $('.text-messages-wrapper').prepend(data.html);
@@ -666,28 +666,28 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
                 view_more_wrapper.hide();
             }
             
-            SK_progressIconLoader(view_more_wrapper);
+            FA_progressIconLoader(view_more_wrapper);
         });
     }
     
-    function SK_sendMessageForm(e) {
+    function FA_sendMessageForm(e) {
         document.title = document_title;
         
         if (e.keyCode == 13 && e.shiftKey == 0) {
             e.preventDefault();
             $('form.send-message-form').submit();
-            SK_progressIconLoader($('.textarea-container').find('.options-wrapper'));
+            FA_progressIconLoader($('.textarea-container').find('.options-wrapper'));
         }
     }
     
-    function SK_uploadMessageForm() {
+    function FA_uploadMessageForm() {
         document.title = document_title;
         $('form.send-message-form').submit();
-        SK_progressIconLoader($('.textarea-container').find('.options-wrapper'));
+        FA_progressIconLoader($('.textarea-container').find('.options-wrapper'));
     }
 
-    function SK_removeMsg(id) {
-        $.post(SK_source() + '?t=message&a=delete', {message_id: id}, function (data) {
+    function FA_removeMsg(id) {
+        $.post(FA_source() + '?t=message&a=delete', {message_id: id}, function (data) {
             
             if (data.status == 200) {
                 $('#message_' + id).slideUp(function () {
@@ -707,13 +707,13 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
             ?>
         </div>
         <?php
-        $message_recipients = SK_getMessageRecipients($sk['timeline']['id']);
+        $message_recipients = FA_getMessageRecipients($sk['timeline']['id']);
         
         if (is_array($message_recipients) && count($message_recipients) > 0) {
             
-            foreach (SK_getMessageRecipients($sk['timeline']['id']) as $recipient) {
+            foreach (FA_getMessageRecipients($sk['timeline']['id']) as $recipient) {
         ?>
-        <a class="list-column column-hover" href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=settings&tab3=messages&recipient_id='. $recipient['username'] . '&id='. $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&tab3=messages&recipient_id=<?php echo $recipient['username']; ?>&id=<?php echo $sk['timeline']['username']; ?>">
+        <a class="list-column column-hover" href="<?php echo FA_smoothLink('index.php?tab1=timeline&tab2=settings&tab3=messages&recipient_id='. $recipient['username'] . '&id='. $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&tab3=messages&recipient_id=<?php echo $recipient['username']; ?>&id=<?php echo $sk['timeline']['username']; ?>">
         <table border="0" width="100%" cellspacing="0" cellpadding="0">
             <tr>
             <td width="38px" align="left" valign="middle">
@@ -724,7 +724,7 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
                     <?php
                     echo $recipient['name'];
                     
-                    $messages_count = SK_countMessages(
+                    $messages_count = FA_countMessages(
                         array(
                             'new' => true,
                             'timeline_id' => $sk['timeline']['id'],
@@ -756,12 +756,12 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
     </div>
     <?php
         }
-    } elseif (isset($_GET['tab3']) && $_GET['tab3'] == "likes" && SK_isPageAdmin($sk['timeline']['id'])) {
+    } elseif (isset($_GET['tab3']) && $_GET['tab3'] == "likes" && FA_isPageAdmin($sk['timeline']['id'])) {
     ?>
     <div class="list-wrapper">
         <div class="list-header"><?php echo $lang['pages_likes_label']; ?></div>
         <?php
-        if (SK_countFollowers($sk['timeline']['id']) == 0) {
+        if (FA_countFollowers($sk['timeline']['id']) == 0) {
         ?>
         <div class="no-wrapper">
             <?php echo $lang['no_likes_label']; ?>
@@ -769,7 +769,7 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
         <?php
         } else {
             
-            foreach (SK_getFollowers($sk['timeline']['id']) as $fan) {
+            foreach (FA_getFollowers($sk['timeline']['id']) as $fan) {
         ?>
         <div class="list-column fan-id-<?php echo $fan['id']; ?>">
         <table border="0" width="100%" cellspacing="0" cellpadding="0">
@@ -818,7 +818,7 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
         <div class="avatar-wrapper">
             <img class="avatar" src="<?php echo $sk['timeline']['avatar_url']; ?>" alt="<?php echo $sk['timeline']['name']; ?>">
             <?php
-            if (SK_isPageAdmin($sk['timeline']['id'])) {
+            if (FA_isPageAdmin($sk['timeline']['id'])) {
             ?>
             <div class="avatar-change-wrapper">
                 <i class="icon-camera" title="<?php echo $lang['change_avatar_label']; ?>" onclick="$('.change-avatar-input').click();"></i>
@@ -854,15 +854,15 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
     <div class="timeline-statistics-wrapper">
         <div class="float-left statistic" align="center">
             <?php
-            if (SK_isPageAdmin($sk['timeline']['id'])) {
+            if (FA_isPageAdmin($sk['timeline']['id'])) {
             ?>
-            <a href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=settings&tab3=likes&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&tab3=likes&id=<?php echo $sk['timeline']['username']; ?>">
+            <a href="<?php echo FA_smoothLink('index.php?tab1=timeline&tab2=settings&tab3=likes&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&tab3=likes&id=<?php echo $sk['timeline']['username']; ?>">
             <?php
             }
             
-            echo SK_countFollowers($sk['timeline']['id']) . ' ' .$lang['people_likes_this_label'];
+            echo FA_countFollowers($sk['timeline']['id']) . ' ' .$lang['people_likes_this_label'];
             
-            if (SK_isPageAdmin($sk['timeline']['id'])) {
+            if (FA_isPageAdmin($sk['timeline']['id'])) {
             ?>
             </a>
             <?php
@@ -870,9 +870,9 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
             ?>
         </div>
         <div class="float-left statistic">
-            <a href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=stories&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=stories&id=<?php echo $sk['timeline']['username']; ?>">
+            <a href="<?php echo FA_smoothLink('index.php?tab1=timeline&tab2=stories&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=stories&id=<?php echo $sk['timeline']['username']; ?>">
                 <?php
-                echo SK_countPosts($sk['timeline']['id']) . ' ' . $lang['posts_label']; ?>
+                echo FA_countPosts($sk['timeline']['id']) . ' ' . $lang['posts_label']; ?>
             </a>
         </div>
         <div class="float-clear"></div>
@@ -880,16 +880,16 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
 </div>
 <div class="float-left span35">
     <?php
-    if (SK_isPageAdmin($sk['timeline']['id'])) {
+    if (FA_isPageAdmin($sk['timeline']['id'])) {
     ?>
     <div class="timeline-buttons cover-resize-buttons">
         <table border="0" width="100%" cellspacing="0" cellpadding="0">
         <tr>
             <td align="center" valign="middle">
-                <a onclick="SK_saveReposition();"><i class="icon-pushpin"></i> <?php echo $lang['save_position_label']; ?></a>
+                <a onclick="FA_saveReposition();"><i class="icon-pushpin"></i> <?php echo $lang['save_position_label']; ?></a>
             </td>
             <td align="center" valign="middle">
-                <a onclick="SK_cancelReposition();"><i class="icon-remove"></i> <?php echo $lang['cancel']; ?></a>
+                <a onclick="FA_cancelReposition();"><i class="icon-remove"></i> <?php echo $lang['cancel']; ?></a>
             </td>
         </tr>
         </table>
@@ -904,11 +904,11 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
         <tr>
             <td align="center" valign="middle">
                 <?php
-                echo SK_getFollowButton($sk['timeline']['id']);
+                echo FA_getFollowButton($sk['timeline']['id']);
                 ?>
             </td>
             <td align="center" valign="middle">
-                <a href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=settings&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&id=<?php echo $sk['timeline']['username']; ?>">
+                <a href="<?php echo FA_smoothLink('index.php?tab1=timeline&tab2=settings&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&id=<?php echo $sk['timeline']['username']; ?>">
                     <i class="icon-gear"></i> 
                     <?php
                     echo $lang['settings_label'];
@@ -926,7 +926,7 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
                 </a>
             </td>
             <td align="center" valign="middle">
-                <a onclick="SK_repositionCover();">
+                <a onclick="FA_repositionCover();">
                     <i class="icon-move"></i> 
                     <?php
                     echo $lang['reposition_cover_label'];
@@ -951,11 +951,11 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
             ?>
             <td align="center" valign="middle">
                 <?php
-                echo SK_getFollowButton($sk['timeline']['id']);
+                echo FA_getFollowButton($sk['timeline']['id']);
                 ?>
             </td>
             <td align="center" valign="middle">
-                <a href="<?php echo SK_smoothLink('index.php?tab1=messages&recipient_id='.$sk['timeline']['username']); ?>" data-href="?tab1=messages&recipient_id=<?php echo $sk['timeline']['username']; ?>">
+                <a href="<?php echo FA_smoothLink('index.php?tab1=messages&recipient_id='.$sk['timeline']['username']); ?>" data-href="?tab1=messages&recipient_id=<?php echo $sk['timeline']['username']; ?>">
                     <i class="icon-inbox"></i> 
                     <?php
                     echo $lang['message_label'];
@@ -967,7 +967,7 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
             ?>
             <td align="center" width="100%" valign="middle">
                 <?php
-                echo SK_getFollowButton($sk['timeline']['id']);
+                echo FA_getFollowButton($sk['timeline']['id']);
                 ?>
             </td>
             <?php
@@ -983,7 +983,7 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
         <div class="sidebar-div">
             <?php echo $lang['page_category_label']; ?>: 
             <?php
-            $category = SK_getPageCategoryData($sk['timeline']['category_id']);
+            $category = FA_getPageCategoryData($sk['timeline']['category_id']);
             echo $category['name'];
             ?>
         </div>
@@ -1047,17 +1047,17 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
         <?php
         if ($sk['logged'] == true) {
             
-            if (SK_isPageAdmin($sk['timeline']['id'])) {
-                echo SK_getStoryPublisherBox($sk['timeline']['id']);
+            if (FA_isPageAdmin($sk['timeline']['id'])) {
+                echo FA_getStoryPublisherBox($sk['timeline']['id']);
             } else {
-                echo SK_getStoryPublisherBox(0, $sk['timeline']['id']);
+                echo FA_getStoryPublisherBox(0, $sk['timeline']['id']);
             }
         }
         ?>
         <div class="stories-container" data-story-type="all" data-story-timeline="<?php echo $sk['timeline']['id']; ?>">
             <div class="stories-wrapper">
                 <?php
-                $stories = SK_getStories(
+                $stories = FA_getStories(
                     array(
                         'publisher_id' => $sk['timeline']['id']
                     )
@@ -1066,13 +1066,13 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
                 if (is_array($stories) && count($stories) > 0) {
                     
                     foreach($stories as $sk['story']) {
-                        echo SK_getPage('story/content');
+                        echo FA_getPage('story/content');
                     }
                 }
                 ?>
             </div>
             <div align="center">
-                <div class="load-btn" onclick="SK_loadOldStories();">
+                <div class="load-btn" onclick="FA_loadOldStories();">
                     <i class="icon-reorder progress-icon hide"></i>
                     <?php echo $lang['view_previous_posts_label']; ?>
                 </div>
@@ -1087,43 +1087,43 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
             echo $lang['filters_header'];
             ?>
         </div>
-        <div class="filter all-wrapper" onclick="SK_filterStories('all',<?php echo $sk['timeline']['id']; ?>);">
+        <div class="filter all-wrapper" onclick="FA_filterStories('all',<?php echo $sk['timeline']['id']; ?>);">
             <i class="icon-tasks progress-icon" data-icon="tasks"></i> 
             <?php
             echo $lang['filter_label_all'];
             ?>
         </div>
-        <div class="filter texts-wrapper" onclick="SK_filterStories('texts',<?php echo $sk['timeline']['id']; ?>);">
+        <div class="filter texts-wrapper" onclick="FA_filterStories('texts',<?php echo $sk['timeline']['id']; ?>);">
             <i class="icon-pencil progress-icon" data-icon="pencil"></i> 
             <?php
             echo $lang['filter_label_texts'];
             ?>
         </div>
-        <div class="filter photos-wrapper" onclick="SK_filterStories('photos',<?php echo $sk['timeline']['id']; ?>);">
+        <div class="filter photos-wrapper" onclick="FA_filterStories('photos',<?php echo $sk['timeline']['id']; ?>);">
             <i class="icon-camera-retro progress-icon" data-icon="camera-retro"></i> 
             <?php
             echo $lang['filter_label_photos'];
             ?>
         </div>
-        <div class="filter videos-wrapper" onclick="SK_filterStories('videos',<?php echo $sk['timeline']['id']; ?>);">
+        <div class="filter videos-wrapper" onclick="FA_filterStories('videos',<?php echo $sk['timeline']['id']; ?>);">
             <i class="icon-film progress-icon" data-icon="film"></i> 
             <?php
             echo $lang['filter_label_videos'];
             ?>
         </div>
-        <div class="filter music-wrapper" onclick="SK_filterStories('music',<?php echo $sk['timeline']['id']; ?>);">
+        <div class="filter music-wrapper" onclick="FA_filterStories('music',<?php echo $sk['timeline']['id']; ?>);">
             <i class="icon-music progress-icon" data-icon="music"></i> 
             <?php
             echo $lang['filter_label_music'];
             ?>
         </div>
-        <div class="filter places-wrapper" onclick="SK_filterStories('places',<?php echo $sk['timeline']['id']; ?>);">
+        <div class="filter places-wrapper" onclick="FA_filterStories('places',<?php echo $sk['timeline']['id']; ?>);">
             <i class="icon-map-marker progress-icon" data-icon="map-marker"></i> 
             <?php
             echo $lang['filter_label_places'];
             ?>
         </div>
-        <div class="filter timeline_post_by_others-wrapper" onclick="SK_filterStories('timeline_post_by_others',<?php echo $sk['timeline']['id']; ?>);">
+        <div class="filter timeline_post_by_others-wrapper" onclick="FA_filterStories('timeline_post_by_others',<?php echo $sk['timeline']['id']; ?>);">
             <i class="icon-group progress-icon" data-icon="group"></i> 
             <?php
             echo $lang['filter_label_post_by_others'];
@@ -1138,7 +1138,7 @@ if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['t
 
 <div class="float-clear"></div>
 <?php
-    if ($sk['logged'] == true && SK_isPageAdmin($sk['timeline']['id'])) {
+    if ($sk['logged'] == true && FA_isPageAdmin($sk['timeline']['id'])) {
 ?>
 <script>
 $(function () {
@@ -1146,7 +1146,7 @@ $(function () {
     $('.cover-resize-wrapper').height($('.cover-resize-wrapper').width() * 0.3);
     
     $('form.change-avatar-form').ajaxForm({
-        url: SK_source() + '?t=avatar&a=new',
+        url: FA_source() + '?t=avatar&a=new',
         
         beforeSend: function() {
             $('.avatar-progress-wrapper').html('0%<br><?php echo $lang['uploaded']; ?>').fadeIn('fast').removeClass('hidden');
@@ -1187,7 +1187,7 @@ $(function () {
     });
     
     $('form.cover-form').ajaxForm({
-        url: SK_source() + '?t=cover&a=new',
+        url: FA_source() + '?t=cover&a=new',
         
         beforeSend: function() {
             $('.cover-progress')
@@ -1235,7 +1235,7 @@ $(function () {
     });
     
     $('form.cover-position-form').ajaxForm({
-        url: SK_source() + '?t=cover&a=reposition',
+        url: FA_source() + '?t=cover&a=reposition',
         
         beforeSend: function() {
             $('.cover-progress').html('<?php echo $lang['repositioning']; ?>...').fadeIn('fast').removeClass('hidden');
@@ -1270,7 +1270,7 @@ $(function () {
     });
 });
 
-function SK_repositionCover() {
+function FA_repositionCover() {
     $('.cover-wrapper').hide();
     $('.cover-resize-wrapper').show();
     $('.cover-resize-buttons').show();
@@ -1304,7 +1304,7 @@ function SK_repositionCover() {
     });
 }
 
-function SK_saveReposition() {
+function FA_saveReposition() {
     
     if ($('input.cover-position').length == 1) {
         posY = $('input.cover-position').val();
@@ -1312,7 +1312,7 @@ function SK_saveReposition() {
     }
 }
 
-function SK_cancelReposition() {
+function FA_cancelReposition() {
     $('.cover-wrapper').show();
     $('.cover-resize-wrapper').hide();
     $('.cover-resize-buttons').hide();

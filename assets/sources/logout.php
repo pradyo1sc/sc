@@ -10,4 +10,4 @@ if (isset($_SESSION['user_pass'])) {
 setcookie('sk_u_i', 0, time()-60);
 setcookie('sk_u_p', 0, time()-60);
 
-header('Location: ' . SK_smoothLink('index.php?tab1=welcome'));
+header('Location: ' . FA_smoothLink('index.php?tab1=welcome'));

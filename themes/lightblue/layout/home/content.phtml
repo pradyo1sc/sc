@@ -1,7 +1,7 @@
 <div class="page-margin"></div>
 <div class="float-left span63">
     <?php
-    $announcement_count = SK_countAnnouncements();
+    $announcement_count = FA_countAnnouncements();
 
     if ($announcement_count > 0) {
     ?>
@@ -18,7 +18,7 @@
             <div class="float-clear"></div>
         </div>
     <?php
-        $announcements = SK_getAnnouncements();
+        $announcements = FA_getAnnouncements();
 
         foreach ($announcements as $announcement) {
         ?>
@@ -35,24 +35,24 @@
     }
     
     if ($sk['logged'] == true) {
-        echo SK_getStoryPublisherBox();
+        echo FA_getStoryPublisherBox();
     }
     ?>
     <div class="stories-container">
         <div class="stories-wrapper">
             <?php
-            $stories = SK_getStories();
+            $stories = FA_getStories();
             
             if (is_array($stories) && count($stories) > 0) {
                 
                 foreach($stories as $sk['story']) {
-                    echo SK_getPage('story/content');
+                    echo FA_getPage('story/content');
                 }
             }
             ?>
         </div>
         <div align="center">
-            <div class="load-btn" onclick="SK_loadOldStories();">
+            <div class="load-btn" onclick="FA_loadOldStories();">
                 <i class="icon-reorder progress-icon hide"></i>
                 <?php
                 echo $lang['view_previous_posts_label'];
@@ -85,42 +85,42 @@
             ?>
         </div>
         
-        <div class="filter all-wrapper" onclick="SK_filterStories('all',0);">
+        <div class="filter all-wrapper" onclick="FA_filterStories('all',0);">
             <i class="icon-tasks progress-icon" data-icon="tasks"></i> 
             <?php
             echo $lang['filter_label_all'];
             ?>
         </div>
         
-        <div class="filter texts-wrapper" onclick="SK_filterStories('texts',0);">
+        <div class="filter texts-wrapper" onclick="FA_filterStories('texts',0);">
             <i class="icon-pencil progress-icon" data-icon="pencil"></i> 
             <?php
             echo $lang['filter_label_texts'];
             ?>
         </div>
         
-        <div class="filter photos-wrapper" onclick="SK_filterStories('photos',0);">
+        <div class="filter photos-wrapper" onclick="FA_filterStories('photos',0);">
             <i class="icon-camera-retro progress-icon" data-icon="camera-retro"></i> 
             <?php
             echo $lang['filter_label_photos'];
             ?>
         </div>
         
-        <div class="filter videos-wrapper" onclick="SK_filterStories('videos',0);">
+        <div class="filter videos-wrapper" onclick="FA_filterStories('videos',0);">
             <i class="icon-film progress-icon" data-icon="film"></i> 
             <?php
             echo $lang['filter_label_videos'];
             ?>
         </div>
         
-        <div class="filter music-wrapper" onclick="SK_filterStories('music',0);">
+        <div class="filter music-wrapper" onclick="FA_filterStories('music',0);">
             <i class="icon-music progress-icon" data-icon="music"></i> 
             <?php
             echo $lang['filter_label_music'];
             ?>
         </div>
         
-        <div class="filter places-wrapper" onclick="SK_filterStories('places',0);">
+        <div class="filter places-wrapper" onclick="FA_filterStories('places',0);">
             <i class="icon-map-marker progress-icon" data-icon="map-marker"></i> 
             <?php
             echo $lang['filter_label_places'];
@@ -147,12 +147,12 @@
         </div>
         <div class="suggestions-content">
             <?php
-            $suggestions = SK_getFollowSuggestions();
+            $suggestions = FA_getFollowSuggestions();
             
             if (is_array($suggestions) && count($suggestions) > 0) {
                 
                 foreach ($suggestions as $sk['suggestion']) {
-                    echo SK_getPage('home/suggestion-wrap');
+                    echo FA_getPage('home/suggestion-wrap');
                 }
             }
             ?>
@@ -165,12 +165,12 @@
         </div>
         <div class="trending-content">
             <?php
-            $trendings = SK_getTrendings('popular');
+            $trendings = FA_getTrendings('popular');
             
             if (is_array($trendings) && count($trendings) > 0) {
                 
                 foreach ($trendings as $sk['trend']) {
-                    echo SK_getPage('hashtag/trend-wrap');
+                    echo FA_getPage('hashtag/trend-wrap');
                 }
             }
             ?>
@@ -204,7 +204,7 @@ $(function() {
                 request_data.timeline_id = element.attr('data-story-timeline');
             }
             
-            $.get(SK_source(), request_data, function(data) {
+            $.get(FA_source(), request_data, function(data) {
                 
                 if (data.status == 200) {
                     $('.stories-wrapper').prepend(data.html);
@@ -216,20 +216,20 @@ $(function() {
 
 function refreshFollowSuggestions() {
     
-    SK_progressIconLoader($('.suggestions-wrapper').find('.list-header'));
+    FA_progressIconLoader($('.suggestions-wrapper').find('.list-header'));
     
-    $.get(SK_source(), {t: 'search', a: 'suggestions'}, function (data) {
+    $.get(FA_source(), {t: 'search', a: 'suggestions'}, function (data) {
         
         if (data.status == 200) {
             $('.suggestions-content').html(data.html);
         }
         
-        SK_progressIconLoader($('.suggestions-wrapper'));
+        FA_progressIconLoader($('.suggestions-wrapper'));
     });
 }
 
 function closeAnnouncements() {
     $('.announcement-container').remove();
-    $.get(SK_source(), {t: 'announcements', a: 'read'});
+    $.get(FA_source(), {t: 'announcements', a: 'read'});
 }
 </script>

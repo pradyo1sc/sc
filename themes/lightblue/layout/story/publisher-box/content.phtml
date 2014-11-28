@@ -27,13 +27,13 @@
             
             <div class="input-wrapper soundcloud-wrapper" data-group="A">
                 <i class="icon-music icon"></i>
-                <input class="soundcloud-input" type="text" onkeyup="SK_searchSoundcloud(this.value);" value="<?php echo $lang['post_publisher_soundcloud_placeholder']; ?>" placeholder="<?php echo $lang['post_publisher_soundcloud_placeholder']; ?>" data-placeholder="<?php echo $lang['post_publisher_soundcloud_placeholder']; ?>">
+                <input class="soundcloud-input" type="text" onkeyup="FA_searchSoundcloud(this.value);" value="<?php echo $lang['post_publisher_soundcloud_placeholder']; ?>" placeholder="<?php echo $lang['post_publisher_soundcloud_placeholder']; ?>" data-placeholder="<?php echo $lang['post_publisher_soundcloud_placeholder']; ?>">
                 <div class="input-result-wrapper"></div>
             </div>
             
             <div class="input-wrapper youtube-wrapper" data-group="A">
                 <i class="icon-film icon"></i>
-                <input class="youtube-input" type="text" onkeyup="SK_searchYoutube(this.value);" value="<?php echo $lang['post_publisher_youtube_placeholder']; ?>" placeholder="<?php echo $lang['post_publisher_youtube_placeholder']; ?>" data-placeholder="<?php echo $lang['post_publisher_youtube_placeholder']; ?>">
+                <input class="youtube-input" type="text" onkeyup="FA_searchYoutube(this.value);" value="<?php echo $lang['post_publisher_youtube_placeholder']; ?>" placeholder="<?php echo $lang['post_publisher_youtube_placeholder']; ?>" data-placeholder="<?php echo $lang['post_publisher_youtube_placeholder']; ?>">
                 <div class="input-result-wrapper"></div>
             </div>
             
@@ -45,7 +45,7 @@
             
             <div class="input-wrapper emoticons-wrapper" data-group="C">
                 <?php
-                $emoticons = SK_getEmoticons();
+                $emoticons = FA_getEmoticons();
                 
                 if (is_array($emoticons)) {
                     
@@ -99,7 +99,7 @@
             </tr>
             </table>
         </div>
-        <input class="photo-upload-input hidden" type="file" name="photos[]" multiple="yes" accept="image/jpeg,image/png" onchange="SK_writeStoryPhotoUpload(this);">
+        <input class="photo-upload-input hidden" type="file" name="photos[]" multiple="yes" accept="image/jpeg,image/png" onchange="FA_writeStoryPhotoUpload(this);">
         <?php
         if (isset($sk['input']['timeline'])) {
         ?>
@@ -120,7 +120,7 @@ soundcloud_query = '';
 youtube_query = '';
 
 $('.story-publisher-box form').ajaxForm({
-    url: SK_source() + '?t=post&a=new',
+    url: FA_source() + '?t=post&a=new',
     
     beforeSend: function() {
         main_wrapper = $('.story-publisher-box');
@@ -134,7 +134,7 @@ $('.story-publisher-box form').ajaxForm({
         inputs.attr('disabled', true);
         button.attr('disabled', true);
         
-        SK_progressIconLoader(button);
+        FA_progressIconLoader(button);
     },
     
     uploadProgress: function(event, position, total, percentComplete) {
@@ -188,7 +188,7 @@ $('.story-publisher-box form').ajaxForm({
             .removeAttr('disabled')
             .find('span').text(button_default_text);
         
-        SK_progressIconLoader(button);
+        FA_progressIconLoader(button);
     }
 });
 
@@ -210,7 +210,7 @@ function toggleMediaGroup(chosen_input_selector) {
 }
 
 // Photo On-Upload Function
-function SK_writeStoryPhotoUpload(input) {
+function FA_writeStoryPhotoUpload(input) {
     parent_wrapper = $('.story-publisher-box');
     input_wrapper = parent_wrapper.find('.photo-wrapper');
     group_id = input_wrapper.attr('data-group');
@@ -221,7 +221,7 @@ function SK_writeStoryPhotoUpload(input) {
 
 
 // SoundCloud Search
-function SK_searchSoundcloud(query) {
+function FA_searchSoundcloud(query) {
     if (query != soundcloud_query) {
         main_wrapper = $('.story-publisher-box');
         soundcloud_wrapper = main_wrapper.find('.soundcloud-wrapper');
@@ -236,14 +236,14 @@ function SK_searchSoundcloud(query) {
             result_wrapper.html('<div class="loading-wrapper"><i class="icon-spinner icon-spin"></i> <?php echo $lang['searching']; ?>...</div>').slideDown();
             setTimeout(function () {
                 if (soundcloud_query == query) {
-                    SK_getSoundcloud(query);
+                    FA_getSoundcloud(query);
                 }
             }, 1500);
         }
     }
 }
 
-function SK_getSoundcloud(query) {
+function FA_getSoundcloud(query) {
     main_wrapper = $('.story-publisher-box');
     soundcloud_wrapper = main_wrapper.find('.soundcloud-wrapper');
     result_wrapper = soundcloud_wrapper.find('.input-result-wrapper');
@@ -256,13 +256,13 @@ function SK_getSoundcloud(query) {
         query = query.replace("http://", "").replace("https://", "");
         result_wrapper.html('<div class="loading-wrapper"><i class="icon-spinner icon-spin"></i> <?php echo $lang['searching']; ?>...</div>').slideDown();
         
-        $.get(SK_source(), {t: 'soundcloud_search', q: query}, function(data) {
+        $.get(FA_source(), {t: 'soundcloud_search', q: query}, function(data) {
             
             if (data.status == 200) {
                 
                 if (data.type == "embed") {
                     soundcloud_wrapper
-                    .append('<span class="remove-btn" onclick="SK_removeSoundcloudData();"><i class="icon-remove"></i></span>')
+                    .append('<span class="remove-btn" onclick="FA_removeSoundcloudData();"><i class="icon-remove"></i></span>')
                     .find('input.soundcloud-input')
                     .hide()
                     .after('<div class="result-container"><span class="title">https://' + query + '</span><i class="icon-ok"></i><input type="hidden" name="soundcloud_title" value="Embedded"><input type="hidden" name="soundcloud_uri" value="' + data.sc_uri + '"></div>')
@@ -282,9 +282,9 @@ function SK_getSoundcloud(query) {
     }
 }
 
-function SK_addSoundcloudData(title,uri) {
+function FA_addSoundcloudData(title,uri) {
     $('.story-publisher-box').find('.soundcloud-wrapper')
-        .append('<span class="remove-btn" onclick="SK_removeSoundcloudData();"><i class="icon-remove"></i></span>')
+        .append('<span class="remove-btn" onclick="FA_removeSoundcloudData();"><i class="icon-remove"></i></span>')
         
         .find('input.soundcloud-input')
             .hide()
@@ -297,7 +297,7 @@ function SK_addSoundcloudData(title,uri) {
             });
 }
 
-function SK_removeSoundcloudData() {
+function FA_removeSoundcloudData() {
     $('.story-publisher-box').find('.soundcloud-wrapper')
         .find('.result-container')
             .remove()
@@ -310,7 +310,7 @@ function SK_removeSoundcloudData() {
 
 
 // Youtube Search
-function SK_searchYoutube(query) {
+function FA_searchYoutube(query) {
     if (query != youtube_query) {
         main_wrapper = $('.story-publisher-box');
         youtube_wrapper = main_wrapper.find('.youtube-wrapper');
@@ -325,14 +325,14 @@ function SK_searchYoutube(query) {
             result_wrapper.html('<div class="loading-wrapper"><i class="icon-spinner icon-spin"></i> <?php echo $lang['searching']; ?>...</div>').slideDown();
             setTimeout(function () {
                 if (youtube_query == query) {
-                    SK_getYoutube(query);
+                    FA_getYoutube(query);
                 }
             }, 1500);
         }
     }
 }
 
-function SK_getYoutube(query) {
+function FA_getYoutube(query) {
     main_wrapper = $('.story-publisher-box');
     youtube_wrapper = main_wrapper.find('.youtube-wrapper');
     result_wrapper = youtube_wrapper.find('.input-result-wrapper');
@@ -345,7 +345,7 @@ function SK_getYoutube(query) {
         query = query.replace("http://", "").replace("https://", "");
         result_wrapper.html('<div class="loading-wrapper"><i class="icon-spinner icon-spin"></i> <?php echo $lang['searching']; ?>...</div>').slideDown();
         
-        $.get(SK_source(), {t: 'youtube_search', q: query}, function(data) {
+        $.get(FA_source(), {t: 'youtube_search', q: query}, function(data) {
             
             if (data.status == 200) {
                 
@@ -368,9 +368,9 @@ function SK_getYoutube(query) {
     }
 }
 
-function SK_addYoutubeData(id,title) {
+function FA_addYoutubeData(id,title) {
     $('.story-publisher-box').find('.youtube-wrapper')
-        .append('<span class="remove-btn" onclick="SK_removeYoutubeData();"><i class="icon-remove"></i></span>')
+        .append('<span class="remove-btn" onclick="FA_removeYoutubeData();"><i class="icon-remove"></i></span>')
         .find('input.youtube-input')
             .hide()
             .after('<div class="result-container"><span class="title">' + title.substr(0,70) + '</span><i class="icon-ok"></i><input type="hidden" name="youtube_title" value="' + title + '"><input type="hidden" name="youtube_video_id" value="' + id + '"></div>')
@@ -381,7 +381,7 @@ function SK_addYoutubeData(id,title) {
             });
 }
 
-function SK_removeYoutubeData() {
+function FA_removeYoutubeData() {
     $('.story-publisher-box').find('.youtube-wrapper')
         .find('.result-container')
             .remove()

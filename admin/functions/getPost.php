@@ -1,5 +1,5 @@
 <?php
-function SK_getPost($post_id=0) {
+function FA_getPost($post_id=0) {
     global $config, $dbConnect;
     
     $query_one = "SELECT id,post_id,timeline_id,recipient_id,type1,type2 FROM " . DB_POSTS . " WHERE id=$post_id AND active=1";

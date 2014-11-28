@@ -1,6 +1,6 @@
 <?php
 if (isset($_POST['activate_theme']) && !empty($_POST['theme']) && isset($_POST['keep_blank']) && empty($_POST['keep_blank']) && $logged_in == true) {
-    $theme = SK_secureEncode($_POST['theme']);
+    $theme = FA_secureEncode($_POST['theme']);
     $saved = false;
     
     if (file_exists('../themes/' . $theme . '/info.php')) {

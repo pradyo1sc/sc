@@ -18,7 +18,7 @@ require('../assets/settings/ads.php');
 $config['site_url'] = $site_url;
 $config['theme_url'] = $site_url . '/themes/' . $config['theme'];
 
-if (!SK_verifyLogin()) {
+if (!FA_verifyLogin()) {
     exit();
 }
 
@@ -31,7 +31,7 @@ if (!empty($_GET['t'])) {
 }
 
 if ($t == "manage_users" && !empty($_GET['after_user_id']) && is_numeric($_GET['after_user_id']) && $_GET['after_user_id'] > 0) {
-    $user_id = SK_secureEncode($_GET['after_user_id']);
+    $user_id = FA_secureEncode($_GET['after_user_id']);
     
     $query = "SELECT id FROM ". DB_ACCOUNTS ." WHERE type='user' AND id IN (SELECT id FROM ". DB_USERS .") AND id<$user_id ORDER BY id DESC LIMIT 20";
     
@@ -41,7 +41,7 @@ if ($t == "manage_users" && !empty($_GET['after_user_id']) && is_numeric($_GET['
         $html = '';
         
         while ($sql_fetch = mysqli_fetch_array($sql_query, MYSQLI_ASSOC)) {
-        $account = SK_getAccount($sql_fetch['id']);
+        $account = FA_getAccount($sql_fetch['id']);
         
         $html .= '<div class="user-data-wrapper manage-user-list" data-user-id="' . $account['id'] . '">
             <div class="float-left span10">
@@ -70,7 +70,7 @@ if ($t == "manage_users" && !empty($_GET['after_user_id']) && is_numeric($_GET['
 }
 
 if ($t == "manage_pages" && !empty($_GET['after_page_id']) && is_numeric($_GET['after_page_id']) && $_GET['after_page_id'] > 0) {
-    $page_id = SK_secureEncode($_GET['after_page_id']);
+    $page_id = FA_secureEncode($_GET['after_page_id']);
     
     $query = "SELECT id FROM ". DB_ACCOUNTS ." WHERE type='page' AND id IN (SELECT id FROM ". DB_PAGES .") AND id<$page_id ORDER BY id DESC LIMIT 20";
     
@@ -80,7 +80,7 @@ if ($t == "manage_pages" && !empty($_GET['after_page_id']) && is_numeric($_GET['
         $html = '';
         
         while ($sql_fetch = mysqli_fetch_array($sql_query, MYSQLI_ASSOC)) {
-        $account = SK_getAccount($sql_fetch['id']);
+        $account = FA_getAccount($sql_fetch['id']);
         
         $html .= '<div class="user-data-wrapper manage-page-list" data-page-id="' . $account['id'] . '">
             <div class="float-left span10">
@@ -109,7 +109,7 @@ if ($t == "manage_pages" && !empty($_GET['after_page_id']) && is_numeric($_GET['
 }
 
 if ($t == "manage_groups" && !empty($_GET['after_group_id']) && is_numeric($_GET['after_group_id']) && $_GET['after_group_id'] > 0) {
-    $group_id = SK_secureEncode($_GET['after_group_id']);
+    $group_id = FA_secureEncode($_GET['after_group_id']);
     
     $query = "SELECT id FROM ". DB_ACCOUNTS ." WHERE type='group' AND id IN (SELECT id FROM ". DB_GROUPS .") AND id<$group_id ORDER BY id DESC LIMIT 20";
     
@@ -119,7 +119,7 @@ if ($t == "manage_groups" && !empty($_GET['after_group_id']) && is_numeric($_GET
         $html = '';
         
         while ($sql_fetch = mysqli_fetch_array($sql_query, MYSQLI_ASSOC)) {
-        $account = SK_getAccount($sql_fetch['id']);
+        $account = FA_getAccount($sql_fetch['id']);
         
         $html .= '<div class="user-data-wrapper manage-group-list" data-group-id="' . $account['id'] . '">
             <div class="float-left span10">
@@ -147,7 +147,7 @@ if ($t == "manage_groups" && !empty($_GET['after_group_id']) && is_numeric($_GET
 }
 
 if ($t == "manage_reports" && !empty($_GET['after_report_id']) && is_numeric($_GET['after_report_id']) && $_GET['after_report_id'] > 0) {
-    $report_id = SK_secureEncode($_GET['after_report_id']);
+    $report_id = FA_secureEncode($_GET['after_report_id']);
     
     $query = "SELECT * FROM ". DB_REPORTS ." WHERE id<$report_id ORDER BY id DESC LIMIT 20";
     
@@ -157,8 +157,8 @@ if ($t == "manage_reports" && !empty($_GET['after_report_id']) && is_numeric($_G
         $html = '';
         
         while ($report = mysqli_fetch_assoc($sql_query)) {
-        $reporter = SK_getAccount($report['reporter_id']);
-        $post = SK_getPost($report['post_id']);
+        $reporter = FA_getAccount($report['reporter_id']);
+        $post = FA_getPost($report['post_id']);
         
         $unseen_class = '';
         

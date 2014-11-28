@@ -1,8 +1,8 @@
 <?php
 $available = false;
 
-if (SK_getPostType($sk['post']['id']) == "story") {
-    $sk['story'] = SK_getStory($sk['post']['id'], true);
+if (FA_getPostType($sk['post']['id']) == "story") {
+    $sk['story'] = FA_getStory($sk['post']['id'], true);
 
     if (is_array($sk['story'])) {
         $available = true;
@@ -14,7 +14,7 @@ if (SK_getPostType($sk['post']['id']) == "story") {
 <div class="float-left span63">
     <?php
     if ($available == true) {
-        echo SK_getPage('story/content');
+        echo FA_getPage('story/content');
     } else {
     ?>
     <div class="empty-wrapper">
@@ -45,8 +45,8 @@ if ($sk['logged'] == true) {
         </div>
         <div class="suggestions-content">
             <?php
-            foreach (SK_getFollowSuggestions() as $sk['suggestion']) {
-                echo SK_getPage('home/suggestion-wrap');
+            foreach (FA_getFollowSuggestions() as $sk['suggestion']) {
+                echo FA_getPage('home/suggestion-wrap');
             }
             ?>
         </div>
@@ -58,12 +58,12 @@ if ($sk['logged'] == true) {
         </div>
         <div class="trending-content">
             <?php
-            $trendings = SK_getTrendings('popular');
+            $trendings = FA_getTrendings('popular');
             
             if (is_array($trendings) && count($trendings) > 0) {
                 
                 foreach ($trendings as $sk['trend']) {
-                    echo SK_getPage('hashtag/trend-wrap');
+                    echo FA_getPage('hashtag/trend-wrap');
                 }
             }
             ?>
@@ -85,15 +85,15 @@ $(function () {
 
 function refreshFollowSuggestions() {
     
-    SK_progressIconLoader($('.suggestions-wrapper').find('.list-header'));
+    FA_progressIconLoader($('.suggestions-wrapper').find('.list-header'));
     
-    $.get(SK_source(), {t: 'search', a: 'suggestions'}, function (data) {
+    $.get(FA_source(), {t: 'search', a: 'suggestions'}, function (data) {
         
         if (data.status == 200) {
             $('.suggestions-content').html(data.html);
         }
         
-        SK_progressIconLoader($('.suggestions-wrapper'));
+        FA_progressIconLoader($('.suggestions-wrapper'));
     });
 }
 </script>
