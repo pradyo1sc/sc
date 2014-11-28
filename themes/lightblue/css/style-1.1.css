@@ -1,0 +1,36 @@
+img.emoticon {
+width: 16px;
+vertical-align: top;
+}
+.dropdown-search-content .hashtag-result {
+display: block;
+background: white;
+color: #898f9c;
+padding: 8px 10px;
+cursor: pointer;
+}
+.dropdown-search-content .hashtag-result:hover {
+background: #5987c9;
+color: white;
+}
+.story-publisher-box .emoticons-wrapper {
+padding: 0;
+}
+.story-publisher-box .emoticons-wrapper img {
+display: inline-block;
+padding: 7px 6px;
+cursor: pointer;
+}
+.message-container .text-message-wrapper {
+position: relative;
+}
+.text-message-wrapper .remove-btn {
+position: absolute;
+top: 7px;
+right: 3px;
+color: #babbbc;
+cursor: pointer;
+}
+.text-message-wrapper .remove-btn:hover {
+color: #898f9c;
+}

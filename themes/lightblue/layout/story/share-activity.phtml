@@ -1,0 +1,6 @@
+<span class="share-activity activity-btn" onclick="FA_getStoryShares(<?php echo $sk['story']['id']; ?>);" title="<?php echo $lang['shares_label']; ?>">
+    <?php
+    echo FA_countPostShares($sk['story']['id']);
+    ?>
+    <i class="icon-share-alt progress-icon" data-icon="share-alt"></i>
+</span>

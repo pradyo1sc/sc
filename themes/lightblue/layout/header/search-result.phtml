@@ -1,0 +1,31 @@
+<a id="search_result_<?php echo $sk['list']['id']; ?>" class="search-list" href="<?php echo $sk['list']['url']; ?>" data-href="?tab1=timeline&id=<?php echo $sk['list']['username']; ?>">
+    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <td width="46px" align="left" valign="middle">
+                <img class="avatar" src="<?php echo $sk['list']['thumbnail_url']; ?>" width="40px" height="auto" alt="<?php echo $sk['list']['name']; ?>" valign="middle">
+            </td>
+            <td align="left" valign="middle">
+                <span class="name">
+                    <?php echo $sk['list']['name']; ?>
+                </span>
+                <br>
+                <?php
+                if ($sk['list']['type'] == "user") {
+                    
+                    if (!empty($sk['list']['current_city'])) {
+                        echo $sk['list']['current_city'];
+                    } else {
+                        echo $lang['gender_' . $sk['list']['gender'] . '_label'];
+                    }
+                } elseif ($sk['list']['type'] == "page") {
+                    $category = FA_getPageCategoryData($sk['list']['category_id']);
+                    echo $category['name'];
+                } elseif ($sk['list']['type'] == "group") {
+                    echo $lang[$sk['list']['group_privacy'] . '_group'];
+                }
+                ?>
+                </div>
+            </td>
+        </tr>
+    </table>
+</a>

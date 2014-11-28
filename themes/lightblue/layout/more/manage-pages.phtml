@@ -1,0 +1,45 @@
+<div class="list-wrapper">
+    <div class="list-header">
+        <div class="float-left">
+            <?php echo $lang['manage_pages_header_label']; ?>
+        </div>
+
+        <div class="float-right">
+            <a class="hover-line" href="<?php echo FA_smoothLink('index.php?tab1=create_page'); ?>" data-href="?tab1=create_page">
+                <?php echo $lang['page_create_label']; ?>
+            </a>
+        </div>
+
+        <div class="float-clear"></div>
+    </div>
+    <?php
+    if (($managed_pages_num = FA_countManagedPages()) == 0) {
+    ?>
+    <div class="list-column">
+        <?php echo $lang['no_managed_pages_label']; ?>.
+    </div>
+    <?php
+    } else {
+        foreach (FA_getManagedPages() as $page) {
+    ?>
+    <div class="list-column">
+        <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <td width="42px" align="left" valign="middle">
+                <a href="<?php echo $page['url']; ?>" data-href="?tab1=timeline&id=<?php echo $page['username']; ?>">
+                    <img width="36px" height="36px" class="radius3" src="<?php echo $page['avatar_url']; ?>" alt="<?php echo $page['name']; ?>">
+                </a>
+            </td>
+            <td align="left" valign="middle">
+                <a class="bold-500" href="<?php echo $page['url']; ?>" data-href="?tab1=timeline&id=<?php echo $page['username']; ?>">
+                    <?php echo $page['name']; ?>
+                </a>
+            </td>
+        </tr>
+        </table>
+    </div>
+    <?php
+        }
+    }
+    ?>
+</div>

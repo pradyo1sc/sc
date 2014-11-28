@@ -1,0 +1,25 @@
+body {
+background: black url(welcome.jpg);
+background-size: cover;
+}
+
+h1 {
+color: white;
+text-shadow: 0 0 2px rgba(0, 0, 0, 1);
+}
+small {
+color: white;
+font-size: 21px;
+text-shadow: 0 0 2px rgba(0, 0, 0, 1);
+}
+
+.footer-wrapper {
+color: #dddedf;
+text-shadow: 1px 0 0 rgba(0, 0, 0, 0.5);
+}
+.footer-wrapper a {
+color: white;
+}
+.footer-content {
+border-color: rgba(0,0,0,0.2);
+}

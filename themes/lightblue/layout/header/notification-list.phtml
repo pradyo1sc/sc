@@ -1,0 +1,27 @@
+<?php
+$unread_class = '';
+
+if ($sk['notification']['seen'] == 0) {
+    $unread_class = ' unread';
+}
+?>
+<a class="notification-list<?php echo $unread_class; ?>" href="<?php echo $sk['notification']['url']; ?>" data-href="<?php echo str_replace('index.php', '', $sk['notification']['raw_url']); ?>">
+    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <td width="38px" valign="top" align="left">
+                <img class="avatar" src="<?php echo $sk['notification']['notifier']['avatar_url']; ?>" width="32px" height="auto" alt="<?php echo $sk['notification']['notifier']['name']; ?>">
+            </td>
+            
+            <td valign="top" align="left">
+                <span class="bold-500">
+                    <?php echo $sk['notification']['notifier']['name']; ?>
+                </span> 
+                <?php echo $sk['notification']['text']; ?>
+                <br>
+                <span class="time ajax-time" title="<?php echo date('c', $sk['notification']['time']); ?>">
+                    <?php echo date('c', $sk['notification']['time']); ?>
+                </span>
+            </td>
+        </tr>
+    </table>
+</a>

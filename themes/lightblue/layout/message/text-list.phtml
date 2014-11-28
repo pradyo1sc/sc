@@ -1,0 +1,43 @@
+<div id="message_<?php echo $sk['message']['id']; ?>" class="text-message-wrapper" data-message-id="<?php echo $sk['message']['id']; ?>">
+    <table border="0" width="100%"><tr>
+        <td width="32px" align="left" valign="top">
+            <a href="<?php echo $sk['message']['account']['url']; ?>" data-href="?tab1=timeline&id=<?php echo $sk['message']['account']['username']; ?>">
+                <img class="avatar" width="32px" height="32px" src="<?php echo $sk['message']['account']['thumbnail_url']; ?>" alt="<?php echo $sk['message']['account']['name']; ?>">
+            </a>
+        </td>
+        <td width="2px"></td>
+        <td align="left" valign="top">
+            <div>
+                <a class="publisher-name" href="<?php echo $sk['message']['account']['url']; ?>" data-href="?tab1=timeline&id=<?php echo $sk['message']['account']['username']; ?>">
+                    <?php echo $sk['message']['account']['name']; ?>
+                </a> 
+                <span class="message-text">
+                    <?php echo $sk['message']['text']; ?>
+                </span>
+            </div>
+
+            <?php if (!empty($sk['message']['media']['id'])) { ?>
+            <div class="photo-wrapper">
+                <img src="<?php echo $sk['message']['media']['complete_url']; ?>" alt="<?php echo $sk['message']['account']['name']; ?>">
+            </div>
+            <?php
+            }
+            ?>
+            
+            <div class="time">
+                <span class="ajax-time" title="<?php echo date('c', $sk['message']['time']); ?>">
+                    <?php echo date('c', $sk['message']['time']); ?>
+                </span>
+            </div>
+        </td>
+    </tr></table>
+    <?php
+    if ($sk['message']['owner'] == true) {
+    ?>
+    <div class="remove-btn" onclick="FA_removeMsg(<?php echo $sk['message']['id']; ?>);">
+        <i class="icon-remove progress-icon"></i>
+    </div>
+    <?php
+    }
+    ?>
+</div>

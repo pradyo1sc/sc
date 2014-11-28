@@ -1,0 +1,150 @@
+/* New css for v1.2 [begins] */
+.wc-feat-float {
+	color: white;
+	margin: 50px 0 0;
+}
+.wc-feat-float i {
+	width: 72px;
+	float: left;
+	margin: 0;
+}
+.wc-feat-float .feat-msg {
+	width: 478px;
+	float: left;
+	font-size: 14px;
+	text-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+	margin: 2px 0 0 0;
+}
+.wc-feat-float .feat-msg strong {
+	display: block;
+	font-size: 17px;
+}
+.wc-feat-float .feat-msg p {
+	margin: 9px 0 0;
+	padding: 0;
+}
+
+/* New css for v1.1 [begins] */
+input[type="checkbox"] {
+	display: inline-block;
+	vertical-align: top;
+	background: white;
+	color: #4b4b4b;
+	padding: 2px;
+}
+.fb-button {
+	background: #203f81;
+	color: white;
+	font-weight: bold;
+	margin-bottom: 10px;
+	border: 1px solid #0f2d6c;
+	border-radius: 3px;
+}
+.fb-button a {
+	display: block;
+	color: white;
+}
+.fb-button i {
+	display: inline-block;
+	padding: 6px 15px;
+	margin: 4px 8px 4px 0;
+	border-right: 1px solid #0f2d6c;
+	border-radius: 2px 0px 0px 2px;
+}
+.fb-button span {
+	display: inline-block;
+	border-radius: 3px 0px 0px 3px;
+	padding: 7px 0 8px;
+}
+/* New css for v1.1 [ends] */
+
+body {
+	background: black url(../images/welcome.jpg);
+	background-size: cover;
+}
+
+h1 {
+	color: white;
+	text-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+}
+small {
+	color: white;
+	font-size: 21px;
+	text-shadow: 0 0 2px rgba(0, 0, 0, 1);
+}
+
+.header-site-logo img {
+	height: 22px;
+}
+
+.welcome-form {
+	background: white;
+	color: #4e5665;
+	margin-bottom: 20px;
+	padding-bottom: 2px;
+	border-radius: 2px;
+	box-shadow: 0 0 0 1px rgba(0, 0, 0, .3);
+}
+.welcome-form .form-header {
+	background: #f9fafb;
+	font-weight: 500;
+	padding: 10px;
+	border-bottom: 1px solid #e9eaeb;
+	border-radius: 3px 3px 0 0;
+}
+.welcome-form .post-message {
+	background: #eff7b5;
+	color: #4e5665;
+	font-weight: 500;
+	padding: 8px;
+	border-bottom: 1px solid #dfeb8a;
+	border-radius: 3px 3px 0 0;
+}
+.welcome-form .form-content {
+	padding: 8px 10px;
+}
+.welcome-form .input-wrapper {
+	position: relative;
+	margin-bottom: 10px;
+}
+.welcome-form .input-wrapper img.captcha {
+	vertical-align: middle;
+	border-radius: 3px;
+}
+.welcome-form input[type=text], .welcome-form input[type=password], .welcome-form textarea {
+	width: 96%;
+	color: #898f9c;
+	margin: 0;
+	border-color: #e5e6e7;
+}
+.welcome-form select {
+	width: 100%;
+	color: #898f9c;
+	margin: 0;
+	border-color: #e5e6e7;
+}
+.welcome-form button {
+	padding: 3px 7px;
+	margin: 0;
+}
+.welcome-form .check-username-result {
+	position: absolute;
+	top: 5px; right: 5px;
+}
+
+.footer-wrapper {
+	color: #f2f2f2;
+	text-shadow: 1px 0 0 rgba(0, 0, 0, 0.5);
+}
+.footer-wrapper a {
+	color: white;
+}
+.footer-content {
+	border-color: rgba(0,0,0,0.2);
+}
+
+@media only screen and (max-device-width: 1920px), only screen and (max-width: 1920px) {
+.header-site-logo {
+	display: inline;
+}
+}

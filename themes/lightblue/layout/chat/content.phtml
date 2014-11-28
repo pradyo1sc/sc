@@ -1,0 +1,81 @@
+<?php
+$hidden_class = '';
+
+if (!isset($sk['chat']['recipient']['id'])) {
+    $hidden_class = ' hidden';
+}
+?>
+<div id="chat_<?php echo $sk['chat']['recipient']['id'] ?>" class="chat-wrapper<?php echo $hidden_class; ?>">
+    <div class="chat-header" onclick="javascript:$('.chat-content-toggler').toggle();">
+        <div class="float-left">
+            <?php
+            $active_class = '';
+            if ($sk['chat']['recipient']['online'] == true) {
+                $active_class = ' active';
+            }
+            ?>
+            <i class="icon-circle online-icon<?php echo $active_class; ?>"></i> 
+            <span class="chat-recipient-name">
+                <?php echo substr($sk['chat']['recipient']['name'], 0, 15); ?>
+            </span>
+        </div>
+        <div class="float-right">
+            <i class="icon-remove close-icon" onclick="FA_closeChat();" title="Close chat"></i>
+        </div>
+        <div class="float-clear"></div>
+    </div>
+    <div class="chat-content-toggler">
+        <div class="chat-messages">
+            <?php
+            if (isset($sk['chat']['recipient']['id'])) {
+                $array_data = array('recipient_id' => $sk['chat']['recipient']['id']);
+                $messages = FA_getMessages($array_data);
+                
+                if (is_array($messages)) {
+                    
+                    foreach ($messages as $sk['message']) {
+                        
+                        if ($sk['message']['account']['id'] == $sk['user']['id']) {
+                            echo FA_getPage('chat/outgoing-text');
+                        } else {
+                            echo FA_getPage('chat/incoming-text');
+                        }
+                    }
+                }
+            }
+            ?>
+        </div>
+        <?php
+        $chat_textarea = false;
+        
+        if ($sk['chat']['recipient']['message_privacy'] == "following" && FA_isFollowing($sk['user']['id'], $sk['chat']['recipient']['id'])) {
+            $chat_textarea = true;
+        } elseif ($sk['chat']['recipient']['message_privacy'] == "everyone") {
+            $chat_textarea = true;
+        }
+        
+        if ($chat_textarea == true) {
+        ?>
+        <div class="chat-textarea">
+            <textarea class="auto-grow-input" onfocus="FA_focusChat();" onkeyup="FA_sendChatMessage(this.value,<?php echo $sk['chat']['recipient']['id']; ?>,event);"></textarea>
+            <div class="advanced-options">
+                <i class="icon-smile cursor-hand" onclick="javascript:$('.chat-emoticons-wrapper').toggle();"></i>
+                <div class="chat-emoticons-wrapper">
+                    <?php
+                    $emoticons = FA_getEmoticons();
+                    
+                    if (is_array($emoticons)) {
+                        
+                        foreach ($emoticons as $emo_code => $emo_icon) {
+                            echo '<img src="' . $emo_icon . '" width="16px" onclick="addEmoToChat(\'' . $emo_code . '\');">';
+                        }
+                    }
+                    ?>
+                </div>
+            </div>
+        </div>
+        <?php
+        }
+        ?>
+    </div>
+</div>

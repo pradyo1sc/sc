@@ -1,0 +1,33 @@
+<div id="online_<?php echo $sk['list']['id']; ?>" class="column cursor-hand" onclick="FA_getChat(<?php echo $sk['list']['id']; ?>,'<?php echo $sk['list']['name']; ?>');">
+    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+        <td width="32px" align="left" valign="middle">
+            <img width="32px" height="32px" class="user-avatar" src="<?php echo $sk['list']['thumbnail_url']; ?>" alt="<?php echo $sk['list']['name']; ?>">
+        </td>
+        
+        <td align="left" valign="middle">
+            <span class="bold-500">
+                <?php echo substr($sk['list']['name'], 0, 15); ?>
+            </span>
+            <?php
+                $active_class = '';
+                
+                if ($sk['list']['online'] == true) {
+                    $active_class = ' active';
+                }
+            ?>
+            <i class="icon-circle online-icon<?php echo $active_class; ?>"></i>
+            <?php
+            $new_texts = FA_countMessages(array(
+                'new' => true,
+                'recipient_id' => $sk['list']['id']
+            ));
+            
+            if ($new_texts > 0) {
+                echo '<span class="update-alert">' . $new_texts . '</span>';
+            }
+            ?>
+        </td>
+    </tr>
+    </table>
+</div>

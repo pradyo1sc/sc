@@ -1,0 +1,215 @@
+<div id="story_<?php echo $sk['story']['id']; ?>" class="story-wrapper story_<?php echo $sk['story']['id']; ?>" data-story-id="<?php echo $sk['story']['id']; ?>">
+    <div class="publisher-wrapper">
+        <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <td width="48px" align="left" valign="top">
+                <a href="<?php echo $sk['story']['publisher']['url']; ?>" data-href="?tab1=timeline&id=<?php echo $sk['story']['publisher']['username']; ?>">
+                    <img class="avatar" src="<?php echo $sk['story']['publisher']['thumbnail_url']; ?>" width="40px" height="40px" alt="<?php echo $sk['story']['publisher']['name']; ?>">
+                </a>
+            </td>
+            <td align="left" valign="top">
+                <a class="name" href="<?php echo $sk['story']['publisher']['url']; ?>" data-href="?tab1=timeline&id=<?php echo $sk['story']['publisher']['username']; ?>">
+                    <?php echo $sk['story']['publisher']['name']; ?>
+                </a> 
+                <?php
+                if ($sk['story']['recipient_exists'] == true) {
+                ?>
+                <i class="icon-arrow-right recipient-indicator-icon"></i> <a class="name" href="<?php echo $sk['story']['recipient']['url']; ?>" data-href="?tab1=timeline&id=<?php echo $sk['story']['recipient']['username']; ?>">
+                    <?php echo $sk['story']['recipient']['name']; ?>
+                </a> 
+                <?php
+                }
+
+                echo $sk['story']['activity_text'];
+                ?>
+                <div class="other-data">
+                    <span class="time-wrapper ajax-time" title="<?php echo date('c', $sk['story']['time']); ?>">
+                        <?php echo date('c', $sk['story']['time']); ?>
+                    </span>
+                    <?php
+                    if ($sk['story']['location_exists'] == true) {
+                    ?>
+                    <abbr class="space3">&#183;</abbr>
+                    <span class="location-wrapper" title="<?php echo $sk['story']['location']['name']; ?>">
+                        <i class="icon-map-marker"></i>
+                        <?php echo $sk['story']['location']['name']; ?>
+                    </span>
+                    <?php
+                    }
+                    ?>
+                </div>
+            </td>
+        </tr>
+        </table>
+        <?php
+        if ($sk['logged'] == true) {
+        ?>
+        <div class="setting-buttons">
+            <?php
+            if ($sk['story']['admin'] == true) {
+            ?>
+            <span class="remove-btn cursor-hand" title="<?php echo $lang['remove']; ?>" onclick="FA_deletePostWindow(<?php echo $sk['story']['id']; ?>);">
+                <i class="icon-remove progress-icon"></i>
+            </span>
+            <?php
+            } elseif (!FA_isPostReported($sk['story']['id'])) {
+            ?>
+            <span class="report-btn cursor-hand" title="<?php echo $lang['report']; ?>" onclick="FA_reportPost(<?php echo $sk['story']['id']; ?>);">
+                <i class="icon-flag progress-icon"></i>
+            </span>
+            <?php
+            }
+            ?>
+        </div>
+        <?php
+        }
+        ?>
+    </div>
+    
+    <?php
+    if ($sk['logged'] == true) {
+    ?>
+    <div class="options-wrapper">
+        <?php echo FA_getPostLikeButton($sk['story']['id']); ?>
+        
+        <abbr class="space6">&#183;</abbr>
+        
+        <?php echo FA_getPostShareButton($sk['story']['id']); ?>
+        
+        <abbr class="space6">&#183;</abbr>
+        
+        <?php echo FA_getPostFollowButton($sk['story']['id']); ?>
+    </div>
+    <?php
+    }
+    
+    if (!empty($sk['story']['text'])) {
+    ?>
+    <div class="text-wrapper">
+        <?php echo $sk['story']['text']; ?>
+    </div>
+    <?php
+    }
+    
+    if ($sk['story']['media_exists'] == true) {
+        
+        // If it is photos
+        if ($sk['story']['media_type'] == "photos") {
+        ?>
+        <div class="photos-wrapper">
+            <?php
+            $photo_class = 'width-' . $sk['story']['media_num'];
+            
+            if ($sk['story']['media_num'] >= 3) {
+                $photo_class = 'width-3';
+            }
+            
+            foreach ($sk['story']['media'] as $photo) {
+            ?>
+            <a href="javascript:void(0);">
+                <img class="<?php echo $photo_class; ?>" src="<?php echo $photo['url']; ?>" alt="Photo" onclick="javascript:FA_openLightbox(<?php echo $photo['post_id']; ?>);">
+            </a>
+            <?php
+            }
+            ?>
+        </div>
+        <?php
+        } elseif ($sk['story']['media_type'] == "soundcloud") {
+        ?>
+        <div class="soundcloud-wrapper" align="center">
+            <iframe frameborder="0" src="https://w.soundcloud.com/player/?url=<?php echo $sk['story']['media']['url']; ?>&amp;color=f07b22" width="100%"></iframe>
+        </div>
+        <?php
+        } elseif ($sk['story']['media_type'] == "youtube") {
+        ?>
+        <div class="youtube-wrapper" align="center">
+            <iframe src="https://www.youtube.com/embed/<?php echo $sk['story']['media']['id']; ?>?ap=%2526fmt%3D18&disablekb=1&rel=0" width="100%" height="300px" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <?php
+        }
+    } elseif ($sk['story']['location_exists'] == true) {
+    ?>
+    <div class="google-map-viewer-wrapper" align="center">
+        <img src="https://maps.googleapis.com/maps/api/staticmap?center=<?php echo $sk['story']['location']['name']; ?>&zoom=13&size=600x300&maptype=roadmap&markers=color:red%7C<?php echo $sk['story']['location']['name']; ?>" width="100%" alt="<?php echo $sk['story']['location']['name']; ?>">
+    </div>
+    <?php
+    }
+    ?>
+    <div class="activity-wrapper">
+        <table border="0" width="100%" cellspacing="0" cellpadding="0">
+            <tr>
+                <td align="left" valign="middle">
+                    <span class="story-like-activity">
+                        <?php
+                        echo FA_getPostLikeActivityButton($sk['story']['id']);
+                        ?>
+                    </span>
+                    
+                    <abbr class="space6">&#183;</abbr>
+                    
+                    <span class="story-comment-activity">
+                        <?php
+                        echo FA_getPostCommentActivityButton($sk['story']['id']);
+                        ?>
+                    </span>
+                    
+                    <abbr class="space6">&#183;</abbr>
+                    
+                    <span class="story-share-activity">
+                        <?php
+                        echo FA_getPostShareActivityButton($sk['story']['id']);
+                        ?>
+                    </span>
+                </td>
+                
+                <td align="right" valign="middle">
+                    <?php if ($sk['story']['via_type'] == "like") {
+                    ?>
+                    <a class="via-name" href="<?php echo $sk['story']['via']['url']; ?>" data-href="?tab1=timeline&id=<?php echo $sk['story']['via']['username']; ?>">
+                        <?php echo $sk['story']['via']['name']; ?>
+                    </a> <?php echo $lang['likes_this_label']; ?>
+                    <?php
+                    } elseif ($sk['story']['via_type'] == "share") {
+                    ?>
+                    <a class="via-name" href="<?php echo $sk['story']['via']['url']; ?>" data-href="?tab1=timeline&id=<?php echo $sk['story']['via']['username']; ?>">
+                        <?php echo $sk['story']['via']['name']; ?>
+                    </a> <?php echo $lang['shared_this_label']; ?>
+                    <?php
+                    } elseif ($sk['story']['via_type'] == "tag") {
+                    ?>
+                    <a class="via-name" href="<?php echo $sk['story']['via']['url']; ?>" data-href="?tab1=timeline&id=<?php echo $sk['story']['via']['username']; ?>">
+                        <?php echo $sk['story']['via']['name']; ?>
+                    </a> <?php echo $lang['tagged_on_this_label']; ?>
+                    <?php
+                    }
+                    ?>
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="comments-container hidden">
+        <?php
+        if ($sk['story']['view_all_comments'] == true) {
+        ?>
+        <div class="view-more-wrapper" align="center" onclick="FA_loadAllComments(<?php echo $sk['story']['id']; ?>);">
+            <i class="icon-lightbulb progress-icon hide"></i>
+            <?php
+            echo $lang['view_all_comments_label'];
+            ?>
+        </div>
+        <?php
+        }
+        ?>
+        
+        <div class="comments-wrapper">
+            <?php
+            echo $sk['story']['comments'];
+            ?>
+        </div>
+        
+        <?php
+        echo $sk['story']['comment']['publisher_box'];
+        ?>
+    </div>
+</div>

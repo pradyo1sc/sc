@@ -1,0 +1,941 @@
+<?php
+$owner = false;
+$post_visibility_privacy = true;
+
+if (isset($sk['user']) && is_array($sk['user'])) {
+    if ($sk['timeline']['id'] == $sk['user']['id']) {
+        $owner = true;
+    }
+}
+
+if ($sk['timeline']['post_privacy'] == "following") {
+    $post_visibility_privacy = false;
+
+    if (isset($sk['user']) && is_array($sk['user'])) {
+        
+        if ($owner == true or FA_isFollowing($sk['user']['id'], $sk['timeline']['id'])) {
+            $post_visibility_privacy = true;
+        }
+    }
+}
+?>
+<div class="timeline-header-wrapper">
+    <div class="cover-container">
+        <div class="cover-wrapper">
+            <img src="<?php echo $sk['timeline']['cover_url']; ?>" alt="<?php echo $sk['timeline']['name']; ?>">
+            <div class="cover-progress"></div>
+        </div>
+        
+        <div class="cover-resize-wrapper">
+            <img src="<?php echo $sk['timeline']['actual_cover_url']; ?>" alt="<?php echo $sk['timeline']['name']; ?>">
+            <div class="drag-div" align="center"><?php echo $lang['reposition_drag_label']; ?></div>
+            <div class="cover-progress"></div>
+        </div>
+        
+        <div class="avatar-wrapper">
+            <img class="avatar" src="<?php echo $sk['timeline']['avatar_url']; ?>" alt="<?php echo $sk['timeline']['name']; ?>">
+            <?php
+            if ($sk['logged'] == true && $owner == true) {
+            ?>
+            <div class="avatar-change-wrapper">
+                <i class="icon-camera" title="<?php echo $lang['change_avatar_label']; ?>" onclick="javascript:$('.change-avatar-input').click();"></i>
+            </div>
+            
+            <form class="change-avatar-form hidden" method="post" enctype="multipart/form-data" action="<?php echo $sk['config']['ajax_path']; ?>?t=avatar&a=post_upload">
+                <input class="change-avatar-input hidden" type="file" name="image" accept="image/jpeg,image/png" onchange="javascript:$('form.change-avatar-form').submit();">
+                <input name="timeline_id" value="<?php echo $sk['timeline']['id']; ?>" type="hidden">
+            </form>
+            
+            <div class="avatar-progress-wrapper"></div>
+            <?php
+            }
+            ?>
+        </div>
+        <div class="timeline-name-wrapper">
+            <a href="<?php echo $sk['timeline']['url']; ?>" data-href="?tab1=timeline&id=<?php echo $sk['timeline']['username']; ?>">
+                <?php echo $sk['timeline']['name']; ?>
+            </a>
+            <?php
+            if ($sk['timeline']['verified'] == true) {
+            ?>
+            <span class="verified-badge" title="Verified">
+                <i class="icon-ok"></i>
+            </span>
+            <?php
+            }
+            ?>
+        </div>
+    </div>
+    <div class="timeline-statistics-wrapper">
+        <table border="0" width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <?php
+            if ($sk['logged'] == true && $owner == true && FA_countFollowRequests($sk['timeline']['id']) > 0) {
+            ?>
+            <td class="statistic" align="center" valign="middle">
+                <a href="<?php echo FA_smoothLink('index.php?tab1=timeline&tab2=requests&id='. $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=requests&id=<?php echo $sk['timeline']['username']; ?>">
+                    <?php echo FA_countFollowRequests($sk['timeline']['id']) . ' ' . $lang['requests_label']; ?>
+                </a>
+            </td>
+            <?php
+            }
+
+            if ($post_visibility_privacy == true) {
+            ?>
+            <td class="statistic" align="center" valign="middle">
+                <a href="<?php echo FA_smoothLink('index.php?tab1=timeline&tab2=stories&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=stories&id=<?php echo $sk['timeline']['username']; ?>">
+                    <?php echo FA_countPosts($sk['timeline']['id']) . ' ' . $lang['posts_label']; ?>
+                </a>
+            </td>
+            <?php
+            }
+            
+            if ($sk['config']['friends'] == true) {
+            ?>
+            <td class="statistic" align="center" valign="middle">
+                <a href="<?php echo FA_smoothLink('index.php?tab1=timeline&tab2=friends&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=friends&id=<?php echo $sk['timeline']['username']; ?>">
+                    <?php echo FA_countFollowing($sk['timeline']['id']) . ' ' . $lang['friends_label']; ?>
+                </a>
+            </td>
+            <?php
+            } else {
+            ?>
+            <td class="statistic" align="center" valign="middle">
+                <a href="<?php echo FA_smoothLink('index.php?tab1=timeline&tab2=following&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=following&id=<?php echo $sk['timeline']['username']; ?>">
+                    <?php echo FA_countFollowing($sk['timeline']['id']) . ' ' . $lang['following_label']; ?>
+                </a>
+            </td>
+            <td class="statistic" align="center" valign="middle">
+                <a href="<?php echo FA_smoothLink('index.php?tab1=timeline&tab2=followers&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=followers&id=<?php echo $sk['timeline']['username']; ?>">
+                    <?php echo FA_countFollowers($sk['timeline']['id']) . ' ' . $lang['followers_label']; ?>
+                </a>
+            </td>
+            <?php
+            }
+            ?>
+            <td class="statistic" align="center" valign="middle">
+                <a href="<?php echo FA_smoothLink('index.php?tab1=timeline&tab2=likes&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=likes&id=<?php echo $sk['timeline']['username']; ?>">
+                    <?php echo FA_countPageLikes($sk['timeline']['id']) . ' ' .$lang['likes_label']; ?>
+                </a>
+            </td>
+            <td class="statistic" align="center" valign="middle">
+                <a href="<?php echo FA_smoothLink('index.php?tab1=timeline&tab2=groups&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=groups&id=<?php echo $sk['timeline']['username']; ?>">
+                    <?php echo FA_countGroupJoined($sk['timeline']['id']) . ' ' .$lang['groups_label']; ?>
+                </a>
+            </td>
+        </tr>
+        </table>
+    </div>
+</div>
+<div class="float-left span35">
+    <?php
+    if ($sk['logged'] == true) {
+        
+        if ($owner == true) {
+    ?>
+    <div class="timeline-buttons cover-resize-buttons">
+        <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <td align="center" valign="middle">
+                <a onclick="FA_saveReposition();"><i class="icon-pushpin"></i> <?php echo $lang['save_position_label']; ?></a>
+            </td>
+            <td align="center" valign="middle">
+                <a onclick="FA_cancelReposition();"><i class="icon-remove"></i> <?php echo $lang['cancel']; ?></a>
+            </td>
+        </tr>
+        </table>
+        <form class="cover-position-form hidden" method="post">
+            <input class="cover-position" name="pos" value="0" type="hidden">
+            <input class="screen-width" name="width" value="920" type="hidden">
+            <input name="timeline_id" value="<?php echo $sk['timeline']['id']; ?>" type="hidden">
+        </form>
+    </div>
+    <div class="timeline-buttons default-buttons">
+        <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <td align="center" valign="middle">
+                <a onclick="javascript:$('.change-avatar-input').click();">
+                    <i class="icon-picture"></i> 
+                    <?php echo $lang['change_avatar_label']; ?>
+                </a>
+            </td>
+            
+            <td align="center" valign="middle">
+                <a href="<?php echo FA_smoothLink('index.php?tab1=settings'); ?>" data-href="?tab1=settings">
+                    <i class="icon-edit-sign"></i> 
+                    <?php echo $lang['edit_profile_label']; ?>
+                </a>
+            </td>
+        </tr>
+        
+        <tr>
+            <td align="center" valign="middle">
+                <a onclick="javascript:$('.cover-image-input').click();">
+                    <i class="icon-camera-retro"></i> 
+                    <?php echo $lang['change_cover_label']; ?>
+                </a>
+            </td>
+            
+            <td align="center" valign="middle">
+                <a onclick="FA_repositionCover();">
+                    <i class="icon-move"></i> 
+                    <?php
+                    echo $lang['reposition_cover_label'];
+                    ?>
+                </a>
+            </td>
+        </tr>
+        </table>
+    </div>
+    
+    <form class="cover-form hidden" method="post" enctype="multipart/form-data" action="<?php echo $sk['config']['ajax_path']; ?>?t=cover&a=post_upload">
+        <input class="cover-image-input hidden" type="file" name="image" accept="image/jpeg,image/png" onchange="javascript:$('form.cover-form').submit();">
+        <input name="timeline_id" value="<?php echo $sk['timeline']['id']; ?>" type="hidden">
+    </form>
+    <?php
+        } else {
+    ?>
+    <div class="timeline-buttons">
+        <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <?php
+            $showFollowButton = false;
+
+            if ($sk['config']['friends'] == true) {
+                $showFollowButton = true;
+            } else {
+                if ($sk['timeline']['follow_privacy'] == "everyone" or ($sk['timeline']['follow_privacy'] == "following" && FA_isFollowing($sk['user']['id'], $sk['timeline']['id']))) {
+                    $showFollowButton = true;
+                }
+            }
+            ?>
+
+            <?php
+            if ($showFollowButton == true) {
+            ?>
+            <td align="center" valign="middle">
+                <?php echo FA_getFollowButton($sk['timeline']['id']); ?>
+            </td>
+            <?php
+            }
+            
+            if ($sk['timeline']['message_privacy'] == "everyone" or ($sk['timeline']['message_privacy'] == "following" && FA_isFollowing($sk['user']['id'], $sk['timeline']['id']))) {
+            ?>
+            <td align="center" valign="middle">
+                <a onclick="FA_getChat(<?php echo $sk['timeline']['id']; ?>,'<?php echo $sk['timeline']['name']; ?>');">
+                    <i class="icon-inbox"></i> 
+                    <?php echo $lang['message_label']; ?>
+                </a>
+            </td>
+            <?php
+            }
+            ?>
+        </tr>
+        </table>
+    </div>
+    <?php
+        }
+    }
+    ?>
+    
+    <div class="timeline-sidebar">
+        <?php
+        $edit_link = '';
+        
+        if ($sk['logged'] == true && $owner == true) {
+            $edit_link = ' (<a href="' . FA_smoothLink('index.php?tab1=settings') . '" data-href="?tab1=settings">' . $lang['edit_label'] . '</a>)';
+        }
+        ?>
+        <div class="sidebar-header-wrapper"><?php echo $lang['about_label'] . ' ' . $edit_link; ?></div>
+        <?php
+        if (!empty($sk['timeline']['gender'])) {
+        ?>
+        <div class="sidebar-div">
+            <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td width="25px" align="left" valign="top">
+                        <i class="icon-<?php echo $sk['timeline']['gender']; ?>"></i>
+                    </td>
+                    <td align="left" valign="top">
+                        <?php echo ucfirst($lang['gender_' . $sk['timeline']['gender'] . '_label']); ?>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <?php
+        }
+        
+        if (!empty($sk['timeline']['birth'])) {
+        $months = FA_getMonths();
+        ?>
+        <div class="sidebar-div">
+            <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td width="25px" align="left" valign="top">
+                        <i class="icon-calendar"></i>
+                    </td>
+                    <td align="left" valign="top">
+                        <?php
+                        echo $sk['timeline']['birth']['date'] . ' ';
+                        $month = $months[$sk['timeline']['birth']['month']][1];
+                        
+                        if (!empty($month)) {
+                            echo ucfirst($month) . ', ' . $sk['timeline']['birth']['year'];
+                        }
+                        ?>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <?php
+        }
+        
+        if (!empty($sk['timeline']['current_city'])) {
+        ?>
+        <div class="sidebar-div">
+            <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td width="25px" align="left" valign="top">
+                        <i class="icon-building"></i>
+                    </td>
+                    <td align="left" valign="top">
+                        <?php echo $lang['user_location_label'] . ' ' . $sk['timeline']['current_city']; ?>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <?php
+        }
+        
+        if (!empty($sk['timeline']['hometown'])) {
+        ?>
+        <div class="sidebar-div">
+            <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td width="25px" align="left" valign="top">
+                        <i class="icon-building"></i>
+                    </td>
+                    <td align="left" valign="top">
+                        <?php echo $lang['user_hometown_label'] . ' ' .$sk['timeline']['hometown']; ?>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <?php
+        }
+        
+        if (!empty($sk['timeline']['about'])) {
+        ?>
+        <div class="sidebar-div">
+            <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td width="25px" align="left" valign="top">
+                        <i class="icon-book"></i>
+                    </td>
+                    <td align="left" valign="top">
+                        <?php echo $sk['timeline']['about']; ?>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <?php
+        }
+        ?>
+    </div>
+</div>
+<div class="float-right span63">
+    <div class="timeline-370">
+        <?php
+        if (isset($_GET['tab2']) && $_GET['tab2'] == "requests" && $owner == true) {
+        ?>
+        <div class="list-wrapper">
+            <div class="list-header">
+                <?php
+                if ($sk['config']['friends'] == true) {
+                    echo $lang['friends_requests_label'];
+                } else {
+                    echo $lang['follow_requests_label'];
+                }
+                
+                ?>
+            </div>
+            <?php
+            if (FA_countFollowRequests($sk['timeline']['id']) == 0) {
+            ?>
+            <div class="no-wrapper">
+                <?php
+                if ($sk['config']['friends'] == true) {
+                    echo $lang['no_friends'];
+                } else {
+                    echo $lang['no_follow_requests'];
+                }
+                ?>
+            </div>
+            <?php
+            } else {
+                
+                foreach (FA_getFollowRequests($sk['timeline']['id']) as $request) {
+            ?>
+            <div class="list-column follow-request-<?php echo $request['id']; ?>">
+                <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td width="42px" align="left" valign="middle">
+                        <a href="<?php echo $request['url']; ?>" data-href="?tab1=timeline&id=<?php echo $request['username']; ?>">
+                            <img width="36px" height="36px" class="radius3" src="<?php echo $request['thumbnail_url']; ?>" alt="<?php echo $request['name']; ?>">
+                        </a>
+                    </td>
+                    
+                    <td align="left" valign="middle">
+                        <a class="bold-500" href="<?php echo $request['url']; ?>" data-href="?tab1=timeline&id=<?php echo $request['username']; ?>">
+                            <?php echo $request['name']; ?>
+                        </a>
+                    </td>
+                    
+                    <?php
+                    if ($owner == true) {
+                    ?>
+                    <td class="column-btn" align="right" valign="middle">
+                        <input class="column-btn accept-btn" type="submit" value="Accept" onclick="FA_acceptFollowRequest(<?php echo $request['id']; ?>);">
+                        <input class="column-btn decline-btn" type="submit" value="Decline" onclick="FA_declineFollowRequest(<?php echo $request['id']; ?>);">
+                    </td>
+                    <?php
+                    }
+                    ?>
+                </tr>
+                </table>
+            </div>
+            <?php
+                }
+            }
+            ?>
+        </div>
+        <script>
+        function FA_acceptFollowRequest(follower_id) {
+            $('.follow-request-' + follower_id).find('.accept-btn').val('<?php echo $lang['accepting']; ?>..');
+            $.post(FA_source() + '?t=user&a=accept_request', {follower_id: follower_id}, function(data) {
+                if (data.status == 200) {
+                    $('.follow-request-'+follower_id).slideUp(function() {
+                        $(this).remove();
+                    });
+                }
+            });
+        }
+        function FA_declineFollowRequest(follower_id) {
+            $('.follow-request-' + follower_id).find('.decline-btn').val('<?php echo $lang['declining']; ?>..');
+            $.post(FA_source() + '?t=user&a=decline_request', {follower_id: follower_id}, function(data) {
+                if (data.status == 200) {
+                    $('.follow-request-'+follower_id).slideUp(function() {
+                        $(this).remove();
+                    });
+                }
+            });
+        }
+        </script>
+        <?php
+        } elseif (isset($_GET['tab2']) && ($_GET['tab2'] == "following" or $_GET['tab2'] == "friends")) {
+        ?>
+        <div class="list-wrapper">
+            <div class="list-header">
+                <?php
+                if ($sk['config']['friends'] == true) {
+                    echo $lang['friends_label'];
+                } else {
+                    echo $lang['following_label'];
+                }
+                ?>
+            </div>
+            <?php
+            if (FA_countFollowing($sk['timeline']['id']) == 0) {
+                echo '<div class="no-wrapper">' . $sk['timeline']['name'] . ' ';
+                    
+                    if ($sk['config']['friends'] == true) {
+                        echo $lang['no_friends'];
+                    } else {
+                        echo $lang['no_followings'];
+                    }
+                echo '</div>';
+            } else {
+                
+                foreach (FA_getFollowing($sk['timeline']['id']) as $following) {
+            ?>
+            <div class="list-column">
+                <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td width="42px" align="left" valign="middle">
+                        <a href="<?php echo $following['url']; ?>" data-href="?tab1=timeline&id=<?php echo $following['username']; ?>">
+                            <img width="36px" height="36px" class="radius3" src="<?php echo $following['thumbnail_url']; ?>" alt="<?php echo $following['name']; ?>">
+                        </a>
+                    </td>
+                    <td align="left" valign="middle">
+                        <a class="bold-500" href="<?php echo $following['url']; ?>" data-href="?tab1=timeline&id=<?php echo $following['username']; ?>">
+                            <?php echo $following['name']; ?>
+                        </a>
+                    </td>
+                    <td class="column-btn" align="right" valign="middle">
+                        <?php echo FA_getFollowButton($following['id']); ?>
+                    </td>
+                </tr>
+                </table>
+            </div>
+            <?php
+                }
+            }
+            ?>
+        </div>
+        <?php
+        } elseif (isset($_GET['tab2']) && $_GET['tab2'] == "followers" && $sk['config']['friends'] !== true) {
+        ?>
+        <div class="list-wrapper">
+            <div class="list-header">
+                <?php echo $lang['followers_label']; ?>
+            </div>
+            <?php
+            if (FA_countFollowers($sk['timeline']['id']) == 0) {
+                echo '<div class="no-wrapper">' . $sk['timeline']['name'] . ' ' . $lang['no_followers'] . '</div>';
+            } else {
+                
+                foreach (FA_getFollowers($sk['timeline']['id']) as $follower) {
+            ?>
+            <div class="list-column">
+                <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td width="42px" align="left" valign="middle">
+                        <a href="<?php echo $follower['url']; ?>" data-href="?tab1=timeline&id=<?php echo $follower['username']; ?>">
+                            <img width="36px" height="36px" class="radius3" src="<?php echo $follower['thumbnail_url']; ?>" alt="<?php echo $follower['name']; ?>">
+                        </a>
+                    </td>
+                    <td align="left" valign="middle">
+                        <a class="bold-500" href="<?php echo $follower['url']; ?>" data-href="?tab1=timeline&id=<?php echo $follower['username']; ?>">
+                            <?php
+                            echo $follower['name'];
+                            ?>
+                        </a>
+                    </td>
+                    <td class="column-btn" align="right" valign="middle">
+                        <?php echo FA_getFollowButton($follower['id']); ?>
+                    </td>
+                </tr>
+                </table>
+            </div>
+            <?php
+                }
+            }
+            ?>
+        </div>
+        <?php
+        } elseif (isset($_GET['tab2']) && $_GET['tab2'] == "likes") {
+        ?>
+        <div class="list-wrapper">
+            <div class="list-header">
+                <?php echo $lang['liked_pages_label']; ?>
+            </div>
+            <?php
+            if (FA_countPageLikes($sk['timeline']['id']) == 0) {
+                echo '<div class="no-wrapper">' . $sk['timeline']['name'] . ' ' . $lang['no_liked_pages'] . '</div>';
+            } else {
+                
+                foreach (FA_getLikedPages($sk['timeline']['id']) as $page) {
+            ?>
+            <div class="list-column">
+                <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td width="42px" align="left" valign="middle">
+                        <a href="<?php echo $page['url']; ?>" data-href="?tab1=timeline&id=<?php echo $page['username']; ?>">
+                            <img width="36px" height="36px" class="radius3" src="<?php echo $page['thumbnail_url']; ?>" alt="<?php echo $page['name']; ?>">
+                        </a>
+                    </td>
+                    <td align="left" valign="middle">
+                        <a class="bold-500" href="<?php echo $page['url']; ?>" data-href="?tab1=timeline&id=<?php echo $page['username']; ?>">
+                            <?php echo $page['name']; ?>
+                        </a>
+                    </td>
+                    <td class="column-btn" align="right" valign="middle">
+                        <?php echo FA_getFollowButton($page['id']); ?>
+                    </td>
+                </tr>
+                </table>
+            </div>
+            <?php
+                }
+            }
+            ?>
+        </div>
+        <?php
+        } elseif (isset($_GET['tab2']) && $_GET['tab2'] == "groups") {
+        ?>
+        <div class="list-wrapper">
+            <div class="list-header">
+                <?php echo $lang['groups_joined_label']; ?>
+            </div>
+            <?php
+            if (FA_countGroupJoined($sk['timeline']['id']) == 0) {
+                echo '<div class="no-wrapper">' . $sk['timeline']['name'] . ' ' . $lang['no_groups_joined'] . '</div>';
+            } else {
+                
+                foreach (FA_getGroupsJoined($sk['timeline']['id']) as $group) {
+            ?>
+            <div class="list-column">
+                <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td width="42px" align="left" valign="middle">
+                        <a href="<?php echo $group['url']; ?>" data-href="?tab1=timeline&id=<?php echo $group['username']; ?>">
+                            <img width="36px" height="36px" class="radius3" src="<?php echo $group['thumbnail_url']; ?>" alt="<?php echo $group['name']; ?>">
+                        </a>
+                    </td>
+                    <td align="left" valign="middle">
+                        <a class="bold-500" href="<?php echo $group['url']; ?>" data-href="?tab1=timeline&id=<?php echo $group['username']; ?>">
+                            <?php
+                            echo $group['name'];
+                            ?>
+                        </a>
+                    </td>
+                    <td class="column-btn" align="right" valign="middle">
+                        <?php echo FA_getFollowButton($group['id']); ?>
+                    </td>
+                </tr>
+                </table>
+            </div>
+            <?php
+                }
+            }
+            ?>
+        </div>
+        <?php
+        } else {
+            
+            if ($sk['logged'] == true) {
+                echo FA_getStoryPublisherBox(0, $sk['timeline']['id']);
+            }
+        ?>
+        <div class="stories-container" data-story-type="all" data-story-timeline="<?php echo $sk['timeline']['id']; ?>">
+            <div class="stories-wrapper">
+            <?php
+            $stories = FA_getStories(
+                array(
+                    'publisher_id' => $sk['timeline']['id']
+                )
+            );
+            
+            if (is_array($stories) && count($stories) > 0) {
+                
+                foreach ($stories as $sk['story']) {
+                    echo FA_getPage('story/content');
+                }
+            }
+            ?>
+            </div>
+            <div align="center">
+                <div class="load-btn" onclick="FA_loadOldStories();">
+                    <i class="icon-reorder progress-icon hide"></i>
+                    <?php echo $lang['view_previous_posts_label']; ?>
+                </div>
+            </div>
+        </div>
+        <?php
+        }
+        ?>
+    </div>
+</div>
+<div class="float-left span35">
+    <div class="story-filters-wrapper">
+        <div class="filter-header-wrapper">
+            <?php
+            echo $lang['filters_header'];
+            ?>
+        </div>
+        
+        <div class="filter all-wrapper" onclick="FA_filterStories('all',<?php echo $sk['timeline']['id']; ?>);">
+            <i class="icon-tasks progress-icon" data-icon="tasks"></i> 
+            <?php
+            echo $lang['filter_label_all'];
+            ?>
+        </div>
+        
+        <div class="filter texts-wrapper" onclick="FA_filterStories('texts',<?php echo $sk['timeline']['id']; ?>);">
+            <i class="icon-pencil progress-icon" data-icon="pencil"></i> 
+            <?php
+            echo $lang['filter_label_texts'];
+            ?>
+        </div>
+        
+        <div class="filter photos-wrapper" onclick="FA_filterStories('photos',<?php echo $sk['timeline']['id']; ?>);">
+            <i class="icon-camera-retro progress-icon" data-icon="camera-retro"></i> 
+            <?php
+            echo $lang['filter_label_photos'];
+            ?>
+        </div>
+        
+        <div class="filter videos-wrapper" onclick="FA_filterStories('videos',<?php echo $sk['timeline']['id']; ?>);">
+            <i class="icon-film progress-icon" data-icon="film"></i> 
+            <?php
+            echo $lang['filter_label_videos'];
+            ?>
+        </div>
+        
+        <div class="filter music-wrapper" onclick="FA_filterStories('music',<?php echo $sk['timeline']['id']; ?>);">
+            <i class="icon-music progress-icon" data-icon="music"></i> 
+            <?php
+            echo $lang['filter_label_music'];
+            ?>
+        </div>
+        
+        <div class="filter places-wrapper" onclick="FA_filterStories('places',<?php echo $sk['timeline']['id']; ?>);">
+            <i class="icon-map-marker progress-icon" data-icon="map-marker"></i> 
+            <?php
+            echo $lang['filter_label_places'];
+            ?>
+        </div>
+        
+        <div class="filter likes-wrapper" onclick="FA_filterStories('likes',<?php echo $sk['timeline']['id']; ?>);">
+            <i class="icon-thumbs-up progress-icon" data-icon="thumbs-up"></i> 
+            <?php
+            echo $lang['filter_label_likes'];
+            ?>
+        </div>
+        
+        <div class="filter shares-wrapper" onclick="FA_filterStories('shares',<?php echo $sk['timeline']['id']; ?>);">
+            <i class="icon-share-alt progress-icon" data-icon="share-alt"></i> 
+            <?php
+            echo $lang['filter_label_shares'];
+            ?>
+        </div>
+        
+        <div class="filter timeline_post_by_others-wrapper" onclick="FA_filterStories('timeline_post_by_others',<?php echo $sk['timeline']['id']; ?>);">
+            <i class="icon-group progress-icon" data-icon="group"></i> 
+            <?php
+            echo $lang['filter_label_post_by_others'];
+            ?>
+        </div>
+    </div>
+    
+    <?php
+    if ($post_visibility_privacy == true) {
+    ?>
+    <div class="list-wrapper u-album-wrapper">
+        <div class="list-header">
+            <?php
+            echo $lang['albums'];
+
+            if ($sk['timeline']['id'] == $sk['user']['id']) {
+            ?>
+             (<a href="<?php echo FA_smoothLink('index.php?tab1=album&tab2=create'); ?>" data-href="?tab1=album&tab2=create"><?php echo $lang['create']; ?></a>)
+            <?php
+            }
+            ?>
+        </div>
+        <div class="u-album-content">
+            <?php
+            $albums = FA_getAlbums($sk['timeline']['id']);
+            
+            if (is_array($albums) && count($albums) > 0) {
+                
+                foreach ($albums as $album) {
+                    echo '<a class="list-column column-hover" href="' . FA_smoothLink('index.php?tab1=album&tab2=' . $album['id']) . '" data-href="?tab1=album&tab2=' . $album['id'] . '">
+                        ' . $album['name'] . '
+                    </a>';
+                }
+            }
+            ?>
+        </div>
+    </div>
+    <?php
+    }
+
+    echo $sk['config']['ad_place_timeline'];
+    ?>
+</div>
+
+<div class="float-clear"></div>
+
+<?php
+if ($owner == true) {
+?>
+<script>
+$(function(){
+    $('.timeline-370').css('min-height', ($('.timeline-sidebar').height() + 150) + 'px');
+    $('.cover-resize-wrapper').height($('.cover-resize-wrapper').width()*0.3);
+    
+    $('form.change-avatar-form').ajaxForm({
+        url: FA_source() + '?t=avatar&a=new',
+        
+        beforeSend: function() {
+            $('.avatar-progress-wrapper').html('0%<br><?php echo $lang['uploaded']; ?>').fadeIn('fast').removeClass('hidden');
+            $('.avatar-change-wrapper').addClass('hidden');
+        },
+        
+        uploadProgress: function(event, position, total, percentComplete) {
+            var percentVal = percentComplete+'%';
+            $('.avatar-progress-wrapper').html(percentVal+'<br><?php echo $lang['uploaded']; ?>');
+            
+            if (percentComplete == 100) {
+                
+                setTimeout(function () {
+                    $('.avatar-progress-wrapper').html('<?php echo $lang['processing']; ?>');
+                    
+                    setTimeout(function () {
+                        $('.avatar-progress-wrapper').html('<?php echo $lang['please_wait']; ?>');
+                    }, 2000);
+                }, 500);
+            }
+        },
+        success: function(responseText) {
+            
+            if (responseText.status == 200) {
+                $('.avatar-wrapper').find('img.avatar')
+                    .attr('src', responseText.avatar_url)
+                    .load(function() {
+                        $('.avatar-progress-wrapper').fadeOut('fast').addClass('hidden').html('');
+                        $('.avatar-change-wrapper').removeClass('hidden');
+                    });
+            }
+            else {
+                $('.avatar-progress-wrapper').fadeOut('fast').addClass('hidden').html('');
+                $('.avatar-change-wrapper').removeClass('hidden');
+            }
+        }
+    });
+    
+    $('form.cover-form').ajaxForm({
+        url: FA_source() + '?t=cover&a=new',
+        
+        beforeSend: function() {
+            $('.cover-progress')
+                .html('0% <?php echo $lang['uploaded']; ?>')
+                .css('line-height', $('.cover-resize-wrapper').height() + 'px')
+                .fadeIn('fast')
+                .removeClass('hidden');
+        },
+        
+        uploadProgress: function(event, position, total, percentComplete) {
+            var percentVal = percentComplete+'%';
+            $('.cover-progress').html(percentVal+' <?php echo $lang['uploaded']; ?>');
+            
+            if (percentComplete == 100) {
+                
+                setTimeout(function () {
+                    $('.cover-progress').html('<?php echo $lang['processing']; ?>');
+                    
+                    setTimeout(function () {
+                        $('.cover-progress').html('<?php echo $lang['please_wait']; ?>');
+                    }, 2000);
+                }, 500);
+            }
+        },
+        
+        success: function(responseText) {
+            
+            if (responseText.status == 200) {
+                $('.cover-wrapper img')
+                    .attr('src', responseText.cover_url + '?' + new Date().getTime())
+                    .load(function() {
+                        $('.cover-progress').fadeOut('fast', function(){
+                            $(this).addClass('hidden').html('');
+                        });
+                        $('.cover-resize-wrapper img').attr('src', responseText.actual_cover_url + '?' + new Date().getTime()).css('top', 0);
+                    });
+            }
+            else {
+                $('.cover-progress').fadeOut('fast', function(){
+                    $(this).addClass('hidden').html('');
+                });
+                $('.cover-resize-wrapper img').css('top', 0);
+            }
+        }
+    });
+    
+    $('form.cover-position-form').ajaxForm({
+        url: FA_source() + '?t=cover&a=reposition',
+        
+        beforeSend: function() {
+            $('.cover-progress').html('<?php echo $lang['repositioning']; ?>').fadeIn('fast').removeClass('hidden');
+        },
+        
+        success: function(responseText) {
+            
+            if (responseText.status == 200) {
+                $('.cover-wrapper img')
+                    .attr('src', responseText.url + '?' + new Date().getTime())
+                    .load(function () {
+                        $('.cover-progress').fadeOut('fast').addClass('hidden').html('');
+                        $('.cover-wrapper').show();
+                        $('.cover-resize-wrapper')
+                            .hide()
+                            .find('img').css('top', 0);
+                        $('.cover-resize-buttons').hide();
+                        $('.default-buttons').show();
+                        $('input.cover-position').val(0);
+                        $('.cover-resize-wrapper img').draggable('destroy').css('cursor','default');
+                    });
+            }
+        }
+    });
+    
+    $(window).resize(function () {
+        cover_width = $('.cover-resize-wrapper').width();
+        $('.cover-resize-wrapper').height(cover_width * 0.3);
+        $('.cover-resize-wrapper img').css('top', 0);
+        $('.cover-progress').css('line-height', $('.cover-resize-wrapper').height() + 'px');
+        $('.screen-width').val(cover_width);
+    });
+});
+
+function FA_repositionCover() {
+    $('.cover-wrapper').hide();
+    $('.cover-resize-wrapper').show();
+    $('.cover-resize-buttons').show();
+    $('.default-buttons').hide();
+    $('.screen-width').val($('.cover-resize-wrapper').width());
+    $('.cover-resize-wrapper img')
+    .css('cursor', 's-resize')
+    .draggable({
+        scroll: false,
+        
+        axis: "y",
+        
+        cursor: "s-resize",
+        
+        drag: function (event, ui) {
+            y1 = $('.timeline-header-wrapper').height();
+            y2 = $('.cover-resize-wrapper').find('img').height();
+            
+            if (ui.position.top >= 0) {
+                ui.position.top = 0;
+            }
+            else
+            if (ui.position.top <= (y1-y2)) {
+                ui.position.top = y1-y2;
+            }
+        },
+        
+        stop: function(event, ui) {
+            $('input.cover-position').val(ui.position.top);
+        }
+    });
+}
+
+function FA_saveReposition() {
+    
+    if ($('input.cover-position').length == 1) {
+        posY = $('input.cover-position').val();
+        $('form.cover-position-form').submit();
+    }
+}
+
+function FA_cancelReposition() {
+    $('.cover-wrapper').show();
+    $('.cover-resize-wrapper').hide();
+    $('.cover-resize-buttons').hide();
+    $('.default-buttons').show();
+    $('input.cover-position').val(0);
+    $('.cover-resize-wrapper img').draggable('destroy').css('cursor','default');
+}
+</script>
+<?php
+} else {
+?>
+<script>
+$('.timeline-370').css('min-height', ($('.timeline-sidebar').height() + 150) + 'px');
+</script>
+<?php
+}
+?>

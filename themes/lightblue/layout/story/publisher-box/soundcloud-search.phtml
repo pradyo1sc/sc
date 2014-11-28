@@ -1,0 +1,37 @@
+<div class="api-data-wrapper soundcloud-api-data" onclick="FA_addSoundcloudData('<?php echo $sk['api']['title']; ?>','<?php echo $sk['api']['uri']; ?>');">
+    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+        <td width="40px" align="left" valign="middle">
+        <?php
+        if (!empty($sk['api']['artwork_url'])) {
+        ?>
+        <img class="thumbnail" src="<?php echo $sk['api']['artwork_url']; ?>" width="32px" height="32px" valign="middle" alt="Image">
+        <?php
+        } else {
+        ?>
+        <img class="thumbnail" width="32px" height="32px" valign="middle" alt="Image">
+        <?php
+        }
+        ?>
+        </td>
+        <td align="left" valign="middle">
+            <div class="name">
+                <?php
+                echo $sk['api']['title'];
+                ?>
+            </div>
+            <?php
+            if (!empty($sk['api']['genre'])) {
+            ?>
+            <div class="info">
+                <?php
+                echo $sk['api']['genre'];
+                ?>
+            </div>
+            <?php
+            }
+            ?>
+        </td>
+    </tr>
+    </table>
+</div>

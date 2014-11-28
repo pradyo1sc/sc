@@ -1,0 +1,22 @@
+<div class="window-container">
+    <div class="window-background" onclick="FA_closeWindow();"></div>
+    <div class="window-wrapper">
+        <div class="window-header-wrapper">
+            <i class="icon-minus-sign"></i> 
+            <?php
+            echo $lang['delete_post_label'];
+            ?>?
+            <span class="window-close-btn" title="Close window" onclick="FA_cancelDeleteWindow(<?php echo $sk['post']['id']; ?>);">
+                <i class="icon-remove"></i>
+            </span>
+        </div>
+        <div class="button-content-wrapper">
+            <button onclick="FA_closeWindow();"><?php echo $lang['cancel']; ?></button> 
+            <button class="active" onclick="FA_deletePost(<?php echo $sk['post']['id']; ?>);">
+                <?php
+                echo $lang['delete_button'];
+                ?>
+            </button>
+        </div>
+    </div>
+</div>

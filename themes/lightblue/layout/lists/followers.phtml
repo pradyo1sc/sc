@@ -1,0 +1,37 @@
+<div class="list-column follower-<?php echo $sk['list']['id']; ?>">
+    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+        <td width="42px" align="left" valign="middle">
+            <a href="<?php echo $sk['list']['url']; ?>">
+                <img width="36px" height="36px" class="radius3" src="<?php echo $sk['list']['thumbnail_url']; ?>" alt="<?php echo $sk['list']['name']; ?>">
+            </a>
+        </td>
+        <td width="45%" align="left" valign="middle">
+            <a class="bold-500" href="<?php echo $sk['list']['url']; ?>">
+                <?php
+                echo $sk['list']['name'];
+                ?>
+            </a>
+            <div class="info">
+            <?php
+            if ($sk['list']['type'] == "user") {
+                
+                if (!empty($sk['list']['current_city'])) {
+                    echo $sk['list']['current_city'];
+                }
+            } elseif ($sk['list']['type'] == "page") {
+                echo FA_getPageCategoryData($sk['list']['category_id'])['name'];
+            } elseif ($sk['list']['type'] == "group") {
+                echo ucwords($sk['list']['group_privacy']) . ' Group';
+            }
+            ?>
+            </div>
+        </td>
+        <td class="column-btn" align="right" valign="middle">
+            <?php
+            echo FA_getFollowButton($sk['list']['id']);
+            ?>
+        </td>
+    </tr>
+    </table>
+</div>

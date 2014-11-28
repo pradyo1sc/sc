@@ -1,0 +1,144 @@
+<div class="page-margin"></div>
+<div class="float-left span59">
+    <form class="create-page-form" method="post">
+        <div class="form-container">
+            <div class="form-header">
+                <?php
+                echo $lang['page_create_label'];
+                ?>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <label class="float-left span25">
+                    <?php
+                    echo $lang['page_category_label'];
+                    ?>:
+                </label>
+                <div class="input float-left span65">
+                    <select name="page_category_id">
+                        <?php
+                        foreach (FA_getPageCategories() as $parent_category) {
+                        ?>
+                        <optgroup label="<?php echo $parent_category['name']; ?>">
+                        
+                        <?php
+                        foreach (FA_getPageCategories($parent_category['id']) as $main_category) {
+                        ?>
+                        <option value="<?php echo $main_category['id']; ?>"><?php echo $main_category['name']; ?></option>
+                        <?php
+                        }
+                        ?>
+                        
+                        </optgroup>
+                        <?php
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="float-clear"></div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <label class="float-left span25">
+                    <?php
+                    echo $lang['page_name_label'];
+                    ?>:
+                </label>
+                <div class="input float-left span65">
+                    <input type="text" value="<?php echo $lang['page_name_textarea_label']; ?>" placeholder="<?php echo $lang['page_name_textarea_label']; ?>" data-placeholder="<?php echo $lang['page_name_textarea_label']; ?>" onkeyup="FA_generateUsername(this.value);" data-copy-to=".page-name-input">
+                    
+                    <input class="page-name-input" type="hidden" name="page_name">
+                </div>
+                <div class="float-clear"></div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <label class="float-left span25">
+                    <?php
+                    echo $lang['username_label'];
+                    ?>:
+                </label>
+                
+                <div class="input float-left span65">
+                    <input class="username-textinput" type="text" value="<?php echo $lang['page_username_textarea_label']; ?>" placeholder="<?php echo $lang['page_username_textarea_label']; ?>" data-placeholder="<?php echo $lang['page_username_textarea_label']; ?>" autocomplete="off" data-copy-to=".page-username-input" onkeyup="FA_checkUsername(this.value,0,'.check-username-result',true);">
+                    
+                    <input class="page-username-input" type="hidden" name="page_username">
+                    
+                    <div class="check-username-result"></div>
+                </div>
+                
+                <div class="float-clear"></div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <label class="float-left span25">
+                    <?php
+                    echo $lang['description_label'];
+                    ?>:
+                </label>
+                
+                <div class="input float-left span65">
+                    <textarea class="auto-grow-input" valign="top" name="page_about" placeholder="<?php echo $lang['page_description_textarea_label']; ?>" data-placeholder="<?php echo $lang['page_description_textarea_label']; ?>"><?php echo $lang['page_description_textarea_label']; ?></textarea>
+                </div>
+                
+                <div class="float-clear"></div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <button class="active">
+                    <?php
+                    echo $lang['page_create_label'];
+                    ?>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="float-right span40">
+    <div class="list-wrapper">
+        <div class="list-header"><?php echo $lang['page_intro_header']; ?></div>
+        
+        <div class="list-column">
+            <strong class="bold-500"><?php echo $lang['page_intro_list1_header']; ?></strong>
+            <br>
+            <?php echo $lang['page_intro_list1_description']; ?>
+        </div>
+        
+        <div class="list-column">
+            <strong class="bold-500"><?php echo $lang['page_intro_list2_header']; ?></strong>
+            <br>
+            <?php echo $lang['page_intro_list2_description']; ?>
+        </div>
+    </div>
+</div>
+
+<div class="float-clear"></div>
+
+<script>
+$(function(){
+    $('form.create-page-form').ajaxForm({
+        url: FA_source() + '?t=page&a=create',
+        
+        beforeSend: function() {
+            $('form.create-page-form')
+                .find('button')
+                    .removeClass()
+                    .text('<?php echo $lang['creating']; ?>...');
+        },
+        
+        success: function(responseText) {
+            
+            if (responseText.status == 200) {
+                window.location = responseText.url;
+            }
+            else {
+                $('form.create-page-form')
+                .find('button')
+                    .addClass('active')
+                    .text('<?php echo $lang['page_create_label']; ?>');
+            }
+        }
+    });
+});
+</script>

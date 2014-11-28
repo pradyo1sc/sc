@@ -1,0 +1,37 @@
+<div class="api-data-wrapper youtube-api-data" onclick="FA_addYoutubeData('<?php echo $sk['api']['media$group']['yt$videoid']['$t']; ?>','<?php echo $sk['api']['title']['$t']; ?>');">
+    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+        <td width="40px" align="left" valign="middle">
+        <?php
+        if (!empty($sk['api']['media$group']['media$thumbnail'][1]['url'])) {
+        ?>
+        <img class="thumbnail" src="<?php echo $sk['api']['media$group']['media$thumbnail'][1]['url']; ?>" width="32px" height="32px" valign="middle" alt="Youtube">
+        <?php
+        } else {
+        ?>
+        <img class="thumbnail" width="32px" height="32px" valign="middle" alt="Youtube">
+        <?php
+        }
+        ?>
+        </td>
+        <td align="left" valign="middle">
+            <div class="name">
+                <?php
+                echo $sk['api']['title']['$t'];
+                ?>
+            </div>
+            <?php
+            if (!empty($sk['api']['category'][1]['label'])) {
+            ?>
+            <div class="info">
+                <?php
+                echo $sk['api']['category'][1]['label'];
+                ?>
+            </div>
+            <?php
+            }
+            ?>
+        </td>
+    </tr>
+    </table>
+</div>

@@ -1,0 +1,107 @@
+<div class="page-margin"></div>
+<div class="float-left span63">
+    <form class="list-wrapper hashtag-search-form" method="get" action="<?php echo $sk['config']['site_url']; ?>/index.php">
+        <div class="list-header">
+            <?php
+            echo $lang['hashtag_search_header_label'];
+            ?>
+        </div>
+        <div class="list-column">
+            <input class="query-input" type="text" name="query" placeholder="<?php echo $lang['hashtag_search_textarea_label']; ?>" style="width: 85%;"> 
+            
+            <button><?php echo $lang['search_button']; ?></button>
+        </div>
+        
+        <input type="hidden" name="tab1" value="hashtag">
+    </form>
+    <?php
+    foreach ($sk['posts'] as $sk['story']) {
+        echo FA_getPage('story/content');
+    }
+    ?>
+</div>
+<?php
+if ($sk['logged'] == true) {
+?>
+<div class="float-right span35">
+    <div class="list-wrapper suggestions-wrapper">
+        <div class="list-header">
+            <div class="float-left"><?php echo $lang['follow_suggestions_label']; ?></div>
+            
+            <div class="float-right">
+                <span class="cursor-hand" onclick="refreshFollowSuggestions();" title="<?php echo $lang['refresh_label']; ?>">
+                    <i class="icon-repeat progress-icon"></i> 
+                    <?php echo $lang['refresh_label']; ?>
+                </span>
+            </div>
+            
+            <div class="float-clear"></div>
+        </div>
+        
+        <div class="suggestions-content">
+            <?php
+            foreach (FA_getFollowSuggestions() as $sk['suggestion']) {
+            echo FA_getPage('home/suggestion-wrap');
+            }
+            ?>
+        </div>
+    </div>
+    
+    <div class="list-wrapper trending-wrapper">
+        <div class="list-header">
+            <?php echo $lang['trending_header_label']; ?>
+        </div>
+        <div class="trending-content">
+            <?php
+            $trendings = FA_getTrendings('popular');
+            
+            if (is_array($trendings) && count($trendings) > 0) {
+                
+                foreach ($trendings as $sk['trend']) {
+                    echo FA_getPage('hashtag/trend-wrap');
+                }
+            }
+            ?>
+        </div>
+    </div>
+    
+    <?php echo $sk['config']['ad_place_hashtag']; ?>
+</div>
+<?php
+}
+?>
+<div class="float-clear"></div>
+<script>
+<?php
+if ($sk['logged'] == true) {
+?>
+function refreshFollowSuggestions() {
+    
+    FA_progressIconLoader($('.suggestions-wrapper').find('.list-header'));
+    
+    $.get(FA_source(), {t: 'search', a: 'suggestions'}, function (data) {
+        
+        if (data.status == 200) {
+            $('.suggestions-content').html(data.html);
+        }
+        
+        FA_progressIconLoader($('.suggestions-wrapper'));
+    });
+}
+<?php
+}
+
+if ($sk['config']['smooth_links'] == 1) {
+?>
+$('form.hashtag-search-form').submit(function() {
+    query = $('.query-input').val();
+    $(this)
+        .attr('action', '<?php echo $sk['config']['site_url']; ?>/hashtag/' + query)
+        .find('.query-input').attr({'name':'','value':''})
+        .end()
+        .find('input[type=hidden]').remove();
+});
+<?php
+}
+?>
+</script>

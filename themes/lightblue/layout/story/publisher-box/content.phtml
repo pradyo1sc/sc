@@ -1,0 +1,394 @@
+<div class="story-publisher-box">
+    <form method="post" enctype="multipart/form-data">
+        <div class="box-header-wrapper">
+            <i class="icon-edit"></i>
+            <?php
+            echo $lang['post_textarea_header_label'];
+            ?>
+        </div>
+        <div class="inputs-container">
+            <textarea class="auto-grow-input" placeholder="<?php echo $sk['input']['placeholder']; ?>" data-placeholder="<?php echo $sk['input']['placeholder']; ?>" data-height="30" data-copy-to=".story-text-input"><?php echo $sk['input']['placeholder']; ?></textarea>
+            
+            <input class="story-text-input" type="hidden" name="text" value="">
+            
+            <div class="input-wrapper photo-wrapper" data-group="A">
+                <div class="float-left">
+                    <div class="photos-container">0 photo(s) selected</div>
+                </div>
+
+                <div class="float-right">
+                    <div class="album-option">
+                        <a href="<?php echo $sk['config']['site_url']; ?>/album/create" data-href="?tab1=album&tab2=create">Create an album</a>
+                    </div>
+                </div>
+
+                <div class="float-clear"></div>
+            </div>
+            
+            <div class="input-wrapper soundcloud-wrapper" data-group="A">
+                <i class="icon-music icon"></i>
+                <input class="soundcloud-input" type="text" onkeyup="FA_searchSoundcloud(this.value);" value="<?php echo $lang['post_publisher_soundcloud_placeholder']; ?>" placeholder="<?php echo $lang['post_publisher_soundcloud_placeholder']; ?>" data-placeholder="<?php echo $lang['post_publisher_soundcloud_placeholder']; ?>">
+                <div class="input-result-wrapper"></div>
+            </div>
+            
+            <div class="input-wrapper youtube-wrapper" data-group="A">
+                <i class="icon-film icon"></i>
+                <input class="youtube-input" type="text" onkeyup="FA_searchYoutube(this.value);" value="<?php echo $lang['post_publisher_youtube_placeholder']; ?>" placeholder="<?php echo $lang['post_publisher_youtube_placeholder']; ?>" data-placeholder="<?php echo $lang['post_publisher_youtube_placeholder']; ?>">
+                <div class="input-result-wrapper"></div>
+            </div>
+            
+            <div class="input-wrapper google-map-wrapper" data-group="B">
+                <i class="icon-map-marker icon"></i>
+                <input type="text" value="<?php echo $lang['post_publisher_googlemap_placeholder']; ?>" placeholder="<?php echo $lang['post_publisher_googlemap_placeholder']; ?>" data-placeholder="<?php echo $lang['post_publisher_googlemap_placeholder']; ?>" data-copy-to=".google-map-input">
+                <input class="google-map-input" type="hidden" name="google_map_name" value="">
+            </div>
+            
+            <div class="input-wrapper emoticons-wrapper" data-group="C">
+                <?php
+                $emoticons = FA_getEmoticons();
+                
+                if (is_array($emoticons)) {
+                    
+                    foreach ($emoticons as $emo_code => $emo_icon) {
+                        echo '<img src="' . $emo_icon . '" width="16px" onclick="addEmoToInput(\'' . $emo_code . '\',\'.story-publisher-box textarea\');">';
+                    }
+                }
+                ?>
+            </div>
+        </div>
+        
+        <div class="more-wrapper">
+            <table border="0" width="100%" cellspacing="0" cellpadding="0">
+            <tr>
+                <td width="28px" align="center" valign="middle">
+                    <span class="option" onclick="javascript:$('.story-publisher-box').find('input.photo-upload-input').click();">
+                        <i class="icon-camera-retro"></i>
+                    </span>
+                </td>
+                
+                <td width="28px" align="center" valign="middle">
+                    <span class="option" onclick="toggleMediaGroup('.story-publisher-box .soundcloud-wrapper');">
+                        <i class="icon-music"></i>
+                    </span>
+                </td>
+                
+                <td width="28px" align="center" valign="middle">
+                    <span class="option" onclick="toggleMediaGroup('.story-publisher-box .youtube-wrapper');">
+                        <i class="icon-film"></i>
+                    </span>
+                </td>
+                
+                <td width="28px" align="center" valign="middle">
+                    <span class="option" onclick="toggleMediaGroup('.story-publisher-box .google-map-wrapper');">
+                        <i class="icon-map-marker"></i>
+                    </span>
+                </td>
+                
+                <td width="28px" align="center" valign="middle">
+                    <span class="option" onclick="toggleMediaGroup('.story-publisher-box .emoticons-wrapper');">
+                        <i class="icon-smile"></i>
+                    </span>
+                </td>
+                
+                <td align="right" valign="middle">
+                    <button class="submit-btn active" name="story_submit_btn">
+                        <i class="icon-edit progress-icon"></i> 
+                        <span><?php echo $lang['post_button']; ?></span>
+                    </button>
+                </td>
+            </tr>
+            </table>
+        </div>
+        <input class="photo-upload-input hidden" type="file" name="photos[]" multiple="yes" accept="image/jpeg,image/png" onchange="FA_writeStoryPhotoUpload(this);">
+        <?php
+        if (isset($sk['input']['timeline'])) {
+        ?>
+        <input type="hidden" name="timeline_id" value="<?php echo $sk['input']['timeline']['id']; ?>">
+        <?php
+        }
+        
+        if (isset($sk['input']['recipient'])) {
+        ?>
+        <input type="hidden" name="recipient_id" value="<?php echo $sk['input']['recipient']['id']; ?>">
+        <?php
+        }
+        ?>
+    </form>
+</div>
+<script>
+soundcloud_query = '';
+youtube_query = '';
+
+$('.story-publisher-box form').ajaxForm({
+    url: FA_source() + '?t=post&a=new',
+    
+    beforeSend: function() {
+        main_wrapper = $('.story-publisher-box');
+        textarea = main_wrapper.find('textarea');
+        inputs = main_wrapper.find('input[type="text"]');
+        button = main_wrapper.find('button.submit-btn');
+        
+        button_default_text = button.find('span').text();
+        
+        textarea.attr('disabled', true);
+        inputs.attr('disabled', true);
+        button.attr('disabled', true);
+        
+        FA_progressIconLoader(button);
+    },
+    
+    uploadProgress: function(event, position, total, percentComplete) {
+        button
+            .find('span').text(percentComplete + '%');
+        
+        if (percentComplete == 100) {
+            button
+                .find('span').text('<?php echo $lang['processing']; ?>');
+        }
+    },
+    
+    success: function(responseText) {
+        
+        if (responseText.status == 200) {
+            $('.stories-wrapper').prepend(responseText.html);
+        }
+        
+        $('.story-publisher-box form').resetForm();
+        
+        main_wrapper
+            .find('.story-text-input')
+            .val('')
+            
+            .end().find('.result-container')
+            .remove()
+            
+            .end().find('.input-wrapper')
+                .find('.result-container')
+                .remove()
+                
+                .end()
+                .find('.input-result-wrapper')
+                .empty()
+                
+                .end().find('input')
+                .show()
+                .val('')
+                
+                .end().find('.remove-btn')
+                .remove()
+                
+                .end().find('.youtube-link')
+                .remove()
+            .end().slideUp();
+        
+        textarea.removeAttr('disabled');
+        inputs.removeAttr('disabled');
+        
+        button
+            .removeAttr('disabled')
+            .find('span').text(button_default_text);
+        
+        FA_progressIconLoader(button);
+    }
+});
+
+function toggleMediaGroup(chosen_input_selector) {
+    input_wrapper = $(chosen_input_selector);
+    group_id = input_wrapper.attr('data-group');
+    if (input_wrapper.css('display') == "none") {
+        $('.input-wrapper[data-group=' + group_id + ']')
+            .slideUp()
+            .find('input').val('').show()
+            .end()
+            .find('.result-container').remove()
+            .end()
+            .find('.remove-btn').remove();
+        input_wrapper.slideDown();
+    } else {
+        $('.input-wrapper[data-group=' + group_id + ']').slideUp();
+    }
+}
+
+// Photo On-Upload Function
+function FA_writeStoryPhotoUpload(input) {
+    parent_wrapper = $('.story-publisher-box');
+    input_wrapper = parent_wrapper.find('.photo-wrapper');
+    group_id = input_wrapper.attr('data-group');
+    parent_wrapper.find('.photos-container').text(input.files.length + ' photo(s) selected');
+    $('.input-wrapper[data-group=' + group_id + ']').slideUp();
+    input_wrapper.slideDown();
+}
+
+
+// SoundCloud Search
+function FA_searchSoundcloud(query) {
+    if (query != soundcloud_query) {
+        main_wrapper = $('.story-publisher-box');
+        soundcloud_wrapper = main_wrapper.find('.soundcloud-wrapper');
+        result_wrapper = soundcloud_wrapper.find('.input-result-wrapper');
+        soundcloud_query = query;
+        
+        if (query.length == 0) {
+            result_wrapper.slideUp(function(){
+                $(this).html('');
+            });
+        } else {
+            result_wrapper.html('<div class="loading-wrapper"><i class="icon-spinner icon-spin"></i> <?php echo $lang['searching']; ?>...</div>').slideDown();
+            setTimeout(function () {
+                if (soundcloud_query == query) {
+                    FA_getSoundcloud(query);
+                }
+            }, 1500);
+        }
+    }
+}
+
+function FA_getSoundcloud(query) {
+    main_wrapper = $('.story-publisher-box');
+    soundcloud_wrapper = main_wrapper.find('.soundcloud-wrapper');
+    result_wrapper = soundcloud_wrapper.find('.input-result-wrapper');
+    
+    if (query.length == 0) {
+        result_wrapper.slideUp(function () {
+            $(this).html('');
+        });
+    } else {
+        query = query.replace("http://", "").replace("https://", "");
+        result_wrapper.html('<div class="loading-wrapper"><i class="icon-spinner icon-spin"></i> <?php echo $lang['searching']; ?>...</div>').slideDown();
+        
+        $.get(FA_source(), {t: 'soundcloud_search', q: query}, function(data) {
+            
+            if (data.status == 200) {
+                
+                if (data.type == "embed") {
+                    soundcloud_wrapper
+                    .append('<span class="remove-btn" onclick="FA_removeSoundcloudData();"><i class="icon-remove"></i></span>')
+                    .find('input.soundcloud-input')
+                    .hide()
+                    .after('<div class="result-container"><span class="title">https://' + query + '</span><i class="icon-ok"></i><input type="hidden" name="soundcloud_title" value="Embedded"><input type="hidden" name="soundcloud_uri" value="' + data.sc_uri + '"></div>')
+                    .val('');
+                    result_wrapper.slideUp(function () {
+                        $(this).html('');
+                    });
+                } else if (data.type == "api") {
+                    result_wrapper.html(data.html);
+                }
+                
+            }
+            else {
+                result_wrapper.html('<div class="no-wrapper"><?php echo $lang['no_result_found']; ?></div>');
+            }
+        });
+    }
+}
+
+function FA_addSoundcloudData(title,uri) {
+    $('.story-publisher-box').find('.soundcloud-wrapper')
+        .append('<span class="remove-btn" onclick="FA_removeSoundcloudData();"><i class="icon-remove"></i></span>')
+        
+        .find('input.soundcloud-input')
+            .hide()
+            .after('<div class="result-container"><span class="title">' + title.substr(0,70) + '</span><i class="icon-ok"></i><input type="hidden" name="soundcloud_title" value="' + title + '"><input type="hidden" name="soundcloud_uri" value="' + uri + '"></div>')
+            .val('')
+            
+        .end().find('.input-result-wrapper')
+            .slideUp(function () {
+                $(this).html('');
+            });
+}
+
+function FA_removeSoundcloudData() {
+    $('.story-publisher-box').find('.soundcloud-wrapper')
+        .find('.result-container')
+            .remove()
+        .end().find('input.soundcloud-input')
+            .show()
+            .focus()
+        .end().find('.remove-btn')
+            .remove();
+}
+
+
+// Youtube Search
+function FA_searchYoutube(query) {
+    if (query != youtube_query) {
+        main_wrapper = $('.story-publisher-box');
+        youtube_wrapper = main_wrapper.find('.youtube-wrapper');
+        result_wrapper = youtube_wrapper.find('.input-result-wrapper');
+        youtube_query = query;
+        
+        if (query.length == 0) {
+            result_wrapper.slideUp(function(){
+                $(this).html('');
+            });
+        } else {
+            result_wrapper.html('<div class="loading-wrapper"><i class="icon-spinner icon-spin"></i> <?php echo $lang['searching']; ?>...</div>').slideDown();
+            setTimeout(function () {
+                if (youtube_query == query) {
+                    FA_getYoutube(query);
+                }
+            }, 1500);
+        }
+    }
+}
+
+function FA_getYoutube(query) {
+    main_wrapper = $('.story-publisher-box');
+    youtube_wrapper = main_wrapper.find('.youtube-wrapper');
+    result_wrapper = youtube_wrapper.find('.input-result-wrapper');
+    
+    if (query.length == 0) {
+        result_wrapper.slideUp(function () {
+            $(this).html('');
+        });
+    } else {
+        query = query.replace("http://", "").replace("https://", "");
+        result_wrapper.html('<div class="loading-wrapper"><i class="icon-spinner icon-spin"></i> <?php echo $lang['searching']; ?>...</div>').slideDown();
+        
+        $.get(FA_source(), {t: 'youtube_search', q: query}, function(data) {
+            
+            if (data.status == 200) {
+                
+                if (data.type == "embed") {
+                    youtube_wrapper
+                    .find('.youtube-link')
+                    .remove()
+                    .end()
+                    .find('input.youtube-input')
+                    .after('<input class="youtube-link" type="hidden" name="youtube_video_id" value="' + query + '">')
+                    result_wrapper.slideUp();
+                } else if (data.type == "api") {
+                    result_wrapper.html(data.html);
+                }
+                
+            } else {
+                result_wrapper.html('<div class="no-wrapper"><?php echo $lang['no_result_found']; ?></div>');
+            }
+        });
+    }
+}
+
+function FA_addYoutubeData(id,title) {
+    $('.story-publisher-box').find('.youtube-wrapper')
+        .append('<span class="remove-btn" onclick="FA_removeYoutubeData();"><i class="icon-remove"></i></span>')
+        .find('input.youtube-input')
+            .hide()
+            .after('<div class="result-container"><span class="title">' + title.substr(0,70) + '</span><i class="icon-ok"></i><input type="hidden" name="youtube_title" value="' + title + '"><input type="hidden" name="youtube_video_id" value="' + id + '"></div>')
+            .val('')
+        .end().find('.input-result-wrapper')
+            .slideUp('fast',function(){
+                $(this).html('');
+            });
+}
+
+function FA_removeYoutubeData() {
+    $('.story-publisher-box').find('.youtube-wrapper')
+        .find('.result-container')
+            .remove()
+        .end().find('input.youtube-input')
+            .show()
+            .focus()
+        .end().find('.remove-btn')
+            .remove();
+}
+</script>
