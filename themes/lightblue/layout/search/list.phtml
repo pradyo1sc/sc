@@ -1,0 +1,19 @@
+<div class="list-column">
+    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+        <td width="42px" align="left" valign="middle">
+            <a href="<?php echo $sk['search']['url']; ?>" data-href="?tab1=timeline&id=<?php echo $sk['search']['username']; ?>">
+                <img width="36px" height="36px" class="radius3" src="<?php echo $sk['search']['thumbnail_url']; ?>" alt="<?php echo $sk['search']['name']; ?>">
+            </a>
+        </td>
+        <td align="left" valign="middle">
+            <a class="bold-500" href="<?php echo $sk['search']['url']; ?>" data-href="?tab1=timeline&id=<?php echo $sk['search']['username']; ?>">
+                <?php echo $sk['search']['name']; ?>
+            </a>
+        </td>
+        <td class="column-btn" align="right" valign="middle">
+            <?php echo SK_getFollowButton($sk['search']['id']); ?>
+        </td>
+    </tr>
+    </table>
+</div>

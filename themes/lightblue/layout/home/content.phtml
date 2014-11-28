@@ -1,0 +1,235 @@
+<div class="page-margin"></div>
+<div class="float-left span63">
+    <?php
+    $announcement_count = SK_countAnnouncements();
+
+    if ($announcement_count > 0) {
+    ?>
+    <div class="announcement-container">
+        <div class="announcement-header">
+            <div class="float-left">
+                Announcements
+            </div>
+
+            <div class="float-right">
+                <a href="javascript:void(0);" onclick="javascript:closeAnnouncements();">Close</a>
+            </div>
+
+            <div class="float-clear"></div>
+        </div>
+    <?php
+        $announcements = SK_getAnnouncements();
+
+        foreach ($announcements as $announcement) {
+        ?>
+        <div class="announcement-wrapper">
+            <div class="text">
+                <?php echo $announcement['text']; ?>
+            </div>
+        </div>
+        <?php
+        }
+        ?>
+    </div>
+    <?php
+    }
+    
+    if ($sk['logged'] == true) {
+        echo SK_getStoryPublisherBox();
+    }
+    ?>
+    <div class="stories-container">
+        <div class="stories-wrapper">
+            <?php
+            $stories = SK_getStories();
+            
+            if (is_array($stories) && count($stories) > 0) {
+                
+                foreach($stories as $sk['story']) {
+                    echo SK_getPage('story/content');
+                }
+            }
+            ?>
+        </div>
+        <div align="center">
+            <div class="load-btn" onclick="SK_loadOldStories();">
+                <i class="icon-reorder progress-icon hide"></i>
+                <?php
+                echo $lang['view_previous_posts_label'];
+                ?>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="float-right span35">
+    <div class="short-profile-wrapper">
+        <div class="short-cover">
+            <img src="<?php echo $sk['user']['cover_url']; ?>" width="100%" alt="<?php echo $sk['user']['name']; ?>">
+            <a class="short-avatar" href="<?php echo $sk['user']['url']; ?>" data-href="?tab1=timeline&id=<?php echo $sk['user']['username']; ?>">
+                <img src="<?php echo $sk['user']['avatar_url']; ?>" width="70px" alt="<?php echo $sk['user']['name']; ?>">
+            </a>
+        </div>
+        <div class="short-info">
+            <a class="short-name bold-500" href="<?php echo $sk['user']['url']; ?>" data-href="?tab1=timeline&id=<?php echo $sk['user']['username']; ?>">
+                <?php echo $sk['user']['name']; ?>
+            </a>
+            <br>
+            @<?php echo $sk['user']['username']; ?>
+        </div>
+    </div>
+    
+    <div class="story-filters-wrapper">
+        <div class="filter-header-wrapper">
+            <?php
+            echo $lang['filters_header'];
+            ?>
+        </div>
+        
+        <div class="filter all-wrapper" onclick="SK_filterStories('all',0);">
+            <i class="icon-tasks progress-icon" data-icon="tasks"></i> 
+            <?php
+            echo $lang['filter_label_all'];
+            ?>
+        </div>
+        
+        <div class="filter texts-wrapper" onclick="SK_filterStories('texts',0);">
+            <i class="icon-pencil progress-icon" data-icon="pencil"></i> 
+            <?php
+            echo $lang['filter_label_texts'];
+            ?>
+        </div>
+        
+        <div class="filter photos-wrapper" onclick="SK_filterStories('photos',0);">
+            <i class="icon-camera-retro progress-icon" data-icon="camera-retro"></i> 
+            <?php
+            echo $lang['filter_label_photos'];
+            ?>
+        </div>
+        
+        <div class="filter videos-wrapper" onclick="SK_filterStories('videos',0);">
+            <i class="icon-film progress-icon" data-icon="film"></i> 
+            <?php
+            echo $lang['filter_label_videos'];
+            ?>
+        </div>
+        
+        <div class="filter music-wrapper" onclick="SK_filterStories('music',0);">
+            <i class="icon-music progress-icon" data-icon="music"></i> 
+            <?php
+            echo $lang['filter_label_music'];
+            ?>
+        </div>
+        
+        <div class="filter places-wrapper" onclick="SK_filterStories('places',0);">
+            <i class="icon-map-marker progress-icon" data-icon="map-marker"></i> 
+            <?php
+            echo $lang['filter_label_places'];
+            ?>
+        </div>
+    </div>
+    
+    <div class="list-wrapper suggestions-wrapper">
+        <div class="list-header">
+            <div class="float-left">
+                <?php
+                echo $lang['follow_suggestions_label'];
+                ?>
+            </div>
+            <div class="float-right">
+                <span class="cursor-hand" onclick="refreshFollowSuggestions();" title="<?php echo $lang['refresh_label']; ?>">
+                    <i class="icon-repeat progress-icon"></i> 
+                    <?php
+                    echo $lang['refresh_label'];
+                    ?>
+                </span>
+            </div>
+            <div class="float-clear"></div>
+        </div>
+        <div class="suggestions-content">
+            <?php
+            $suggestions = SK_getFollowSuggestions();
+            
+            if (is_array($suggestions) && count($suggestions) > 0) {
+                
+                foreach ($suggestions as $sk['suggestion']) {
+                    echo SK_getPage('home/suggestion-wrap');
+                }
+            }
+            ?>
+        </div>
+    </div>
+    
+    <div class="list-wrapper trending-wrapper">
+        <div class="list-header">
+            <?php echo $lang['trending_header_label']; ?>
+        </div>
+        <div class="trending-content">
+            <?php
+            $trendings = SK_getTrendings('popular');
+            
+            if (is_array($trendings) && count($trendings) > 0) {
+                
+                foreach ($trendings as $sk['trend']) {
+                    echo SK_getPage('hashtag/trend-wrap');
+                }
+            }
+            ?>
+        </div>
+    </div>
+    
+    <?php echo $sk['config']['ad_place_home']; ?>
+</div>
+
+<div class="float-clear"></div>
+
+<script>
+$(function() {
+    
+    setInterval(function() {
+        
+        if ($('.story-wrapper').length > 0) {
+            element = $('.stories-container');
+            request_data = new Object();
+            request_data.t = 'post';
+            request_data.a = 'filter';
+            request_data.exclude_activity = 1;
+            request_data.before_id = $('.story-wrapper:first').attr('data-story-id');
+            
+            
+            if (typeof(element.attr('data-story-type') != "undefined")) {
+                request_data.type = element.attr('data-story-type');
+            }
+            
+            if (typeof(element.attr('data-story-timeline') != "undefined")) {
+                request_data.timeline_id = element.attr('data-story-timeline');
+            }
+            
+            $.get(SK_source(), request_data, function(data) {
+                
+                if (data.status == 200) {
+                    $('.stories-wrapper').prepend(data.html);
+                }
+            });
+        }
+    }, 120000);
+});
+
+function refreshFollowSuggestions() {
+    
+    SK_progressIconLoader($('.suggestions-wrapper').find('.list-header'));
+    
+    $.get(SK_source(), {t: 'search', a: 'suggestions'}, function (data) {
+        
+        if (data.status == 200) {
+            $('.suggestions-content').html(data.html);
+        }
+        
+        SK_progressIconLoader($('.suggestions-wrapper'));
+    });
+}
+
+function closeAnnouncements() {
+    $('.announcement-container').remove();
+    $.get(SK_source(), {t: 'announcements', a: 'read'});
+}
+</script>

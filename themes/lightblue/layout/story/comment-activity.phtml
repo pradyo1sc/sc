@@ -1,0 +1,6 @@
+<span class="comment-activity activity-btn" onclick="javascript:$('#story_<?php echo $sk['story']['id']; ?> .comments-container').slideToggle();" title="<?php echo $lang['comments']; ?>">
+    <?php
+    echo SK_countPostComments($sk['story']['id']);
+    ?>
+    <i class="icon-comments progress-icon" data-icon="comments"></i>
+</span>

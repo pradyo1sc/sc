@@ -1,0 +1,889 @@
+<div class="timeline-header-wrapper group-header-wrapper">
+    <div class="cover-container">
+        <div class="cover-wrapper">
+            <img src="<?php echo $sk['timeline']['cover_url']; ?>" alt="<?php echo $sk['timeline']['name']; ?>">
+            <div class="cover-progress"></div>
+        </div>
+        
+        <div class="cover-resize-wrapper">
+            <img src="<?php echo $sk['timeline']['actual_cover_url']; ?>" alt="<?php echo $sk['timeline']['name']; ?>">
+            <div class="drag-div" align="center"><?php echo $lang['reposition_drag_label']; ?></div>
+            <div class="cover-progress"></div>
+        </div>
+        
+        <div class="timeline-name-wrapper">
+            <a href="<?php echo $sk['timeline']['url']; ?>" data-href="?tab1=timeline&id=<?php echo $sk['timeline']['username']; ?>">
+                <?php echo $sk['timeline']['name']; ?>
+            </a>
+        </div>
+    </div>
+    
+    <div class="timeline-statistics-wrapper">
+        <table border="0" width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <?php
+            if (($sk['timeline']['add_privacy'] == "members" && SK_isFollowing($sk['timeline']['id'])) or ($sk['timeline']['add_privacy'] == "admins" && SK_isGroupAdmin($sk['timeline']['id']))) {
+            ?>
+            <td class="statistic" align="center" valign="middle">
+                <a href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=add_members&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=add_members&id=<?php echo $sk['timeline']['username']; ?>">
+                    <?php echo $lang['group_add_members_label']; ?>
+                </a>
+            </td>
+            <?php
+            }
+            
+            if (SK_isGroupAdmin($sk['timeline']['id']) && SK_countFollowRequests($sk['timeline']['id']) > 0) {
+            ?>
+            <td class="statistic" align="center" valign="middle">
+                <a href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=requests&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=requests&id=<?php echo $sk['timeline']['username']; ?>">
+                    <?php echo SK_countFollowRequests($sk['timeline']['id']) . ' ' . $lang['group_requests_label']; ?>
+                </a>
+            </td>
+            <?php
+            }
+            ?>
+            <td class="statistic" align="center" valign="middle">
+                <a href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=list_members&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=list_members&id=<?php echo $sk['timeline']['username']; ?>">
+                    <?php
+                    echo SK_countFollowers($sk['timeline']['id']) . ' ' .$lang['group_members_label'];
+                    ?>
+                </a>
+            </td>
+            <td class="statistic" align="center" valign="middle">
+                <a href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=list_admins&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=list_admins&id=<?php echo $sk['timeline']['username']; ?>">
+                    <?php
+                    echo SK_countGroupAdmins($sk['timeline']['id']) . ' ' .$lang['group_admins_label'];
+                    ?>
+                </a>
+            </td>
+            <td class="statistic" align="center" valign="middle">
+                <a href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=stories&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=stories&id=<?php echo $sk['timeline']['username']; ?>">
+                    <?php echo SK_countPosts($sk['timeline']['id']) . ' ' . $lang['posts_label']; ?>
+                </a>
+            </td>
+        </tr>
+        </table>
+    </div>
+</div>
+
+<div class="float-left span35">
+    <?php
+    if (SK_isGroupAdmin($sk['timeline']['id'])) {
+    ?>
+    <div class="timeline-buttons cover-resize-buttons">
+        <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <td align="center" valign="middle">
+                <a onclick="SK_saveReposition();"><i class="icon-pushpin"></i> <?php echo $lang['save_position_label']; ?></a>
+            </td>
+            <td align="center" valign="middle">
+                <a onclick="SK_cancelReposition();"><i class="icon-remove"></i> <?php echo $lang['cancel']; ?></a>
+            </td>
+        </tr>
+        </table>
+        <form class="cover-position-form hidden" method="post">
+            <input class="cover-position" name="pos" value="0" type="hidden">
+            <input class="screen-width" name="width" value="920" type="hidden">
+            <input name="timeline_id" value="<?php echo $sk['timeline']['id']; ?>" type="hidden">
+        </form>
+    </div>
+    <div class="timeline-buttons default-buttons">
+        <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <td align="center" valign="middle">
+                <?php
+                echo SK_getFollowButton($sk['timeline']['id']);
+                ?>
+            </td>
+            <td align="center" valign="middle">
+                <a href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=settings&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&id=<?php echo $sk['timeline']['username']; ?>">
+                    <i class="icon-gear"></i> 
+                    <?php
+                    echo $lang['settings_label'];
+                    ?>
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td align="center" valign="middle">
+                <a onclick="javascript:$('.cover-image-input').click();">
+                    <i class="icon-camera-retro"></i> 
+                    <?php
+                    echo $lang['change_cover_label'];
+                    ?>
+                </a>
+            </td>
+            <td align="center" valign="middle">
+                <a onclick="SK_repositionCover();">
+                    <i class="icon-move"></i> 
+                    <?php
+                    echo $lang['reposition_cover_label'];
+                    ?>
+                </a>
+            </td>
+        </tr>
+        </table>
+    </div>
+    <form class="cover-form hidden" method="post" enctype="multipart/form-data" action="ajax.php?t=cover&a=post_upload">
+        <input class="cover-image-input hidden" type="file" name="image" accept="image/jpeg,image/png" onchange="javascript:$('form.cover-form').submit();">
+        <input name="timeline_id" value="<?php echo $sk['timeline']['id']; ?>" type="hidden">
+    </form>
+    <?php
+    } elseif ($sk['logged'] == true) {
+    ?>
+    <div class="timeline-buttons default-buttons">
+        <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <td align="center" valign="middle">
+                <?php
+                echo SK_getFollowButton($sk['timeline']['id']);
+                ?>
+            </td>
+        </tr>
+        </table>
+    </div>
+    <?php
+    }
+    ?>
+    <div class="timeline-sidebar">
+        <div class="sidebar-div">
+            <?php echo $lang['privacy_label'] . ': ' . ucfirst($sk['timeline']['group_privacy']) . ' ' . $lang['group_label']; ?>
+        </div>
+        <?php
+        if (!empty($sk['timeline']['about'])) {
+        ?>
+        <div class="sidebar-div">
+            <?php
+            echo $lang['about_label'] . ': ' . $sk['timeline']['about'];
+            ?>
+        </div>
+        <?php
+        }
+        ?>
+    </div>
+</div>
+
+<div class="float-right span63">
+    <div class="timeline-370">
+        <?php
+        if (isset($_GET['tab2']) && $_GET['tab2'] == "add_members") {
+            
+            if (($sk['timeline']['add_privacy'] == "members" && SK_isFollowing($sk['timeline']['id'])) or ($sk['timeline']['add_privacy'] == "admins" && SK_isGroupAdmin($sk['timeline']['id']))) {
+            ?>
+            <div class="list-wrapper">
+                <div class="list-header">
+                    <?php
+                    echo $lang['group_add_members_label'];
+                    ?>
+                </div>
+                
+                <?php
+                if (SK_countFollowing($sk['user']['id']) == 0) {
+                ?>
+                <div class="list-column">
+                    <?php
+                    if ($sk['config']['friends'] == true) {
+                        echo $lang['no_friends_to_add_to_group'];
+                    } else {
+                        echo $lang['no_followers_to_add_to_group'];
+                    }
+                    ?>
+                </div>
+                <?php
+                } else {
+                    
+                    foreach (SK_getFollowers($sk['user']['id']) as $follower) {
+                        
+                        if (!SK_isFollowing($sk['timeline']['id'], $follower['id'])) {
+                ?>
+                <div class="list-column follower-id-<?php echo $follower['id']; ?>">
+                    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td width="42px" align="left" valign="middle">
+                            <a href="<?php echo $follower['url']; ?>" data-href="?tab1=timeline&id=<?php echo $follower['username']; ?>">
+                                <img width="36px" height="36px" class="radius3" src="<?php echo $follower['thumbnail_url']; ?>" alt="<?php echo $follower['name']; ?>">
+                            </a>
+                        </td>
+                        <td align="left" valign="middle">
+                            <a class="bold-500" href="<?php echo $follower['url']; ?>" data-href="?tab1=timeline&id=<?php echo $follower['username']; ?>">
+                                <?php
+                                echo $follower['name'];
+                                ?>
+                            </a>
+                        </td>
+                        <td align="right" valign="middle">
+                            <input class="column-btn add-member-btn" type="submit" value="Add" onclick="SK_addGroupMember(<?php echo $sk['timeline']['id']; ?>,<?php echo $follower['id']; ?>);">
+                        </td>
+                    </tr>
+                    </table>
+                </div>
+                <?php
+                        }
+                    }
+                }
+                ?>
+            </div>
+            
+            <script>
+            function SK_addGroupMember(group_id, member_id) {
+                $('.follower-id-' + member_id).find('.add-member-btn').val('Adding..');
+                
+                $.post(SK_source() + '?t=group&a=add_member', {group_id: group_id, member_id: member_id}, function (data) {
+                    
+                    if (data.status == 200) {
+                        $('.follower-id-' + member_id).slideUp(function() {
+                            $(this).remove();
+                        });
+                    }
+                });
+            }
+            </script>
+        <?php
+            }
+        } elseif (isset($_GET['tab2']) && $_GET['tab2'] == "list_members") {
+        ?>
+        <div class="list-wrapper">
+            <div class="list-header">
+                <?php
+                echo $lang['group_members_label'];
+                ?>
+            </div>
+            <?php
+            foreach (SK_getFollowers($sk['timeline']['id']) as $member) {
+            ?>
+            <div class="list-column group-member-<?php echo $member['id']; ?>">
+                <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td width="42px" align="left" valign="middle">
+                        <a href="<?php echo $member['url']; ?>" data-href="?tab1=timeline&id=<?php echo $member['username']; ?>">
+                            <img width="36px" height="36px" class="radius3" src="<?php echo $member['thumbnail_url']; ?>" alt="<?php echo $member['name']; ?>">
+                        </a>
+                    </td>
+                    
+                    <td align="left" valign="middle">
+                        <a class="bold-500" href="<?php echo $member['url']; ?>" data-href="?tab1=timeline&id=<?php echo $member['username']; ?>">
+                            <?php echo $member['name']; ?>
+                        </a>
+                    </td>
+                    
+                    <?php
+                    if (SK_isGroupAdmin($sk['timeline']['id'])) {
+                    ?>
+                    <td align="right" valign="middle">
+                        <input class="column-btn remove-member-btn" type="submit" value="Remove" onclick="SK_removeGroupMember(<?php echo $sk['timeline']['id']; ?>,<?php echo $member['id']; ?>);">
+                        
+                        <?php
+                        if (!SK_isGroupAdmin($sk['timeline']['id'], $member['id'])) {
+                        ?>
+                        <input class="column-btn add-admin-btn" type="submit" value="Make admin" onclick="SK_addGroupAdmin(<?php echo $sk['timeline']['id']; ?>,<?php echo $member['id']; ?>);">
+                        <?php
+                        }
+                        ?>
+                    </td>
+                    <?php
+                    }
+                    ?>
+                </tr>
+                </table>
+            </div>
+            <?php
+            }
+            ?>
+        </div>
+        
+        <script>
+        function SK_removeGroupMember(group_id, member_id) {
+            $('.group-member-' + member_id).find('.remove-member-btn').val('Removing..');
+            
+            $.post(SK_source() + '?t=group&a=remove_member', {group_id: group_id, member_id: member_id}, function (data) {
+                
+                if (data.status == 200) {
+                    $('.group-member-' + member_id).slideUp(function () {
+                        $(this).remove();
+                    });
+                }
+            });
+        }
+        
+        function SK_addGroupAdmin(group_id, admin_id) {
+            $('.group-member-' + admin_id).find('.add-admin-btn').val('Making..');
+            
+            $.post(SK_source() + '?t=group&a=add_admin', {group_id: group_id, admin_id: admin_id}, function (data) {
+                if (data.status == 200) {
+                    $('.group-member-'+admin_id).slideUp(function () {
+                        $(this).remove();
+                    });
+                }
+            });
+        }
+        </script>
+        <?php
+        } elseif (isset($_GET['tab2']) && $_GET['tab2'] == "list_admins") {
+        ?>
+        <div class="list-wrapper">
+            <div class="list-header">
+                <?php
+                echo $lang['group_admins_label'];
+                ?>
+            </div>
+            
+            <?php
+            foreach (SK_getGroupAdmins($sk['timeline']['id']) as $admin) {
+            ?>
+            <div class="list-column group-admin-<?php echo $admin['id']; ?>">
+                <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td width="42px" align="left" valign="middle">
+                        <a href="<?php echo $admin['url']; ?>" data-href="?tab1=timeline&id=<?php echo $admin['username']; ?>">
+                            <img width="36px" height="36px" class="radius3" src="<?php echo $admin['thumbnail_url']; ?>" alt="<?php echo $admin['name']; ?>">
+                        </a>
+                    </td>
+                    
+                    <td align="left" valign="middle">
+                        <a class="bold-500" href="<?php echo $admin['url']; ?>" data-href="?tab1=timeline&id=<?php echo $admin['username']; ?>">
+                            <?php
+                            echo $admin['name'];
+                            ?>
+                        </a>
+                    </td>
+                    
+                    <?php
+                    if (SK_isGroupAdmin($sk['timeline']['id'])) {
+                    ?>
+                    <td align="right" valign="middle">
+                        <input class="column-btn remove-admin-btn" type="submit" value="Remove" onclick="SK_removeGroupAdmin(<?php echo $sk['timeline']['id']; ?>,<?php echo $admin['id']; ?>);">
+                    </td>
+                    <?php
+                    }
+                    ?>
+                </tr>
+                </table>
+            </div>
+            <?php
+            }
+            ?>
+        </div>
+        <script>
+        function SK_removeGroupAdmin(group_id, admin_id) {
+            $('.group-admin-' + admin_id).find('.remove-admin-btn').val('Removing..');
+            
+            $.post(SK_source() + '?t=group&a=remove_admin', {group_id: group_id, admin_id: admin_id}, function (data) {
+                
+                if (data.status == 200) {
+                    $('.group-admin-' + admin_id).slideUp(function () {
+                        $(this).remove();
+                    });
+                }
+            });
+        }
+        </script>
+        <?php
+        } elseif (isset($_GET['tab2']) && $_GET['tab2'] == "requests" && SK_isGroupAdmin($sk['timeline']['id'])) {
+        ?>
+        <div class="list-wrapper">
+            <div class="list-header">
+                <?php
+                echo $lang['group_requests_label'];
+                ?>
+            </div>
+            
+            <?php
+            foreach (SK_getFollowRequests($sk['timeline']['id']) as $request) {
+            ?>
+            <div class="list-column group-member-<?php echo $request['id']; ?>">
+                <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td width="42px" align="left" valign="middle">
+                        <a href="<?php echo $request['url']; ?>" data-href="?tab1=timeline&id=<?php echo $request['username']; ?>">
+                            <img width="36px" height="36px" class="radius3" src="<?php echo $request['thumbnail_url']; ?>" alt="<?php echo $request['name']; ?>">
+                        </a>
+                    </td>
+                    
+                    <td align="left" valign="middle">
+                        <a class="bold-500" href="<?php echo $request['url']; ?>" data-href="?tab1=timeline&id=<?php echo $request['username']; ?>">
+                            <?php echo $request['name']; ?>
+                        </a>
+                    </td>
+                    
+                    <?php
+                    if (SK_isGroupAdmin($sk['timeline']['id'])) {
+                    ?>
+                    <td align="right" valign="middle">
+                        <input class="column-btn accept-btn" type="submit" value="Accept" onclick="SK_acceptGroupMember(<?php echo $sk['timeline']['id']; ?>,<?php echo $request['id']; ?>);">
+                        <input class="column-btn decline-btn" type="submit" value="Decline" onclick="SK_declineGroupMember(<?php echo $sk['timeline']['id']; ?>,<?php echo $request['id']; ?>);">
+                    </td>
+                    <?php
+                    }
+                    ?>
+                </tr>
+                </table>
+            </div>
+            <?php
+            }
+            ?>
+        </div>
+        <script>
+        function SK_acceptGroupMember(group_id, member_id) {
+            $('.group-member-' + member_id).find('.accept-btn').val('Accepting..');
+            
+            $.post(SK_source() + '?t=group&a=accept_member', {group_id: group_id, member_id: member_id}, function (data) {
+                
+                if (data.status == 200) {
+                    $('.group-member-' + member_id).slideUp(function () {
+                        $(this).remove();
+                    });
+                }
+            });
+        }
+        
+        function SK_declineGroupMember(group_id, member_id) {
+            $('.group-member-' + member_id).find('.decline-btn').val('Declining..');
+            
+            $.post(SK_source() + '?t=group&a=remove_member', {group_id: group_id, member_id: member_id}, function (data) {
+                
+                if (data.status == 200) {
+                    $('.group-member-' + member_id).slideUp(function () {
+                        $(this).remove();
+                    });
+                }
+            });
+        }
+        </script>
+        <?php
+        } elseif (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isGroupAdmin($sk['timeline']['id'])) {
+        ?>
+        <form class="update-group-settings-form" method="post">
+        <div class="form-container">
+            <div class="form-header">
+                <?php
+                echo $lang['group_settings_label'];
+                ?>
+            </div>
+            <div class="form-input-wrapper">
+                <label class="float-left span20">
+                    <?php
+                    echo $lang['username_label'];
+                    ?>:
+                </label>
+                <div class="input float-left span65">
+                    <input type="text" name="username" value="<?php echo $sk['timeline']['username']; ?>" autocomplete="off" onkeyup="SK_checkUsername(this.value,<?php echo $sk['timeline']['id']; ?>,'.check-username-result',true);">
+                    <div class="check-username-result ajax-result"></div>
+                </div>
+                <div class="float-clear"></div>
+            </div>
+            <div class="form-input-wrapper">
+                <label class="float-left span20">
+                    <?php
+                    echo $lang['group_name_label'];
+                    ?>:
+                </label>
+                <div class="input float-left span65">
+                    <input type="text" name="name" value="<?php echo $sk['timeline']['name']; ?>">
+                </div>
+                <div class="float-clear"></div>
+            </div>
+            <div class="form-input-wrapper">
+                <label class="float-left span20">
+                    <?php
+                    echo $lang['about_label'];
+                    ?>:
+                </label>
+                <div class="input float-left span65">
+                    <textarea class="auto-grow-input" valign="top" name="about"><?php echo $sk['timeline']['about']; ?></textarea>
+                </div>
+                <div class="float-clear"></div>
+            </div>
+            <div class="form-input-wrapper">
+                <label class="float-left span20">
+                    <?php
+                    echo $lang['privacy_label'];
+                    ?>:
+                </label>
+                <div class="input float-left span65">
+                    <div style="margin-top: 5px;">
+                        <?php
+                        $checked_attr = '';
+                        
+                        if ($sk['timeline']['group_privacy'] == "open") {
+                            $checked_attr = ' checked';
+                        }
+                        ?>
+                        <input valign="top" type="radio" name="group_privacy" value="open"<?php echo $checked_attr; ?>>
+                        <i class="icon-globe" style="margin-right: 3px;"></i> <?php echo $lang['open_group']; ?>
+                        <br>
+                        <small>
+                            <?php
+                            echo $lang['open_group_description'];
+                            ?>.
+                        </small>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <?php
+                        $checked_attr = '';
+                        
+                        if ($sk['timeline']['group_privacy'] == "closed") {
+                            $checked_attr = ' checked';
+                        }
+                        ?>
+                        <input valign="top" type="radio" name="group_privacy" value="closed"<?php echo $checked_attr; ?>>
+                        <i class="icon-lock" style="margin-right: 3px;"></i> <?php echo $lang['closed_group']; ?>
+                        <br>
+                        <small>
+                            <?php
+                            echo $lang['closed_group_description'];
+                            ?>.
+                        </small>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <?php
+                        $checked_attr = '';
+                        
+                        if ($sk['timeline']['group_privacy'] == "secret") {
+                            $checked_attr = ' checked';
+                        }
+                        ?>
+                        <input valign="top" type="radio" name="group_privacy" value="secret"<?php echo $checked_attr; ?>>
+                        <i class="icon-shield" style="margin-right: 3px;"></i> <?php echo $lang['secret_group']; ?>
+                        <br>
+                        <small>
+                            <?php
+                            echo $lang['secret_group_description'];
+                            ?>.
+                        </small>
+                    </div>
+                </div>
+                <div class="float-clear"></div>
+            </div>
+            <div class="form-input-wrapper">
+                <label class="float-left span20">
+                    <?php
+                    echo $lang['group_add_privacy_label'];
+                    ?>:
+                </label>
+                <div class="input float-left span65">
+                    <select name="add_privacy">
+                        <?php
+                        $add_privacy_members_selected_attr = '';
+                        $add_privacy_admins_selected_attr = '';
+                        
+                        if ($sk['timeline']['add_privacy'] == "members") {
+                            $add_privacy_members_selected_attr = ' selected';
+                        }
+                        
+                        if ($sk['timeline']['add_privacy'] == "admins") {
+                            $add_privacy_admins_selected_attr = ' selected';
+                        }
+                        ?>
+                        <option value="members"<?php echo $add_privacy_members_selected_attr; ?>>
+                            <?php
+                            echo $lang['group_members_label'];
+                            ?>
+                        </option>
+                        <option value="admins"<?php echo $add_privacy_admins_selected_attr; ?>>
+                            <?php
+                            echo $lang['group_admins_label'];
+                            ?>
+                        </option>
+                    </select>
+                </div>
+                <div class="float-clear"></div>
+            </div>
+            <div class="form-input-wrapper">
+                <label class="float-left span20">
+                    <?php
+                    echo $lang['group_timeline_post_privacy_label'];
+                    ?>:
+                </label>
+                <div class="input float-left span65">
+                    <select name="timeline_post_privacy">
+                        <?php
+                        $post_privacy_members_selected_attr = '';
+                        $post_privacy_admins_selected_attr = '';
+                        
+                        if ($sk['timeline']['timeline_post_privacy'] == "members") {
+                            $post_privacy_members_selected_attr = ' selected';
+                        }
+                        
+                        if ($sk['timeline']['timeline_post_privacy'] == "admins") {
+                            $post_privacy_admins_selected_attr = ' selected';
+                        }
+                        ?>
+                        <option value="members" <?php echo $post_privacy_members_selected_attr; ?>>
+                            <?php echo $lang['group_members_label']; ?>
+                        </option>
+                        <option value="admins" <?php echo $post_privacy_admins_selected_attr; ?>>
+                            <?php echo $lang['group_admins_label']; ?>
+                        </option>
+                    </select>
+                </div>
+                <div class="float-clear"></div>
+            </div>
+            <div class="form-input-wrapper">
+                <button class="active">
+                    <?php
+                    echo $lang['save_changes_button'];
+                    ?>
+                </button>
+            </div>
+        </div>
+        <input name="timeline_id" value="<?php echo $sk['timeline']['id']; ?>" type="hidden">
+        </form>
+        <script>
+        $('form.update-group-settings-form').ajaxForm({
+            url: SK_source() + '?t=group&a=update_settings',
+            
+            beforeSend: function() {
+                $('form.update-group-settings-form').find('input[type="submit"]')
+                .val('Saving...');
+            },
+            success: function(responseText) {
+                
+                if (responseText.status == 200) {
+                    window.location = responseText.url;
+                }
+            }
+        });
+        </script>
+        <?php
+        } else {
+            echo SK_getStoryPublisherBox(0, $sk['timeline']['id']);
+        ?>
+        <div class="stories-container" data-story-type="all" data-story-timeline="<?php echo $sk['timeline']['id']; ?>">
+            <div class="stories-wrapper">
+            <?php
+            $stories = SK_getStories(
+                array(
+                    'publisher_id' => $sk['timeline']['id']
+                )
+            );
+            
+            if (is_array($stories) && count($stories) > 0) {
+                
+                foreach ($stories as $sk['story']) {
+                    echo SK_getPage('story/content');
+                }
+            }
+            ?>
+            </div>
+            <div align="center">
+                <div class="load-btn" onclick="SK_loadOldStories();">
+                    <i class="icon-reorder progress-icon hide"></i>
+                    <?php echo $lang['view_previous_posts_label']; ?>
+                </div>
+            </div>
+        </div>
+        <?php
+        }
+        ?>
+        </div>
+</div>
+<div class="float-left span35">
+    <div class="story-filters-wrapper">
+        <div class="filter-header-wrapper">
+            <?php
+            echo $lang['filters_header'];
+            ?>
+        </div>
+        <div class="filter all-wrapper" onclick="SK_filterStories('all',<?php echo $sk['timeline']['id']; ?>);">
+            <i class="icon-tasks progress-icon" data-icon="tasks"></i> 
+            <?php
+            echo $lang['filter_label_all'];
+            ?>
+        </div>
+        <div class="filter texts-wrapper" onclick="SK_filterStories('texts',<?php echo $sk['timeline']['id']; ?>);">
+            <i class="icon-pencil progress-icon" data-icon="pencil"></i> 
+            <?php
+            echo $lang['filter_label_texts'];
+            ?>
+        </div>
+        <div class="filter photos-wrapper" onclick="SK_filterStories('photos',<?php echo $sk['timeline']['id']; ?>);">
+            <i class="icon-camera-retro progress-icon" data-icon="camera-retro"></i> 
+            <?php
+            echo $lang['filter_label_photos'];
+            ?>
+        </div>
+        <div class="filter videos-wrapper" onclick="SK_filterStories('videos',<?php echo $sk['timeline']['id']; ?>);">
+            <i class="icon-film progress-icon" data-icon="film"></i> 
+            <?php
+            echo $lang['filter_label_videos'];
+            ?>
+        </div>
+        <div class="filter music-wrapper" onclick="SK_filterStories('music',<?php echo $sk['timeline']['id']; ?>);">
+            <i class="icon-music progress-icon" data-icon="music"></i> 
+            <?php
+            echo $lang['filter_label_music'];
+            ?>
+        </div>
+        <div class="filter places-wrapper" onclick="SK_filterStories('places',<?php echo $sk['timeline']['id']; ?>);">
+            <i class="icon-map-marker progress-icon" data-icon="map-marker"></i> 
+            <?php
+            echo $lang['filter_label_places'];
+            ?>
+        </div>
+    </div>
+    <?php
+    echo $sk['config']['ad_place_timeline'];
+    ?>
+</div>
+<div class="float-clear"></div>
+<?php
+if ($sk['logged'] == true && SK_isGroupAdmin($sk['timeline']['id'])) {
+?>
+<script>
+$(function(){
+    $('.timeline-370').css('min-height', ($('.timeline-sidebar').height() + 150) + 'px');
+    $('.cover-resize-wrapper').height($('.cover-resize-wrapper').width()*0.3);
+    
+    $('form.cover-form').ajaxForm({
+        url: SK_source() + '?t=cover&a=new',
+        
+        beforeSend: function() {
+            $('.cover-progress')
+                .html('0% <?php echo $lang['uploaded']; ?>...')
+                .css('line-height', $('.cover-resize-wrapper').height() + 'px')
+                .fadeIn('fast')
+                .removeClass('hidden');
+        },
+        
+        uploadProgress: function(event, position, total, percentComplete) {
+            var percentVal = percentComplete + '%';
+            
+            $('.cover-progress').html(percentVal + ' <?php echo $lang['uploaded']; ?>...');
+            
+            if (percentComplete == 100) {
+                
+                setTimeout(function () {
+                    $('.cover-progress').html('<?php echo $lang['processing']; ?>..');
+                    
+                    setTimeout(function () {
+                        $('.cover-progress').html('<?php echo $lang['please_wait']; ?>...');
+                    },2000);
+                },500);
+            }
+        },
+        
+        success: function(responseText) {
+            
+            if (responseText.status == 200) {
+                $('.cover-wrapper img')
+                    .attr('src', responseText.cover_url + '?' + new Date().getTime())
+                    .load(function() {
+                        $('.cover-progress').fadeOut('fast', function(){
+                            $(this).addClass('hidden').html('');
+                        });
+                        $('.cover-resize-wrapper img').attr('src', responseText.actual_cover_url + '?' + new Date().getTime()).css('top',0);
+                    });
+            }
+            else {
+                $('.cover-progress').fadeOut('fast', function(){
+                    $(this).addClass('hidden').html('');
+                });
+                $('.cover-resize-wrapper img').css('top', 0);
+            }
+        }
+    });
+    
+    $('form.cover-position-form').ajaxForm({
+        url: SK_source()+'?t=cover&a=reposition',
+        
+        beforeSend: function() {
+            $('.cover-progress').html('<?php echo $lang['repositioning']; ?>...').fadeIn('fast').removeClass('hidden');
+        },
+        
+        success: function(responseText){
+            
+            if (responseText.status == 200) {
+                $('.cover-wrapper img')
+                    .attr('src', responseText.url + '?' + new Date().getTime())
+                    .load(function () {
+                        $('.cover-progress').fadeOut('fast').addClass('hidden').html('');
+                        $('.cover-wrapper').show();
+                        $('.cover-resize-wrapper')
+                            .hide()
+                            .find('img').css('top', 0);
+                        $('.cover-resize-buttons').hide();
+                        $('.default-buttons').show();
+                        $('input.cover-position').val(0);
+                        $('.cover-resize-wrapper img').draggable('destroy').css('cursor','default');
+                    });
+            }
+        }
+    });
+    
+    $(window).resize(function () {
+        cover_width = $('.cover-resize-wrapper').width();
+        $('.cover-resize-wrapper').height(cover_width * 0.3);
+        $('.cover-resize-wrapper img').css('top', 0);
+        $('.cover-progress').css('line-height', $('.cover-resize-wrapper').height() + 'px');
+        $('.screen-width').val(cover_width);
+    });
+});
+
+function SK_repositionCover() {
+    cover_wrapper = $('.cover-wrapper');
+    cover_resize_wrapper = $('.cover-resize-wrapper');
+    cover_resize_buttons = $('.cover-resize-buttons');
+    default_buttons = $('.default-buttons');
+    screen_width = $('.screen-width');
+    cover_position_input = $('input.cover-position');
+    
+    cover_wrapper.hide();
+    cover_resize_wrapper.show();
+    cover_resize_buttons.show();
+    default_buttons.hide();
+    screen_width.val(cover_resize_wrapper.width());
+    cover_position_input.val(0);
+    
+    cover_resize_wrapper.find('img')
+    .css('cursor','s-resize')
+    .draggable({
+        scroll: false,
+        axis: "y",
+        cursor: "s-resize",
+        drag: function(event, ui) {
+            y1 = $('.timeline-header-wrapper').height();
+            y2 = cover_resize_wrapper.find('img').height();
+            
+            if (ui.position.top >= 0) {
+                ui.position.top = 0;
+            }
+            else
+            if (ui.position.top <= (y1-y2)) {
+                ui.position.top = y1-y2;
+            }
+        },
+        
+        stop: function(event, ui) {
+            cover_position_input.val(ui.position.top);
+        }
+    });
+}
+
+function SK_saveReposition() {
+    
+    if ($('input.cover-position').length == 1) {
+        posY = $('input.cover-position').val();
+        $('form.cover-position-form').submit();
+    }
+}
+
+function SK_cancelReposition() {
+    $('.cover-wrapper').show();
+    $('.cover-resize-wrapper').hide();
+    $('.cover-resize-buttons').hide();
+    $('.default-buttons').show();
+    $('input.cover-position').val(0);
+    $('.cover-resize-wrapper img').draggable('destroy').css('cursor','default');
+}
+</script>
+<?php
+} else {
+?>
+<script>
+$('.timeline-370').css('min-height', ($('.timeline-sidebar').height() + 150) + 'px');
+</script>
+<?php
+}
+?>

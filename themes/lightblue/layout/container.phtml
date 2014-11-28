@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title><?php echo $sk['config']['site_title']; ?></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="<?php echo $sk['config']['site_url']; ?>/favicon.ico" />
+    <link href="<?php echo $sk['config']['theme_url']; ?>/css/style.css" rel="stylesheet">
+    <link href="<?php echo $sk['config']['theme_url']; ?>/css/style-1.1.css" rel="stylesheet">
+    <link href="<?php echo $sk['config']['theme_url']; ?>/css/style-1.2.css" rel="stylesheet">
+    <?php
+    // CSS for welcome page
+    if ($_GET['tab1'] == "welcome") {
+        echo '<link href="' . $sk['config']['theme_url'] . '/css/welcome.css" rel="stylesheet">';
+    }
+    ?>
+    <link href="<?php echo $sk['config']['theme_url']; ?>/css/font-awesome/font-awesome.css" rel="stylesheet">
+    <!--[if IE 7]>
+        <link href="<?php echo $sk['config']['theme_url']; ?>/css/font-awesome/font-awesome-ie7.css" rel="stylesheet">
+    <![endif]-->
+    <script src="<?php echo $sk['config']['theme_url']; ?>/javascript/jquery.1.10.2.min.js"></script>
+    <script src="<?php echo $sk['config']['theme_url']; ?>/javascript/jquery-ui-1.10.4.custom.min.js"></script>
+    <script src="<?php echo $sk['config']['theme_url']; ?>/javascript/jquery.ui.touch-punch.min.js"></script>
+    <script src="<?php echo $sk['config']['theme_url']; ?>/javascript/jquery-timeago.js"></script>
+    <script src="<?php echo $sk['config']['theme_url']; ?>/javascript/jquery.form.min.js"></script>
+    <?php
+    if ($sk['config']['smooth_links'] == 1) {
+        echo '<script>
+    function SK_source(){
+        return \'' . $sk['config']['ajax_path'] . '\';
+    }
+    function SK_pageSource() {
+        return \'' . $sk['config']['page_path'] . '\';
+    }
+</script>';
+    } else {
+        echo '<script>
+    function SK_source(){
+        return \'request.php\';
+    }
+    function SK_pageSource() {
+        return \'page.php\';
+    }
+</script>';
+    }
+    
+    if ($sk['logged'] == true) {
+    ?>
+    <script src="<?php echo $sk['config']['theme_url']; ?>/javascript/script.js"></script>
+    <?php
+    } else {
+    ?>
+    <script src="<?php echo $sk['config']['theme_url']; ?>/javascript/welcome.js"></script>
+    <?php
+    }
+    
+    // Open chat automatically from session
+    if ($sk['config']['chat'] == 1) {
+        
+        if ($chat_recipient = SK_getChat()) {
+            echo '<script>$(function() { SK_getChat(' . $chat_recipient['id'] . ',\'' . $chat_recipient['name'] . '\'); });</script>';
+        }
+    }
+    ?>
+    <script>
+    /* Ajax Page Loader */
+    function SK_loadPage(pageurl) {
+        $.get(SK_pageSource() + pageurl, {}, function (data) {
+            $('.page-wrapper')
+                .html(data);
+            stopPageLoadingBar();
+
+            if (typeof window.history.pushState == "function") {
+                historyurl = pageurl;
+                
+                if ($("body").attr('data-rewrite') == 1) {
+                    historyurl = historyurl.replace(/\?tab1=timeline&tab2=([^\/]+)&tab3=([^\/]+)&recipient_id=([^\/]+)&id=([^\/]+)$/i, '<?php echo $sk['config']['site_url']; ?>/@$4/$1/$2/$3');
+                    historyurl = historyurl.replace(/\?tab1=timeline&tab2=([^\/]+)&tab3=([^\/]+)&id=([^\/]+)$/i, '<?php echo $sk['config']['site_url']; ?>/@$3/$1/$2');
+                    historyurl = historyurl.replace(/\?tab1=timeline&tab2=([^\/]+)&id=([^\/]+)$/i, '<?php echo $sk['config']['site_url']; ?>/@$2/$1');
+                    historyurl = historyurl.replace(/\?tab1=timeline&id=([^\/]+)$/i, '<?php echo $sk['config']['site_url']; ?>/@$1');
+
+                    historyurl = historyurl.replace(/\?tab1=messages&recipient_id=([A-Za-z0-9_]+)$/i, '<?php echo $sk['config']['site_url']; ?>/messages/$1');
+                    historyurl = historyurl.replace(/\?tab1=story&id=([0-9]+)$/i, '<?php echo $sk['config']['site_url']; ?>/story/$1');
+
+                    historyurl = historyurl.replace(/\?tab1=welcome&tab2=forgot_password$/i, '<?php echo $sk['config']['site_url']; ?>/forgot-password');
+                    historyurl = historyurl.replace(/\?tab1=welcome&tab2=password_reset&id=([A-Za-z0-9_]+)$/i, '<?php echo $sk['config']['site_url']; ?>/password-reset/$1');
+
+                    historyurl = historyurl.replace(/\?tab1=([^\/]+)&query=([^\/]+)$/i, '<?php echo $sk['config']['site_url']; ?>/$1/$2');
+
+                    historyurl = historyurl.replace(/\?tab1=([^\/]+)&tab2=([^\/]+)&tab3=([^\/]+)$/i, '<?php echo $sk['config']['site_url']; ?>/$1/$2/$3');
+                    historyurl = historyurl.replace(/\?tab1=([^\/]+)&tab2=([^\/]+)$/i, '<?php echo $sk['config']['site_url']; ?>/$1/$2');
+                    historyurl = historyurl.replace(/\?tab1=([^\/]+)$/i, '<?php echo $sk['config']['site_url']; ?>/$1');
+                }
+								//alert(historyurl);
+                history.replaceState({}, 'Daregang', historyurl);
+            }
+        });
+        
+        $('.dropdown-search-container').hide();
+        $('.dropdown-notification-container').hide();
+        $('.notification-nav').removeClass('header-nav-active');
+        $('.dropdown-more-container').hide();
+        $(".sc-lightbox-container").remove();
+    }
+
+    function startPageLoadingBar() {
+        $(".page-loading-bar")
+            .show()
+            .width((50 + Math.random() * 30) + "%");
+    }
+    function stopPageLoadingBar() {
+        $(".page-loading-bar")
+            .width("101%")
+            .delay(200)
+            .fadeOut(400, function() {
+                $(this).width("0");
+            });
+    }
+
+    $(document).on('click', '*[data-href]', function(e) {
+        e.preventDefault();
+        startPageLoadingBar();
+        SK_loadPage($(this).attr('data-href'));
+        $(document).scrollTop(0);
+    });
+    </script>
+</head>
+<body<?php if ($sk['config']['smooth_links'] == true) { echo ' data-rewrite="1"'; } ?>>
+    <?php echo SK_getPage('header/content'); ?>
+    <div class="page-loading-bar">
+        <dd></dd>
+        <dt></dt>
+    </div>
+    
+    <div class="page-wrapper">
+        <?php echo $sk['content']; ?>
+    </div>
+    
+    <?php echo SK_getPage('footer/content'); ?>
+    
+    <?php
+    if ($sk['logged'] == true && $sk['config']['chat'] == 1) {
+        echo SK_getPage('chat/container');
+    }
+    ?>
+    <audio id="notification-sound" preload="auto">
+        <source src="<?php echo $sk['config']['theme_url']; ?>/sounds/notification.ogg" type="audio/ogg">
+        <source src="<?php echo $sk['config']['theme_url']; ?>/sounds/notification.mp3" type="audio/mpeg">
+        <source src="<?php echo $sk['config']['theme_url']; ?>/sounds/notification.wav" type="audio/wav">
+    </audio>
+</body>
+</html>

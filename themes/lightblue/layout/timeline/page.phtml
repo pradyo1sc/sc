@@ -1,0 +1,1333 @@
+<?php
+if (isset($_GET['tab2']) && $_GET['tab2'] == "settings" && SK_isPageAdmin($sk['timeline']['id'])) {
+    
+    if (empty($_GET['tab3'])) {
+        $_GET['tab3'] = 'general_settings';
+    }
+?>
+<div class="page-margin"></div>
+<div class="float-left span25">
+    <div class="list-wrapper">
+        <a class="list-column column-hover" href="<?php echo SK_smoothLink('index.php?tab1=timeline&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&id=<?php echo $sk['timeline']['username']; ?>" align="center">
+            <?php
+            echo $sk['timeline']['name'];
+            ?>
+        </a>
+    </div>
+    
+    <div class="list-wrapper">
+        <div class="list-header">
+            <?php
+            echo $lang['menu_label'];
+            ?>
+        </div>
+        
+        <a class="list-column column-hover" href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=settings&tab3=general_settings&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&tab3=general_settings&id=<?php echo $sk['timeline']['username']; ?>">
+            <?php
+            echo $lang['general_settings_label'];
+            ?>
+        </a>
+        
+        <a class="list-column column-hover" href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=settings&tab3=privacy&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&tab3=privacy&id=<?php echo $sk['timeline']['username']; ?>">
+            <?php
+            echo $lang['privacy_settings_label'];
+            ?>
+        </a>
+        
+        <?php
+        if (SK_isPageAdmin($sk['timeline']['id']) == "admin") {
+        ?>
+        <a class="list-column column-hover" href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=settings&tab3=admins&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&tab3=admins&id=<?php echo $sk['timeline']['username']; ?>">
+            <?php echo $lang['pages_admin_roles_label']; ?>
+        </a>
+        <?php
+        }
+        
+        $message_count = SK_countMessages(
+            array(
+                'new' => true,
+                'timeline_id' => $sk['timeline']['id']
+            )
+        );
+        ?>
+        <a class="list-column column-hover" href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=settings&tab3=messages&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&tab3=messages&id=<?php echo $sk['timeline']['username']; ?>">
+            <?php
+            echo $lang['messages_label'];
+            
+            if ($message_count > 0) {
+            ?>
+            <span class="update-alert">
+                <?php
+                echo $message_count;
+                ?>
+            </span>
+            <?php
+            }
+            ?>
+        </a>
+        
+        <a class="list-column column-hover" href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=settings&tab3=likes&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&tab3=likes&id=<?php echo $sk['timeline']['username']; ?>">
+            <?php
+            echo $lang['pages_likes_label'];
+            ?>
+        </a>
+    </div>
+</div>
+
+<div class="float-right span74">
+    <?php
+    if (isset($_GET['tab3']) && $_GET['tab3'] == "general_settings") {
+    ?>
+    <form class="update-general-settings" method="post">
+    <div class="form-container">
+        <div class="form-header">
+            <?php
+            echo $lang['general_settings_label'];
+            ?>
+        </div>
+        <div class="form-input-wrapper">
+            <label class="float-left span20">
+                <?php
+                echo $lang['username_label'];
+                ?>:
+            </label>
+            <div class="input float-left span70">
+                <input type="text" name="username" value="<?php echo $sk['timeline']['username']; ?>" autocomplete="off" onkeyup="SK_checkUsername(this.value,<?php echo $sk['timeline']['id']; ?>,'.check-username-result',true);">
+                <div class="check-username-result ajax-result"></div>
+            </div>
+            <div class="float-clear"></div>
+        </div>
+        <div class="form-input-wrapper">
+            <label class="float-left span20">
+                <?php
+                echo $lang['pages_name_label'];
+                ?>:
+            </label>
+            <div class="input float-left span70">
+                <input type="text" name="name" value="<?php echo $sk['timeline']['name']; ?>">
+            </div>
+            <div class="float-clear"></div>
+        </div>
+        <div class="form-input-wrapper">
+            <label class="float-left span20">
+                <?php
+                echo $lang['about_label'];
+                ?>:
+            </label>
+            <div class="input float-left span70">
+                <textarea class="auto-grow-input" valign="top" name="about"><?php echo $sk['timeline']['about']; ?></textarea>
+            </div>
+            <div class="float-clear"></div>
+        </div>
+        <div class="form-input-wrapper">
+            <label class="float-left span20">
+                <?php
+                echo $lang['address_label'];
+                ?>:
+            </label>
+            <div class="input float-left span70">
+                <input type="text" name="address" value="<?php echo $sk['timeline']['address']; ?>" autocomplete="off">
+            </div>
+            <div class="float-clear"></div>
+        </div>
+        <div class="form-input-wrapper">
+            <label class="float-left span20">
+                <?php
+                echo $lang['awards_label'];
+                ?>:
+            </label>
+            <div class="input float-left span70">
+                <input type="text" name="awards" value="<?php echo $sk['timeline']['awards']; ?>" autocomplete="off">
+            </div>
+            <div class="float-clear"></div>
+        </div>
+        <div class="form-input-wrapper">
+            <label class="float-left span20">
+                <?php
+                echo $lang['phone_label'];
+                ?>:
+            </label>
+            <div class="input float-left span70">
+                <?php
+                $value_attr = '';
+                
+                if (!empty($sk['timeline']['phone'])) {
+                    $value_attr = ' value="' . $sk['timeline']['phone'] . '"';
+                }
+                ?>
+                <input type="text" name="phone"<?php echo $value_attr; ?> autocomplete="off">
+            </div>
+            <div class="float-clear"></div>
+        </div>
+        <div class="form-input-wrapper">
+            <label class="float-left span20">
+                <?php
+                echo $lang['products_label'];
+                ?>:
+            </label>
+            <div class="input float-left span70">
+                <textarea class="auto-grow-input" name="products" valign="top"><?php echo $sk['timeline']['products']; ?></textarea>
+            </div>
+            <div class="float-clear"></div>
+        </div>
+        <div class="form-input-wrapper">
+            <button class="active">
+                <i class="icon-lightbulb progress-icon hide"></i> 
+                <?php
+                echo $lang['save_changes_button'];
+                ?>
+            </button>
+        </div>
+    </div>
+    <input name="timeline_id" value="<?php echo $sk['timeline']['id']; ?>" type="hidden">
+    </form>
+    <script>
+    $ (function () {
+        
+        $('form.update-general-settings').ajaxForm({
+            url: SK_source() + '?t=page&a=update',
+            
+            success: function (responseText) {
+                
+                if (responseText.status == 200) {
+                    
+                    if ( $('.success-message').length == 0 ) {
+                        $('.form-header').after('<div class="success-message hidden"><?php echo $lang['changes_saved']; ?>.</div>');
+                        $('.success-message').fadeIn('fast',function () {
+                                $(this).fadeOut(1500, function() {
+                                    $(this).remove();
+                                });
+                            });
+                    }
+                    
+                    setTimeout(function () {
+                        window.location = responseText.url;
+                    }, 1000);
+                }
+            }
+        });
+    });
+    </script>
+    <?php
+    } elseif (isset($_GET['tab3']) && $_GET['tab3'] == "privacy") {
+    ?>
+    <form class="update-page-privacy" method="post">
+    <div class="form-container">
+        <div class="form-header">
+            <?php
+            echo $lang['privacy_settings_label'];
+            ?>
+        </div>
+        <div class="form-input-wrapper">
+            <label class="float-left span35">
+                <?php
+                echo $lang['pages_timeline_post_privacy'];
+                ?>:
+            </label>
+            <div class="input float-left span55">
+                <select name="timeline_post_privacy">
+                    <?php
+                    $post_privacy_everyone_selected_attr = '';
+                    $post_privacy_none_selected_attr = '';
+                    
+                    if ($sk['timeline']['timeline_post_privacy'] == "everyone") {
+                        $post_privacy_everyone_selected_attr = ' selected';
+                    }
+                    
+                    if ($sk['timeline']['timeline_post_privacy'] == "none") {
+                        $post_privacy_none_selected_attr = ' selected';
+                    }
+                    ?>
+                    <option value="everyone"<?php echo $post_privacy_everyone_selected_attr; ?>><?php echo $lang['yes']; ?></option>
+                    <option value="none"<?php echo $post_privacy_none_selected_attr; ?>><?php echo $lang['no']; ?></option>
+                </select>
+            </div>
+            <div class="float-clear"></div>
+        </div>
+        <div class="form-input-wrapper">
+            <label class="float-left span35">
+                <?php
+                echo $lang['pages_message_privacy'];
+                ?>:
+            </label>
+            <div class="input float-left span55">
+                <select name="message_privacy">
+                    <?php
+                    $message_privacy_everyone_selected_attr = '';
+                    $message_privacy_none_selected_attr = '';
+                    
+                    if ($sk['timeline']['message_privacy'] == "everyone") {
+                        $message_privacy_everyone_selected_attr = ' selected';
+                    }
+                    
+                    if ($sk['timeline']['message_privacy'] == "none") {
+                        $message_privacy_none_selected_attr = ' selected';
+                    }
+                    ?>
+                    <option value="everyone"<?php echo $message_privacy_everyone_selected_attr; ?>><?php echo $lang['yes']; ?></option>
+                    <option value="none"<?php echo $message_privacy_none_selected_attr; ?>><?php echo $lang['no']; ?></option>
+                </select>
+            </div>
+            <div class="float-clear"></div>
+        </div>
+        <div class="form-input-wrapper">
+            <button class="active">
+                <i class="icon-lightbulb progress-icon hide"></i> 
+                <?php echo $lang['save_changes_button']; ?>
+            </button>
+        </div>
+    </div>
+    <input name="timeline_id" value="<?php echo $sk['timeline']['id']; ?>" type="hidden">
+    </form>
+    <script>
+    $ (function () {
+        
+        $('form.update-page-privacy').ajaxForm({
+            url: SK_source() + '?t=page&a=update',
+            
+            success: function (responseText) {
+                
+                if (responseText.status == 200) {
+                    
+                    if ( $('.success-message').length == 0 ) {
+                        $('.form-header').after('<div class="success-message hidden"><?php echo $lang['changes_saved']; ?>.</div>');
+                        $('.success-message').fadeIn('fast',function () {
+                                $(this).fadeOut(1500, function() {
+                                    $(this).remove();
+                                });
+                            });
+                    }
+                }
+            }
+        });
+    });
+    </script>
+    <?php
+    } elseif (isset($_GET['tab3']) && $_GET['tab3'] == "admins" && SK_isPageAdmin($sk['timeline']['id']) == "admin") {
+    ?>
+    <div class="list-wrapper list-admins">
+        <div class="list-header">
+            <?php
+            echo $lang['pages_admin_roles_label'];
+            ?>
+        </div>
+        <?php
+        if (SK_countPageAdmins($sk['timeline']['id']) == 0) {
+        ?>
+        <div class="no-wrapper"><?php echo $lang['no_admins']; ?></div>
+        <?php
+        } else {
+            
+            foreach (SK_getPageAdmins($sk['timeline']['id']) as $admin) {
+        ?>
+        <div class="list-column page-admin-<?php echo $admin['id']; ?>">
+        <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <td width="38px" align="left" valign="middle">
+                <a href="<?php echo $admin['url']; ?>" data-href="?tab1=timeline&id=<?php echo $admin['username']; ?>">
+                    <img width="32px" height="32px" class="radius3" src="<?php echo $admin['thumbnail_url']; ?>" alt="<?php echo $admin['name']; ?>">
+                </a>
+            </td>
+            
+            <td align="left" valign="middle">
+                <a class="bold-500" href="<?php echo $admin['url']; ?>" data-href="?tab1=timeline&id=<?php echo $admin['username']; ?>">
+                    <?php echo $admin['name']; ?>
+                </a>
+            </td>
+            
+            <td align="right" valign="middle">
+                <select onchange="SK_changeAdminRole(<?php echo $sk['timeline']['id']; ?>,<?php echo $admin['id']; ?>,this.value);">
+                    <?php
+                    $is_admin_selected_attr = '';
+                    $is_editor_selected_attr = '';
+                    $admin_role = SK_isPageAdmin($sk['timeline']['id'], $admin['id']);
+                    
+                    if ($admin_role == "admin") {
+                        $is_admin_selected_attr = ' selected';
+                    } elseif ($admin_role == "editor") {
+                        $is_editor_selected_attr = ' selected';
+                    }
+                    ?>
+                    <option value="admin"<?php echo $is_admin_selected_attr; ?>><?php echo $lang['admin']; ?></option>
+                    <option value="editor"<?php echo $is_editor_selected_attr; ?>><?php echo $lang['editor']; ?></option>
+                </select>
+                <input class="column-btn remove-btn" type="submit" value="<?php echo $lang['remove']; ?>" onclick="SK_removeAdmin(<?php echo $sk['timeline']['id']; ?>,<?php echo $admin['id']; ?>);">
+            </td>
+        </tr>
+        </table>
+        </div>
+        <?php
+            }
+        }
+        ?>
+        <div class="list-column">
+            <?php echo $lang['admin_editor_difference']; ?>
+        </div>
+    </div>
+    <div class="list-wrapper list-potentials">
+        <div class="list-header">
+            <?php
+            echo $lang['pages_add_admins_label'];
+            ?>
+        </div>
+        <?php
+        if (SK_countFollowing($sk['user']['id']) == 0) {
+        ?>
+        <div class="no-wrapper">
+            <?php
+                if ($sk['config']['friends'] == true) {
+                    echo $lang['no_friends_to_add_to_page'];
+                } else {
+                    echo $lang['no_followers_to_add_to_page'];
+                }
+            ?>
+        </div>
+        <?php
+        } else {
+            $nonadmin_followings = 0;
+            
+            foreach (SK_getFollowing($sk['user']['id']) as $potential) {
+                
+                if (!SK_isPageAdmin($sk['timeline']['id'], $potential['id'])) {
+                $nonadmin_followings++;
+        ?>
+        <div class="list-column potential-admin-<?php echo $potential['id']; ?>">
+        <table border="0" width="100%" cellspacing="0" cellpadding="0">
+            <tr>
+            <td width="38px" align="left" valign="middle">
+                <a href="<?php echo $potential['url']; ?>" data-href="?tab1=timeline&id=<?php echo $potential['username']; ?>">
+                    <img width="32px" height="32px" class="radius3" src="<?php echo $potential['thumbnail_url']; ?>" alt="<?php echo $potential['name']; ?>">
+                </a>
+            </td>
+            <td align="left" valign="middle">
+                <a class="bold-500" href="<?php echo $potential['url']; ?>" data-href="?tab1=timeline&id=<?php echo $potential['username']; ?>">
+                    <?php
+                    echo $potential['name'];
+                    ?>
+                </a>
+            </td>
+            <td align="right" valign="middle">
+                <select class="admin-role">
+                    <option value="admin"><?php echo $lang['admin']; ?></option>
+                    <option value="editor"><?php echo $lang['editor']; ?></option>
+                </select>
+                <input class="column-btn add-btn" type="submit" value="<?php echo $lang['add']; ?>" onclick="SK_addAdmin(<?php echo $sk['timeline']['id']; ?>,<?php echo $potential['id']; ?>);">
+            </td>
+            </tr>
+        </table>
+        </div>
+        <?php
+                }
+            }
+            
+            if ($nonadmin_followings == 0) {
+        ?>
+        <div class="no-wrapper">
+            <?php
+                if ($sk['config']['friends'] == true) {
+                    echo $lang['added_all_friends_to_page'];
+                } else {
+                    echo $lang['added_all_followings_to_page'];
+                }
+            ?>
+        </div>
+        <?php
+            }
+        }
+        ?>
+    </div>
+    <script>
+    function SK_changeAdminRole(page_id, admin_id, admin_role) {
+        
+        $.post(SK_source() + '?t=page&a=add_admin', {page_id: page_id, admin_id: admin_id, admin_role: admin_role}, function (data) {
+            
+            if (data.status == 200) {
+                
+                if ($('.list-popup-alert').length == 0) {
+                    $('.list-admins .list-header').after('<div class="list-popup-alert hidden"><?php echo $lang['changes_saved']; ?></div>');
+                }
+                
+                $('.list-popup-alert').fadeIn('fast');
+            }
+            else {
+                $('.list-popup-alert').fadeOut('fast', function () {
+                    $(this).remove();
+                });
+            }
+        });
+    }
+    
+    function SK_addAdmin(page_id, admin_id) {
+        admin_role = $('.potential-admin-'+admin_id).find('select.admin-role').val();
+        $('.potential-admin-'+admin_id).find('.add-btn').val('<?php echo $lang['adding']; ?>...');
+        
+        $.post(SK_source() + '?t=page&a=add_admin', {page_id: page_id, admin_id: admin_id, admin_role: admin_role}, function (data) {
+            
+            if (data.status == 200) {
+                $('.potential-admin-'+admin_id).find('.add-btn').val('<?php echo $lang['added']; ?>');
+            }
+            else {
+                $('.list-popup-alert').fadeOut('fast', function () {
+                    $(this).remove();
+                });
+            }
+        });
+    }
+    
+    function SK_removeAdmin(page_id, admin_id) {
+        $('.page-admin-'+admin_id).find('.remove-btn').val('<?php echo $lang['removing']; ?>...');
+        
+        $.post(SK_source() + '?t=page&a=remove_admin', {page_id: page_id, admin_id: admin_id},function (data) {
+            
+            if (data.status == 200) {
+                $('.page-admin-' + admin_id).slideUp(function () {
+                    $(this).remove();
+                });
+            }
+        });
+    }
+    </script>
+    <?php
+    } elseif (isset($_GET['tab3']) && $_GET['tab3'] == "messages" && SK_isPageAdmin($sk['timeline']['id'])) {
+        
+        if (!empty($_GET['recipient_id'])) {
+            $recipient_id = SK_secureEncode($_GET['recipient_id']);
+            $recipient = SK_getUser($recipient_id);
+    ?>
+    <div class="message-container">
+        <div class="container-header">
+            <div class="float-left">
+                <?php
+                $hidden_class = '';
+                
+                if (!isset($recipient['id'])) {
+                    $hidden_class = ' hidden';
+                }
+                ?>
+                <i class="icon-comments"></i> 
+                <?php
+                echo $lang['messages_label'];
+                ?> w/ 
+                <span id="recipient-name" class="<?php echo $hidden_class; ?>">
+                    <?php
+                    if (isset($recipient['id'])){
+                        echo $recipient['name'];
+                    }
+                    ?>
+                </span>
+            </div>
+            
+            <div class="float-right">
+                <i class="icon-ok progress-icon hide"></i>
+            </div>
+            
+            <div class="float-clear"></div>
+        </div>
+        
+        <div class="text-messages-container">
+            <div class="view-more-wrapper cursor-hand bold-500 <?php echo $hidden_class; ?>" align="center" onclick="SK_getPreviousMessages(<?php echo $recipient['id']; ?>,<?php echo $sk['timeline']['id']; ?>);">
+                <?php
+                echo $lang['view_previous_messages_label'];
+                ?>
+                <i class="icon-arrow-up progress-icon hide"></i>
+            </div>
+            <div class="text-messages-wrapper">
+            <?php
+            $no_messages = false;
+            
+            if (isset($recipient['id'])) {
+                $messages = SK_getMessages(
+                    array(
+                        'recipient_id' => $recipient['id'],
+                        'timeline_id' => $sk['timeline']['id']
+                    )
+                );
+                $count_messages = SK_countMessages(
+                    array(
+                        'recipient_id' => $recipient['id'],
+                        'timeline_id' => $sk['timeline']['id']
+                    )
+                );
+                
+                if ($count_messages == 0) {
+                    $no_messages = true;
+                } else {
+                    
+                    foreach ($messages as $sk['message']) {
+                        echo SK_getPage('message/text-list');
+                    }
+                }
+            } else {
+                $no_messages = true;
+            }
+            
+            if ($no_messages == true) { ?>
+            <div class="no-wrapper" align="center">
+                <?php echo $lang['no_messages_to_show_label']; ?>
+            </div>
+            <?php
+            }
+            ?>
+            </div>
+        </div>
+        
+        <div class="textarea-container" align="center">
+            <form class="send-message-form" method="post" enctype="multipart/form-data">
+                <?php
+                $label = $lang['write_a_message_label'];
+                $disabled_attr = '';
+                $hidden_class = '';
+                
+                if (!isset($recipient['id']) or !is_numeric($recipient['id']) or $recipient['message_privacy'] == "following") {
+                    $label = $lang['cannot_reply_to_conversation'];
+                    $disabled_attr = ' disabled';
+                    $hidden_class = ' hidden';
+                }
+                ?>
+                <textarea class="message-textarea auto-grow-input" name="text" placeholder="<?php echo $label; ?>.." onkeyup="SK_sendMessageForm(event);" onfocus="SK_sendMessageForm(event);" <?php echo $disabled_attr; ?>></textarea>
+                <input class="message-photo-input hidden" name="photos[]" type="file" accept="image/jpeg,image/png" onchange="SK_uploadMessageForm();">
+                <?php
+                $recipient_value = '';
+                
+                if (isset($recipient['id'])) {
+                    $recipient_value = $recipient['id'];
+                }
+                ?>
+                <input id="recipient-id" name="recipient_id" value="<?php echo $recipient_value; ?>" type="hidden">
+                <div class="options-wrapper<?php echo $hidden_class; ?>">
+                    <i class="icon-camera progress-icon cursor-hand" title="<?php echo $lang['upload_photo']; ?>" valign="middle" onclick="$('.message-photo-input').click();"></i>
+                </div>
+                <input type="hidden" name="timeline_id" value="<?php echo $sk['timeline']['id']; ?>">
+            </form>
+        </div>
+    </div>
+    <script>
+    $(function () {
+        setInterval('SK_getNewMessages(<?php echo $sk['timeline']['id']; ?>);',500);
+        $('.text-messages-container').scrollTop($('.text-messages-container').prop('scrollHeight'));
+        
+        $('form.send-message-form').ajaxForm({
+            url: SK_source() + '?t=message&a=send_message',
+            
+            beforeSend: function() {
+                $('.message-textarea').attr('disabled', true);
+            },
+            
+            success: function (responseText) {
+                
+                if (responseText.status == 200) {
+                    $('.text-messages-wrapper').append(responseText.html);
+                    $('.text-messages-container').scrollTop($('.text-messages-container').prop('scrollHeight'));
+                }
+                
+                $('form.send-message-form').clearForm();
+                $('.message-textarea').val('').attr('disabled',false).keyup().focus();
+                
+                SK_progressIconLoader($('.textarea-container').find('.options-wrapper'));
+            }
+        });
+    });
+    
+    function SK_getNewMessages(timeline_id) {
+        text_messages_container = $('.text-messages-container');
+        text_messages_wrapper = $('.text-messages-wrapper');
+        textarea_wrapper = $('.message-textarea');
+        
+        recipient_id = $('#recipient-id').val();
+        
+        $.get(SK_source(), {t: 'message', a: 'load_new_messages', recipient_id: recipient_id, timeline_id: timeline_id}, function (data) {
+            
+            if (data.status == 200) {
+                text_messages_wrapper.append(data.html);
+                text_messages_container.scrollTop(text_messages_container.prop('scrollHeight'));
+                
+                if ( !textarea_wrapper.is(':focus') ) {
+                    document.title = '(<?php echo $lang['chat_new_update_alert']; ?>) ' + document_title;
+                }
+            }
+        });
+    }
+
+    function SK_getPreviousMessages(recipient_id,timeline_id) {
+        view_more_wrapper = $('.view-more-wrapper');
+        
+        before_message_id = $('.text-message-wrapper:first').attr('data-message-id');
+        
+        SK_progressIconLoader(view_more_wrapper);
+        
+        $.get(SK_source(), {t: 'message', a: 'load_previous_messages', recipient_id: recipient_id, timeline_id: timeline_id, before_message_id: before_message_id}, function (data) {
+            
+            if (data.status == 200) {
+                $('.text-messages-wrapper').prepend(data.html);
+                view_wrapper_detach = $('.view-more-wrapper').detach();
+                $('.text-messages-container').prepend(view_wrapper_detach);
+            }
+            else {
+                view_more_wrapper.hide();
+            }
+            
+            SK_progressIconLoader(view_more_wrapper);
+        });
+    }
+    
+    function SK_sendMessageForm(e) {
+        document.title = document_title;
+        
+        if (e.keyCode == 13 && e.shiftKey == 0) {
+            e.preventDefault();
+            $('form.send-message-form').submit();
+            SK_progressIconLoader($('.textarea-container').find('.options-wrapper'));
+        }
+    }
+    
+    function SK_uploadMessageForm() {
+        document.title = document_title;
+        $('form.send-message-form').submit();
+        SK_progressIconLoader($('.textarea-container').find('.options-wrapper'));
+    }
+
+    function SK_removeMsg(id) {
+        $.post(SK_source() + '?t=message&a=delete', {message_id: id}, function (data) {
+            
+            if (data.status == 200) {
+                $('#message_' + id).slideUp(function () {
+                    $(this).remove();
+                });
+            }
+        });
+    }
+    </script>
+    <?php
+    } else {
+    ?>
+    <div class="list-wrapper">
+        <div class="list-header">
+            <?php
+            echo $lang['messages_label'];
+            ?>
+        </div>
+        <?php
+        $message_recipients = SK_getMessageRecipients($sk['timeline']['id']);
+        
+        if (is_array($message_recipients) && count($message_recipients) > 0) {
+            
+            foreach (SK_getMessageRecipients($sk['timeline']['id']) as $recipient) {
+        ?>
+        <a class="list-column column-hover" href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=settings&tab3=messages&recipient_id='. $recipient['username'] . '&id='. $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&tab3=messages&recipient_id=<?php echo $recipient['username']; ?>&id=<?php echo $sk['timeline']['username']; ?>">
+        <table border="0" width="100%" cellspacing="0" cellpadding="0">
+            <tr>
+            <td width="38px" align="left" valign="middle">
+                <img width="32px" height="32px" class="radius3" src="<?php echo $recipient['thumbnail_url']; ?>" alt="<?php echo $recipient['name']; ?>">
+            </td>
+            <td align="left" valign="middle">
+                <div class="bold-500">
+                    <?php
+                    echo $recipient['name'];
+                    
+                    $messages_count = SK_countMessages(
+                        array(
+                            'new' => true,
+                            'timeline_id' => $sk['timeline']['id'],
+                            'recipient_id' => $recipient['id']
+                        )
+                    );
+                    
+                    if ($messages_count > 0) {
+                    ?>
+                    <span class="update-alert">
+                        <?php echo $messages_count; ?>
+                    </span>
+                    <?php
+                    }
+                    ?>
+                </div>
+            </td>
+            </tr>
+        </table>
+        </a>
+        <?php
+            }
+        } else {
+        ?>
+        <div class="no-wrapper"><?php echo $lang['no_messages_to_show_label']; ?></div>
+        <?php
+        }
+        ?>
+    </div>
+    <?php
+        }
+    } elseif (isset($_GET['tab3']) && $_GET['tab3'] == "likes" && SK_isPageAdmin($sk['timeline']['id'])) {
+    ?>
+    <div class="list-wrapper">
+        <div class="list-header"><?php echo $lang['pages_likes_label']; ?></div>
+        <?php
+        if (SK_countFollowers($sk['timeline']['id']) == 0) {
+        ?>
+        <div class="no-wrapper">
+            <?php echo $lang['no_likes_label']; ?>
+        </div>
+        <?php
+        } else {
+            
+            foreach (SK_getFollowers($sk['timeline']['id']) as $fan) {
+        ?>
+        <div class="list-column fan-id-<?php echo $fan['id']; ?>">
+        <table border="0" width="100%" cellspacing="0" cellpadding="0">
+            <tr>
+            <td width="38px" align="left" valign="middle">
+                <a href="<?php echo $fan['url']; ?>" data-href="?tab1=timeline&id=<?php echo $fan['username']; ?>">
+                    <img width="32px" height="32px" class="radius3" src="<?php echo $fan['thumbnail_url']; ?>" alt="<?php echo $fan['name']; ?>">
+                </a>
+            </td>
+            <td align="left" valign="middle">
+                <a class="bold-500" href="<?php echo $fan['url']; ?>" data-href="?tab1=timeline&id=<?php echo $fan['username']; ?>">
+                    <?php
+                    echo $fan['name'];
+                    ?>
+                </a>
+            </td>
+            </tr>
+        </table>
+        </div>
+        <?php
+            }
+        }
+        ?>
+    </div>
+    <?php
+    }
+    ?>
+</div>
+<div class="float-clear"></div>
+<?php
+} else {
+?>
+<div class="timeline-header-wrapper">
+    <div class="cover-container">
+        <div class="cover-wrapper">
+            <img src="<?php echo $sk['timeline']['cover_url']; ?>" alt="@">
+            <div class="cover-progress"></div>
+        </div>
+        
+        <div class="cover-resize-wrapper">
+            <img src="<?php echo $sk['timeline']['actual_cover_url']; ?>" alt="<?php echo $sk['timeline']['name']; ?>">
+            <div class="drag-div" align="center"><?php echo $lang['reposition_drag_label']; ?></div>
+            <div class="cover-progress"></div>
+        </div>
+        
+        <div class="avatar-wrapper">
+            <img class="avatar" src="<?php echo $sk['timeline']['avatar_url']; ?>" alt="<?php echo $sk['timeline']['name']; ?>">
+            <?php
+            if (SK_isPageAdmin($sk['timeline']['id'])) {
+            ?>
+            <div class="avatar-change-wrapper">
+                <i class="icon-camera" title="<?php echo $lang['change_avatar_label']; ?>" onclick="$('.change-avatar-input').click();"></i>
+            </div>
+            <form class="change-avatar-form hidden" method="post" enctype="multipart/form-data" action="<?php echo $sk['config']['ajax_path']; ?>?t=avatar&a=post_upload">
+                <input class="change-avatar-input hidden" type="file" name="image" accept="image/jpeg,image/png" onchange="javascript:$('form.change-avatar-form').submit();">
+                <input name="timeline_id" value="<?php echo $sk['timeline']['id']; ?>" type="hidden">
+            </form>
+            <div class="avatar-progress-wrapper"></div>
+            <?php
+            }
+            ?>
+        </div>
+        
+        <div class="timeline-name-wrapper">
+            <a href="<?php echo $sk['timeline']['url']; ?>" data-href="?tab1=timeline&id=<?php echo $sk['timeline']['username']; ?>">
+                <?php
+                echo $sk['timeline']['name'];
+                ?>
+            </a>
+            <?php
+            if ($sk['timeline']['verified'] == true) {
+            ?>
+            <span class="verified-badge" title="Verified">
+                <i class="icon-ok"></i>
+            </span>
+            <?php
+            }
+            ?>
+        </div>
+    </div>
+    
+    <div class="timeline-statistics-wrapper">
+        <div class="float-left statistic" align="center">
+            <?php
+            if (SK_isPageAdmin($sk['timeline']['id'])) {
+            ?>
+            <a href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=settings&tab3=likes&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&tab3=likes&id=<?php echo $sk['timeline']['username']; ?>">
+            <?php
+            }
+            
+            echo SK_countFollowers($sk['timeline']['id']) . ' ' .$lang['people_likes_this_label'];
+            
+            if (SK_isPageAdmin($sk['timeline']['id'])) {
+            ?>
+            </a>
+            <?php
+            }
+            ?>
+        </div>
+        <div class="float-left statistic">
+            <a href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=stories&id='.$sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=stories&id=<?php echo $sk['timeline']['username']; ?>">
+                <?php
+                echo SK_countPosts($sk['timeline']['id']) . ' ' . $lang['posts_label']; ?>
+            </a>
+        </div>
+        <div class="float-clear"></div>
+    </div>
+</div>
+<div class="float-left span35">
+    <?php
+    if (SK_isPageAdmin($sk['timeline']['id'])) {
+    ?>
+    <div class="timeline-buttons cover-resize-buttons">
+        <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <td align="center" valign="middle">
+                <a onclick="SK_saveReposition();"><i class="icon-pushpin"></i> <?php echo $lang['save_position_label']; ?></a>
+            </td>
+            <td align="center" valign="middle">
+                <a onclick="SK_cancelReposition();"><i class="icon-remove"></i> <?php echo $lang['cancel']; ?></a>
+            </td>
+        </tr>
+        </table>
+        <form class="cover-position-form hidden" method="post">
+            <input class="cover-position" name="pos" value="0" type="hidden">
+            <input class="screen-width" name="width" value="920" type="hidden">
+            <input name="timeline_id" value="<?php echo $sk['timeline']['id']; ?>" type="hidden">
+        </form>
+    </div>
+    <div class="timeline-buttons default-buttons">
+        <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <td align="center" valign="middle">
+                <?php
+                echo SK_getFollowButton($sk['timeline']['id']);
+                ?>
+            </td>
+            <td align="center" valign="middle">
+                <a href="<?php echo SK_smoothLink('index.php?tab1=timeline&tab2=settings&id=' . $sk['timeline']['username']); ?>" data-href="?tab1=timeline&tab2=settings&id=<?php echo $sk['timeline']['username']; ?>">
+                    <i class="icon-gear"></i> 
+                    <?php
+                    echo $lang['settings_label'];
+                    ?>
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td align="center" valign="middle">
+                <a onclick="javascript:$('.cover-image-input').click();">
+                    <i class="icon-camera-retro"></i> 
+                    <?php
+                    echo $lang['change_cover_label'];
+                    ?>
+                </a>
+            </td>
+            <td align="center" valign="middle">
+                <a onclick="SK_repositionCover();">
+                    <i class="icon-move"></i> 
+                    <?php
+                    echo $lang['reposition_cover_label'];
+                    ?>
+                </a>
+            </td>
+        </tr>
+        </table>
+    </div>
+    <form class="cover-form hidden" method="post" enctype="multipart/form-data" action="ajax.php?t=cover&a=post_upload">
+        <input class="cover-image-input hidden" type="file" name="image" accept="image/jpeg,image/png" onchange="javascript:$('form.cover-form').submit();">
+        <input name="timeline_id" value="<?php echo $sk['timeline']['id']; ?>" type="hidden">
+    </form>
+    <?php
+    } elseif ($sk['logged'] == true) {
+    ?>
+    <div class="timeline-buttons default-buttons">
+        <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <?php
+            if ($sk['timeline']['message_privacy'] == "everyone") {
+            ?>
+            <td align="center" valign="middle">
+                <?php
+                echo SK_getFollowButton($sk['timeline']['id']);
+                ?>
+            </td>
+            <td align="center" valign="middle">
+                <a href="<?php echo SK_smoothLink('index.php?tab1=messages&recipient_id='.$sk['timeline']['username']); ?>" data-href="?tab1=messages&recipient_id=<?php echo $sk['timeline']['username']; ?>">
+                    <i class="icon-inbox"></i> 
+                    <?php
+                    echo $lang['message_label'];
+                    ?>
+                </a>
+            </td>
+            <?php
+            } else {
+            ?>
+            <td align="center" width="100%" valign="middle">
+                <?php
+                echo SK_getFollowButton($sk['timeline']['id']);
+                ?>
+            </td>
+            <?php
+            }
+            ?>
+        </tr>
+        </table>
+    </div>
+    <?php
+    }
+    ?>
+    <div class="timeline-sidebar">
+        <div class="sidebar-div">
+            <?php echo $lang['page_category_label']; ?>: 
+            <?php
+            $category = SK_getPageCategoryData($sk['timeline']['category_id']);
+            echo $category['name'];
+            ?>
+        </div>
+        <?php
+        if (!empty($sk['timeline']['about'])) {
+        ?>
+        <div class="sidebar-div">
+            <?php echo $lang['about_label']; ?>: 
+            <?php
+            echo $sk['timeline']['about'];
+            ?>
+        </div>
+        <?php
+        }
+        
+        if (!empty($sk['timeline']['address'])) {
+        ?>
+        <div class="sidebar-div">
+            <?php echo $lang['address_label']; ?>: 
+            <?php
+            echo $sk['timeline']['address'];
+            ?>
+        </div>
+        <?php
+        }
+        
+        if (!empty($sk['timeline']['awards'])) { ?>
+        <div class="sidebar-div">
+            <?php echo $lang['awards_label']; ?>: 
+            <?php
+            echo $sk['timeline']['awards'];
+            ?>
+        </div>
+        <?php
+        }
+        
+        if (!empty($sk['timeline']['phone'])) { ?>
+        <div class="sidebar-div">
+            <?php echo $lang['phone_label']; ?>: 
+            <?php
+            echo $sk['timeline']['phone'];
+            ?>
+        </div>
+        <?php
+        }
+        
+        if (!empty($sk['timeline']['products'])) { ?>
+        <div class="sidebar-div">
+            <?php echo $lang['products_label']; ?>: 
+            <?php
+            echo $sk['timeline']['products'];
+            ?>
+        </div>
+        <?php
+        }
+        ?>
+    </div>
+</div>
+<div class="float-right span63">
+    <div class="timeline-370">
+        <?php
+        if ($sk['logged'] == true) {
+            
+            if (SK_isPageAdmin($sk['timeline']['id'])) {
+                echo SK_getStoryPublisherBox($sk['timeline']['id']);
+            } else {
+                echo SK_getStoryPublisherBox(0, $sk['timeline']['id']);
+            }
+        }
+        ?>
+        <div class="stories-container" data-story-type="all" data-story-timeline="<?php echo $sk['timeline']['id']; ?>">
+            <div class="stories-wrapper">
+                <?php
+                $stories = SK_getStories(
+                    array(
+                        'publisher_id' => $sk['timeline']['id']
+                    )
+                );
+                
+                if (is_array($stories) && count($stories) > 0) {
+                    
+                    foreach($stories as $sk['story']) {
+                        echo SK_getPage('story/content');
+                    }
+                }
+                ?>
+            </div>
+            <div align="center">
+                <div class="load-btn" onclick="SK_loadOldStories();">
+                    <i class="icon-reorder progress-icon hide"></i>
+                    <?php echo $lang['view_previous_posts_label']; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="float-left span35">
+    <div class="story-filters-wrapper">
+        <div class="filter-header-wrapper">
+            <?php
+            echo $lang['filters_header'];
+            ?>
+        </div>
+        <div class="filter all-wrapper" onclick="SK_filterStories('all',<?php echo $sk['timeline']['id']; ?>);">
+            <i class="icon-tasks progress-icon" data-icon="tasks"></i> 
+            <?php
+            echo $lang['filter_label_all'];
+            ?>
+        </div>
+        <div class="filter texts-wrapper" onclick="SK_filterStories('texts',<?php echo $sk['timeline']['id']; ?>);">
+            <i class="icon-pencil progress-icon" data-icon="pencil"></i> 
+            <?php
+            echo $lang['filter_label_texts'];
+            ?>
+        </div>
+        <div class="filter photos-wrapper" onclick="SK_filterStories('photos',<?php echo $sk['timeline']['id']; ?>);">
+            <i class="icon-camera-retro progress-icon" data-icon="camera-retro"></i> 
+            <?php
+            echo $lang['filter_label_photos'];
+            ?>
+        </div>
+        <div class="filter videos-wrapper" onclick="SK_filterStories('videos',<?php echo $sk['timeline']['id']; ?>);">
+            <i class="icon-film progress-icon" data-icon="film"></i> 
+            <?php
+            echo $lang['filter_label_videos'];
+            ?>
+        </div>
+        <div class="filter music-wrapper" onclick="SK_filterStories('music',<?php echo $sk['timeline']['id']; ?>);">
+            <i class="icon-music progress-icon" data-icon="music"></i> 
+            <?php
+            echo $lang['filter_label_music'];
+            ?>
+        </div>
+        <div class="filter places-wrapper" onclick="SK_filterStories('places',<?php echo $sk['timeline']['id']; ?>);">
+            <i class="icon-map-marker progress-icon" data-icon="map-marker"></i> 
+            <?php
+            echo $lang['filter_label_places'];
+            ?>
+        </div>
+        <div class="filter timeline_post_by_others-wrapper" onclick="SK_filterStories('timeline_post_by_others',<?php echo $sk['timeline']['id']; ?>);">
+            <i class="icon-group progress-icon" data-icon="group"></i> 
+            <?php
+            echo $lang['filter_label_post_by_others'];
+            ?>
+        </div>
+    </div>
+    
+    <?php
+    echo $sk['config']['ad_place_timeline'];
+    ?>
+</div>
+
+<div class="float-clear"></div>
+<?php
+    if ($sk['logged'] == true && SK_isPageAdmin($sk['timeline']['id'])) {
+?>
+<script>
+$(function () {
+    $('.timeline-370').css('min-height', ($('.timeline-sidebar').height() + 150) + 'px');
+    $('.cover-resize-wrapper').height($('.cover-resize-wrapper').width() * 0.3);
+    
+    $('form.change-avatar-form').ajaxForm({
+        url: SK_source() + '?t=avatar&a=new',
+        
+        beforeSend: function() {
+            $('.avatar-progress-wrapper').html('0%<br><?php echo $lang['uploaded']; ?>').fadeIn('fast').removeClass('hidden');
+            $('.avatar-change-wrapper').addClass('hidden');
+        },
+        
+        uploadProgress: function(event, position, total, percentComplete) {
+            var percentVal = percentComplete+'%';
+            $('.avatar-progress-wrapper').html(percentVal+'<br><?php echo $lang['uploaded']; ?>');
+            
+            if (percentComplete == 100) {
+                
+                setTimeout(function () {
+                    $('.avatar-progress-wrapper').html('<?php echo $lang['processing']; ?>..');
+                    
+                    setTimeout(function () {
+                        $('.avatar-progress-wrapper').html('<?php echo $lang['please_wait']; ?>...');
+                    },2000);
+                },500);
+            }
+        },
+        
+        success: function (responseText) {
+            
+            if (responseText.status == 200) {
+                $('.avatar-wrapper').find('img.avatar')
+                    .attr('src', responseText.avatar_url)
+                    .load(function() {
+                        $('.avatar-progress-wrapper').fadeOut('fast').addClass('hidden').html('');
+                        $('.avatar-change-wrapper').removeClass('hidden');
+                    });
+            }
+            else {
+                $('.avatar-progress-wrapper').fadeOut('fast').addClass('hidden').html('');
+                $('.avatar-change-wrapper').removeClass('hidden');
+            }
+        }
+    });
+    
+    $('form.cover-form').ajaxForm({
+        url: SK_source() + '?t=cover&a=new',
+        
+        beforeSend: function() {
+            $('.cover-progress')
+                .html('0% <?php echo $lang['uploaded']; ?>...')
+                .css('line-height', $('.cover-resize-wrapper').height() + 'px')
+                .fadeIn('fast')
+                .removeClass('hidden');
+        },
+        
+        uploadProgress: function(event, position, total, percentComplete) {
+            var percentVal = percentComplete+'%';
+            $('.cover-progress').html(percentVal+' <?php echo $lang['uploaded']; ?>...');
+            
+            if (percentComplete == 100) {
+                
+                setTimeout(function () {
+                    $('.cover-progress').html('<?php echo $lang['processing']; ?>..');
+                    
+                    setTimeout(function () {
+                        $('.cover-progress').html('<?php echo $lang['please_wait']; ?>...');
+                    },2000);
+                },500);
+            }
+        },
+        
+        success: function(responseText) {
+            
+            if (responseText.status == 200) {
+                $('.cover-wrapper img')
+                    .attr('src', responseText.cover_url + '?' + new Date().getTime())
+                    .load(function() {
+                        $('.cover-progress').fadeOut('fast', function(){
+                            $(this).addClass('hidden').html('');
+                        });
+                        $('.cover-resize-wrapper img').attr('src', responseText.actual_cover_url + '?' + new Date().getTime()).css('top', 0);
+                    });
+            }
+            else {
+                $('.cover-progress').fadeOut('fast', function () {
+                    $(this).addClass('hidden').html('');
+                });
+                $('.cover-resize-wrapper img').css('top', 0);
+            }
+        }
+    });
+    
+    $('form.cover-position-form').ajaxForm({
+        url: SK_source() + '?t=cover&a=reposition',
+        
+        beforeSend: function() {
+            $('.cover-progress').html('<?php echo $lang['repositioning']; ?>...').fadeIn('fast').removeClass('hidden');
+        },
+        
+        success: function(responseText) {
+            
+            if (responseText.status == 200) {
+                $('.cover-wrapper img')
+                    .attr('src', responseText.url + '?' + new Date().getTime())
+                    .load(function () {
+                        $('.cover-progress').fadeOut('fast').addClass('hidden').html('');
+                        $('.cover-wrapper').show();
+                        $('.cover-resize-wrapper')
+                            .hide()
+                            .find('img').css('top', 0);
+                        $('.cover-resize-buttons').hide();
+                        $('.default-buttons').show();
+                        $('input.cover-position').val(0);
+                        $('.cover-resize-wrapper img').draggable('destroy').css('cursor','default');
+                    });
+            }
+        }
+    });
+    
+    $(window).resize(function () {
+        cover_width = $('.cover-resize-wrapper').width();
+        $('.cover-resize-wrapper').height(cover_width * 0.3);
+        $('.cover-resize-wrapper img').css('top', 0);
+        $('.cover-progress').css('line-height', $('.cover-resize-wrapper').height() + 'px');
+        $('.screen-width').val(cover_width);
+    });
+});
+
+function SK_repositionCover() {
+    $('.cover-wrapper').hide();
+    $('.cover-resize-wrapper').show();
+    $('.cover-resize-buttons').show();
+    $('.default-buttons').hide();
+    $('.screen-width').val($('.cover-resize-wrapper').width());
+    $('.cover-resize-wrapper img')
+    .css('cursor','s-resize')
+    .draggable({
+        scroll: false,
+        
+        axis: "y",
+        
+        cursor: "s-resize",
+        
+        drag: function (event, ui) {
+            y1 = $('.timeline-header-wrapper').height();
+            y2 = $('.cover-resize-wrapper').find('img').height();
+            
+            if (ui.position.top >= 0) {
+                ui.position.top = 0;
+            }
+            else
+            if (ui.position.top <= (y1-y2)) {
+                ui.position.top = y1-y2;
+            }
+        },
+        
+        stop: function (event, ui) {
+            $('input.cover-position').val(ui.position.top);
+        }
+    });
+}
+
+function SK_saveReposition() {
+    
+    if ($('input.cover-position').length == 1) {
+        posY = $('input.cover-position').val();
+        $('form.cover-position-form').submit();
+    }
+}
+
+function SK_cancelReposition() {
+    $('.cover-wrapper').show();
+    $('.cover-resize-wrapper').hide();
+    $('.cover-resize-buttons').hide();
+    $('.default-buttons').show();
+    $('input.cover-position').val(0);
+    $('.cover-resize-wrapper img').draggable('destroy').css('cursor','default');
+}
+</script>
+<?php
+    } else {
+?>
+<script>
+$('.timeline-370').css('min-height', ($('.timeline-sidebar').height() + 150) + 'px');
+</script>
+<?php
+    }
+}
+?>

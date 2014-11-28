@@ -1,0 +1,12 @@
+<div class="e-photo photo_<?php echo $sk['photo']['post_id']; ?>">
+    <img src="<?php echo $sk['config']['site_url'] . '/' . $sk['photo']['url'] . '_100x100.' . $sk['photo']['extension']; ?>" width="100%" onclick="javascript:SK_openLightbox(<?php echo $sk['photo']['post_id']; ?>);">
+    <?php
+    if ($sk['photo']['timeline_id'] == $sk['user']['id']) {
+    ?>
+    <div class="remove-btn" title="Delete Photo" onclick="SK_deletePostWindow(<?php echo $sk['photo']['post_id']; ?>);">
+        <i class="icon-remove"></i>
+    </div>
+    <?php
+    }
+    ?>
+</div>

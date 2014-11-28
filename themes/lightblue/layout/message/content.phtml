@@ -1,0 +1,264 @@
+<div class="page-margin"></div>
+<div class="float-right span74">
+    <?php
+    if (!empty($_GET['recipient_id'])) {
+        $recipient_id = SK_secureEncode($_GET['recipient_id']);
+        $recipient = SK_getUser($recipient_id);
+        
+        if (empty($recipient['id'])) {
+            unset($recipient);
+        }
+    }
+    ?>
+    <div class="message-container">
+        <div class="container-header">
+            <div class="float-left">
+                <i class="icon-comments"></i> <?php echo $lang['messages_label']; ?> w/ <span id="recipient-name" class="hidden"></span>
+            </div>
+            
+            <div class="float-right">
+                <i class="icon-ok progress-icon hide"></i>
+            </div>
+            
+            <div class="float-clear"></div>
+        </div>
+        
+        <div class="text-messages-container">
+            <?php
+            $prev_msg_recipient_id = 0;
+            
+            if (isset($recipient['id'])){
+                $prev_msg_recipient_id = $recipient['id'];
+            }
+            ?>
+            <div class="view-more-wrapper cursor-hand bold-500 hidden" align="center" onclick="SK_getPreviousMessages(<?php echo $prev_msg_recipient_id; ?>);">
+                <i class="icon-arrow-up progress-icon hide"></i>
+                <?php
+                echo $lang['view_previous_messages_label'];
+                ?>
+            </div>
+            
+            <div class="text-messages-wrapper">
+                <div class="no-wrapper" align="center">
+                    <?php
+                    echo $lang['no_messages_to_show_label'];
+                    ?>
+                </div>
+            </div>
+        </div>
+        
+        <div class="textarea-container" align="center">
+            <form class="send-message-form" method="post" enctype="multipart/form-data">
+                <textarea class="message-textarea auto-grow-input" name="text" placeholder="<?php echo $lang['write_a_message_label']; ?>..." onkeyup="SK_sendMessageForm(event);" onfocus="SK_sendMessageForm(event);" data-height="22" disabled></textarea>
+                <input class="message-photo-input hidden" name="photos[]" type="file" accept="image/jpeg,image/png" onchange="SK_uploadMessageForm();">
+                <div class="options-wrapper">
+                    <i class="icon-camera progress-icon cursor-hand" title="<?php echo $lang['upload_photo']; ?>" valign="middle" onclick="$('.message-photo-input').click();"></i>
+                </div>
+                <input name="timeline_id" value="<?php echo $sk['user']['id']; ?>" type="hidden">
+                <input id="recipient-id" name="recipient_id" value="0" type="hidden">
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="float-left span25">
+    <div class="message-recipient-wrapper">
+        <div class="wrapper-header">
+            <input class="recipient-search" type="text" placeholder="<?php echo $lang['messages_search_label']; ?>" onkeyup="SK_getRecipients(this.value);">
+            <i class="icon-search cursor-hand" onclick="$('.recipient-search').focus();"></i>
+        </div>
+        <div class="recipient-list-wrapper">
+            <?php
+            foreach(SK_getMessageRecipients() as $sk['recipient']) {
+                echo SK_getPage('message/recipient-list');
+            }
+            ?>
+        </div>
+    </div>
+    
+    <?php
+    echo $sk['config']['ad_place_messages'];
+    ?>
+</div>
+
+<div class="float-clear"></div>
+
+<script>
+$(function() {
+    setInterval('SK_getNewMessages();', 7500);
+    setInterval('SK_updateRecipients();', 30000);
+    
+    $('form.send-message-form').ajaxForm({
+        url: SK_source() + '?t=message&a=send_message',
+        
+        beforeSend: function() {
+            $('.message-textarea').attr('disabled',true);
+        },
+        
+        success: function(responseText) {
+            
+            if (responseText.status == 200) {
+                
+                if ($('.text-message-wrapper').length == 0) {
+                    $('.text-messages-wrapper').html(responseText.html);
+                } else {
+                    $('.text-messages-wrapper').append(responseText.html);
+                }
+                
+                $('.text-messages-container').scrollTop($('.text-messages-container').prop('scrollHeight'));
+            }
+            
+            $('form.send-message-form').clearForm();
+            $('.message-textarea').val('').attr('disabled', false).keyup().focus();
+            
+            SK_progressIconLoader($('.textarea-container').find('.options-wrapper'));
+        }
+    });
+    
+    <?php
+    if (isset($recipient['id'])) {
+    ?>
+    SK_getMessages(<?php echo $recipient['id']; ?>,'<?php echo $recipient['name']; ?>');
+    <?php
+    }
+    ?>
+});
+
+function SK_updateRecipients() {
+    
+    if ($('.recipient-search').val().length == 0) {
+        
+        $.get(SK_source(), {t: 'search', a: 'recipients'}, function (data) {
+            
+            if (data.status == 200) {
+                $('.recipient-list-wrapper').html(data.html);
+            }
+        });
+    }
+}
+
+function SK_getRecipients(query) {
+    
+    $.get(SK_source(), {t: 'search', a: 'recipients', q: query}, function (data) {
+        
+        if (data.status == 200) {
+            $('.recipient-list-wrapper').html(data.html);
+        }
+    });
+}
+
+function SK_getMessages(recipient_id,recipient_name) {
+    message_container = $('.message-container');
+    container_header = message_container.find('.container-header');
+    text_messages_container = $('.text-messages-container');
+    text_messages_wrapper = $('.text-messages-wrapper');
+    textarea_wrapper = $('.message-textarea');
+    view_more_wrapper = $('.view-more-wrapper');
+    
+    $('#recipient-id').val(recipient_id);
+    $('#recipient-name').text(recipient_name).show();
+    
+    textarea_wrapper.attr('disabled', true);
+    $(document).scrollTop(0);
+    
+    SK_progressIconLoader(container_header);
+    
+    $('#message_recipient_' + recipient_id)
+        .find('.update-alert').hide();
+    
+    $.get(SK_source(), {t: 'message', a: 'load_messages', recipient_id: recipient_id}, function (data) {
+        
+        if (data.status == 200) {
+            text_messages_wrapper.html(data.html);
+            
+            if (data.html.length == 0) {
+                text_messages_wrapper.html('<div align="center" style="color: #898f9c; margin-top: 12px;"><?php echo $lang['no_messages_to_show_label']; ?></div>');
+                view_more_wrapper.hide();
+            } else {
+                view_more_wrapper.attr('onclick', 'SK_getPreviousMessages(' + recipient_id + ');').show();
+            }
+            
+            if (data.reply_ability_status == true) {
+                textarea_wrapper.attr({'placeholder':'<?php echo $lang['write_a_message_label']; ?>...','disabled':false}).focus();
+                $('.options-wrapper').show();
+            } else {
+                textarea_wrapper.attr('placeholder', '<?php echo $lang['cannot_reply_to_conversation']; ?>');
+                $('.options-wrapper').hide();
+            }
+            
+            view_more_wrapper.show();
+        }
+        
+        text_messages_container.scrollTop(text_messages_container.prop('scrollHeight'));
+        SK_progressIconLoader(container_header);
+    });
+}
+
+function SK_getNewMessages() {
+    text_messages_container = $('.text-messages-container');
+    text_messages_wrapper = $('.text-messages-wrapper');
+    textarea_wrapper = $('.message-textarea');
+    
+    recipient_id = $('#recipient-id').val();
+    
+    $.get(SK_source(), {t: 'message', a: 'load_new_messages', recipient_id: recipient_id}, function (data) {
+        
+        if (data.status == 200) {
+            text_messages_wrapper.append(data.html);
+            text_messages_container.scrollTop(text_messages_container.prop('scrollHeight'));
+            
+            if (!textarea_wrapper.is(':focus')) {
+                document.title = '(<?php echo $lang['chat_new_update_alert']; ?>) ' + document_title;
+            }
+        }
+    });
+}
+
+function SK_getPreviousMessages(recipient_id) {
+    view_more_wrapper = $('.view-more-wrapper');
+    
+    before_message_id = $('.text-message-wrapper:first').attr('data-message-id');
+    
+    SK_progressIconLoader(view_more_wrapper);
+    
+    $.get(SK_source(), {t: 'message', a: 'load_previous_messages', recipient_id: recipient_id, before_message_id: before_message_id}, function (data) {
+        
+        if (data.status == 200) {
+            $('.text-messages-wrapper').prepend(data.html);
+            view_wrapper_detach = $('.view-more-wrapper').detach();
+            $('.text-messages-container').prepend(view_wrapper_detach);
+        } else {
+            view_more_wrapper.hide();
+        }
+        
+        SK_progressIconLoader(view_more_wrapper);
+    });
+}
+
+function SK_sendMessageForm(e) {
+    document.title = document_title;
+    
+    if (e.keyCode == 13 && e.shiftKey == 0) {
+        e.preventDefault();
+        $('form.send-message-form').submit();
+        SK_progressIconLoader($('.textarea-container').find('.options-wrapper'));
+    }
+}
+
+function SK_uploadMessageForm() {
+    document.title = document_title;
+    $('form.send-message-form').submit();
+    SK_progressIconLoader($('.textarea-container').find('.options-wrapper'));
+}
+
+function SK_removeMsg(id) {
+    $.post(SK_source() + '?t=message&a=delete', {message_id: id}, function (data) {
+        
+        if (data.status == 200) {
+            $('#message_' + id).slideUp(function () {
+                $(this).remove();
+            });
+        }
+    });
+}
+</script>

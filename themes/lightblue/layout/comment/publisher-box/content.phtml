@@ -1,0 +1,17 @@
+<div class="comment-wrapper">
+    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+        <td width="40px" align="left" valign="top">
+            <a href="<?php echo $sk['input']['timeline']['username']; ?>">
+                <img class="avatar" src="<?php echo $sk['input']['timeline']['thumbnail_url']; ?>" width="32px" height="32px">
+            </a>
+        </td>
+        <td align="left" valign="top">
+            <div class="comment-textarea">
+                <textarea class="auto-grow-input" name="text" placeholder="<?php echo $lang['comment_textarea_label']; ?>" data-placeholder="<?php echo $lang['comment_textarea_label']; ?>" data-height="24" onkeyup="SK_registerComment(this.value,<?php echo $sk['input']['post']['id']; ?>,<?php echo $sk['input']['timeline']['id']; ?>,event);"><?php echo $lang['comment_textarea_label']; ?></textarea>
+                <i class="icon-lightbulb progress-icon hide"></i>
+            </div>
+        </td>
+    </tr>
+    </table>
+</div>

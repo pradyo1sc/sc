@@ -1,0 +1,16 @@
+<div class="chat-text align-right" align="right" title="<?php echo SK_getTime($sk['message']['time'], true); ?>">
+    <div class="text-wrapper float-right">
+        <div class="marker-out"><div class="marker-in"></div></div>
+        <?php echo $sk['message']['text'];
+
+        if (isset($sk['message']['media']['id'])) {
+        ?>
+        <div class="photo-wrapper">
+            <img src="<?php echo $sk['message']['media']['complete_url']; ?>" width="100%" alt="<?php echo $sk['message']['account']['name']; ?>">
+        </div>
+        <?php
+        }
+        ?>
+    </div>
+    <div class="float-clear"></div>
+</div>

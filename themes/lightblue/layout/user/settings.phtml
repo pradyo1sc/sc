@@ -1,0 +1,684 @@
+<div class="page-margin"></div>
+<div class="float-left span25">
+    <div class="list-wrapper">
+        <div class="list-header">
+            <?php
+            echo $lang['menu_label'];
+            ?>
+        </div>
+        
+        <a class="list-column" href="<?php echo SK_smoothLink('index.php?tab1=settings&tab2=general'); ?>" data-href="?tab1=settings&tab2=general">
+            <?php
+            echo $lang['general_settings_label'];
+            ?>
+        </a>
+        
+        <a class="list-column" href="<?php echo SK_smoothLink('index.php?tab1=settings&tab2=privacy'); ?>" data-href="?tab1=settings&tab2=privacy">
+            <?php
+            echo $lang['privacy_settings_label'];
+            ?>
+        </a>
+        
+        <a class="list-column" href="<?php echo SK_smoothLink('index.php?tab1=settings&tab2=avatar'); ?>" data-href="?tab1=settings&tab2=avatar">
+            <?php
+            echo $lang['timeline_avatar_label'];
+            ?>
+        </a>
+        
+        <a class="list-column" href="<?php echo SK_smoothLink('index.php?tab1=settings&tab2=cover'); ?>" data-href="?tab1=settings&tab2=cover">
+            <?php
+            echo $lang['timeline_cover_label'];
+            ?>
+        </a>
+        
+        <a class="list-column" href="<?php echo SK_smoothLink('index.php?tab1=settings&tab2=password'); ?>" data-href="?tab1=settings&tab2=password">
+            <?php
+            echo $lang['password_label'];
+            ?>
+        </a>
+    </div>
+</div>
+<div class="float-right span74">
+    <?php
+    if (!isset($_GET['tab2']) or $_GET['tab2'] == "general") {
+    ?>
+    <form class="update-timeline-form" method="post">
+        <div class="form-container">
+            <div class="form-header">
+                <?php
+                echo $lang['general_settings_label'];
+                ?>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <label class="float-left span15">
+                    <?php
+                    echo $lang['username_label'];
+                    ?>:
+                </label>
+                <div class="input float-left span70">
+                    <input type="text" name="username" value="<?php echo $sk['user']['username']; ?>" autocomplete="off" onkeyup="SK_checkUsername(this.value,<?php echo $sk['user']['id']; ?>,'.check-username-result',true);">
+                    <div class="check-username-result ajax-result"></div>
+                </div>
+                <div class="float-clear"></div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <label class="float-left span15">
+                    <?php
+                    echo $lang['fullname_label'];
+                    ?>:
+                </label>
+                <div class="input float-left span70">
+                    <input type="text" name="name" value="<?php echo $sk['user']['name']; ?>">
+                </div>
+                <div class="float-clear"></div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <label class="float-left span15">
+                    <?php
+                    echo $lang['about_label'];
+                    ?>:
+                </label>
+                <div class="input float-left span70">
+                    <textarea class="auto-grow-input" name="about" valign="top"><?php echo $sk['user']['about']; ?></textarea>
+                </div>
+                <div class="float-clear"></div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <label class="float-left span15">
+                    <?php
+                    echo $lang['email_label'];
+                    ?>:
+                </label>
+                <div class="input float-left span70">
+                    <input type="text" name="email" value="<?php echo $sk['user']['email']; ?>">
+                </div>
+                <div class="float-clear"></div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <label class="float-left span15">
+                    <?php echo $lang['birthday_label']; ?>:
+                </label>
+                <div class="input float-left span70">
+                    <select class="birth-date-select" name="birthday[0]" style="width: 20%;">
+                        <option value=""><?php echo $lang['day']; ?>:</option>
+                        <?php
+                        for ($i = 1; $i < 32; $i++) {
+                            
+                            if ($i == $sk['user']['birth']['date']) {
+                                $option = '<option value="' . $i . '" selected>' . $i . '</option>';
+                            } else {
+                                $option = '<option value="' . $i . '">' . $i . '</option>';
+                            }
+                            
+                            echo $option;
+                        }
+                        ?>
+                    </select>
+                    <select class="birth-month-select" name="birthday[1]" style="width: 30%;" onchange="SK_getMonthDays(this.value);">
+                        <option value=""><?php echo $lang['month']; ?>:</option>
+                        <?php
+                        foreach (SK_getMonths() as $month_number => $month_data) {
+                            
+                            if ($month_number == $sk['user']['birth']['month']) {
+                                $option = '<option value="' . $month_number . '" selected>' . $month_data[1] . '</option>';
+                            } else {
+                                $option = '<option value="' . $month_number . '">' . $month_data[1] . '</option>';
+                            }
+                            
+                            echo $option;
+                        }
+                        ?>
+                    </select>
+                    <select class="birth-year-select" name="birthday[2]" style="width: 30%;">
+                        <option value=""><?php echo $lang['year']; ?>:</option>
+                        <?php
+                        for ($i = date('Y')-100; $i < date('Y')-12; $i++) {
+                            
+                            if ($i == $sk['user']['birth']['year']) {
+                                $option = '<option value="' . $i . '" selected>' . $i . '</option>';
+                            } else {
+                                $option = '<option value="' . $i . '">' . $i . '</option>';
+                            }
+                            
+                        echo $option;
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="float-clear"></div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <label class="float-left span15">
+                    <?php echo $lang['gender_label']; ?>:
+                </label>
+                <div class="input float-left span70">
+                    <select name="gender">
+                        <?php
+                        $gender_male_selected_attr = '';
+                        $gender_female_selected_attr = '';
+                        
+                        if ($sk['user']['gender'] == "male") {
+                            $gender_male_selected_attr = ' selected';
+                        } elseif ($sk['user']['gender'] == "female") {
+                            $gender_female_selected_attr = ' selected';
+                        }
+                        ?>
+                        <option value="male"<?php echo $gender_male_selected_attr; ?>>
+                            <?php
+                            echo $lang['gender_male_label'];
+                            ?>
+                        </option>
+                        <option value="female"<?php echo $gender_female_selected_attr; ?>>
+                            <?php
+                            echo $lang['gender_female_label'];
+                            ?>
+                        </option>
+                    </select>
+                </div>
+                <div class="float-clear"></div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <label class="float-left span15">
+                    <?php
+                    echo $lang['location_label'];
+                    ?>:
+                </label>
+                <div class="input float-left span70">
+                    <input type="text" name="current_city" value="<?php echo $sk['user']['current_city']; ?>">
+                </div>
+                <div class="float-clear"></div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <label class="float-left span15">
+                    <?php
+                    echo $lang['hometown_label'];
+                    ?>:
+                </label>
+                <div class="input float-left span70">
+                    <input type="text" name="hometown" value="<?php echo $sk['user']['hometown']; ?>">
+                </div>
+                <div class="float-clear"></div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <label class="float-left span15"><?php echo $lang['timezone']; ?>:</label>
+                <div class="input float-left span70">
+                    <select name="timezone">
+                        <?php
+                        foreach (SK_getTimezones() as $tz_val => $tz_name) {
+                            
+                            if ($tz_val == $sk['user']['timezone']) {
+                                echo '<option value="' . $tz_val . '" selected>' . $tz_name . '</option>';
+                            } else {
+                                echo '<option value="' . $tz_val . '">' . $tz_name . '</option>';
+                            }
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="float-clear"></div>
+            </div>
+            
+            <div class="form-input-wrapper">
+                <button class="active">
+                    <i class="icon-lightbulb progress-icon hide"></i> 
+                    <?php
+                    echo $lang['save_changes_button'];
+                    ?>
+                </button>
+            </div>
+        </div>
+    </form>
+    <script>
+    $(function () {
+        $('form.update-timeline-form').ajaxForm({
+            url: SK_source()+'?t=user&a=settings',
+            
+            beforeSend: function () {
+                SK_progressIconLoader($('form.update-timeline-form').find('button'));
+            },
+            
+            success: function (responseText) {
+                
+                if (responseText.status == 200) {
+                    
+                    $('.form-header').after('<div class="success-message hidden">Changes saved.</div>');
+                    $('.success-message').fadeIn('fast',function () {
+                        $(this).fadeOut(1500, function() {
+                            $(this).remove();
+                        });
+                    });
+                }
+                
+                SK_progressIconLoader($('form.update-timeline-form').find('button'));
+            }
+        });
+    });
+    
+    function SK_getMonthDays(month_number) {
+        var month = new Array();
+        month[1] = 31;
+        month[2] = 28;
+        month[3] = 31;
+        month[4] = 30;
+        month[5] = 31;
+        month[6] = 30;
+        month[7] = 31;
+        month[8] = 31;
+        month[9] = 30;
+        month[10] = 31;
+        month[11] = 30;
+        month[12] = 31;
+        $('.birth-date-select').html('');
+        
+        for (i=1; i<=month[month_number]; i++) {
+            $('.birth-date-select').append('<option value="'+ i +'">'+ i +'</option>');
+        }
+    }
+    </script>
+    <?php
+    } elseif (isset($_GET['tab2']) && $_GET['tab2'] == "privacy") {
+    ?>
+    <form class="update-timeline-form" method="post">
+        <div class="form-container">
+            <div class="form-header">
+                <?php
+                echo $lang['privacy_settings_label'];
+                ?>
+            </div>
+            
+            <?php
+            if ($sk['config']['friends'] !== true) {
+            ?>
+            <div class="form-input-wrapper">
+                <label class="float-left span35">
+                    <?php
+                    echo $lang['confirm_follow_request_label'];
+                    ?>:
+                </label>
+                <div class="input float-left span55">
+                    <select name="confirm_followers" style="width: 30%;">
+                        <?php
+                        $follow_request_no_selected_attr = '';
+                        $follow_request_yes_selected_attr = '';
+                        
+                        if ($sk['user']['confirm_followers'] == 0) {
+                            $follow_request_no_selected_attr = ' selected';
+                        }
+                        
+                        if ($sk['user']['confirm_followers'] == 1) {
+                            $follow_request_yes_selected_attr = ' selected';
+                        }
+                        ?>
+                        <option value="0"<?php echo $follow_request_no_selected_attr; ?>>
+                            <?php echo $lang['no']; ?>
+                        </option>
+                        <option value="1"<?php echo $follow_request_yes_selected_attr; ?>>
+                            <?php echo $lang['yes']; ?>
+                        </option>
+                    </select>
+                </div>
+                <div class="float-clear"></div>
+            </div>
+
+            <div class="form-input-wrapper">
+                <label class="float-left span35">
+                    <?php echo $lang['follow_privacy_label']; ?>:
+                </label>
+                <div class="input float-left span55">
+                    <select name="follow_privacy">
+                        <?php
+                            $follow_privacy_everyone_selected_attr = '';
+                            $follow_privacy_following_selected_attr = '';
+                            
+                            if ($sk['user']['follow_privacy'] == "everyone") {
+                                $follow_privacy_everyone_selected_attr = ' selected';
+                            } elseif ($sk['user']['follow_privacy'] == "following") {
+                                $follow_privacy_following_selected_attr = ' selected';
+                            }
+                        ?>
+                        <option value="everyone"<?php echo $follow_privacy_everyone_selected_attr; ?>>
+                            <?php echo $lang['everyone']; ?>
+                        </option>
+                        <option value="following"<?php echo $follow_privacy_following_selected_attr; ?>>
+                            <?php
+                            if ($sk['config']['friends'] == true) {
+                                echo $lang['my_friends'];
+                            } else {
+                                echo $lang['people_i_follow'];
+                            }
+                            ?>
+                        </option>
+                    </select>
+                </div>
+                <div class="float-clear"></div>
+            </div>
+            <?php
+            }
+            ?>
+
+            <div class="form-input-wrapper">
+                <label class="float-left span35">
+                    <?php
+                    echo $lang['message_privacy_label'];
+                    ?>:
+                </label>
+                <div class="input float-left span55">
+                    <select name="message_privacy">
+                        <?php
+                        $message_privacy_everyone_selected_attr = '';
+                        $message_privacy_following_selected_attr = '';
+                        
+                        if ($sk['user']['message_privacy'] == "everyone") {
+                            $message_privacy_everyone_selected_attr = ' selected';
+                        }
+                        
+                        if ($sk['user']['message_privacy'] == "following") {
+                            $message_privacy_following_selected_attr = ' selected';
+                        }
+                        ?>
+                        <option value="everyone"<?php echo $message_privacy_everyone_selected_attr; ?>>
+                            <?php echo $lang['everyone']; ?>
+                        </option>
+                        <option value="following"<?php echo $message_privacy_following_selected_attr; ?>>
+                            <?php
+                            if ($sk['config']['friends'] == true) {
+                                echo $lang['my_friends'];
+                            } else {
+                                echo $lang['people_i_follow'];
+                            }
+                            ?>
+                        </option>
+                    </select>
+                </div>
+                <div class="float-clear"></div>
+            </div>
+
+            <div class="form-input-wrapper">
+                <label class="float-left span35">
+                    <?php
+                    echo $lang['comment_privacy_label'];
+                    ?>:
+                </label>
+                <div class="input float-left span55">
+                    <select name="comment_privacy">
+                        <?php
+                        $comment_privacy_everyone_selected_attr = '';
+                        $comment_privacy_following_selected_attr = '';
+                        
+                        if ($sk['user']['comment_privacy'] == "everyone") {
+                            $comment_privacy_everyone_selected_attr = ' selected';
+                        }
+                        
+                        if ($sk['user']['comment_privacy'] == "following") {
+                            $comment_privacy_following_selected_attr = ' selected';
+                        }
+                        ?>
+                        <option value="everyone"<?php echo $comment_privacy_everyone_selected_attr; ?>>
+                            <?php echo $lang['everyone']; ?>
+                        </option>
+
+                        <option value="following"<?php echo $comment_privacy_following_selected_attr; ?>>
+                            <?php
+                            if ($sk['config']['friends'] == true) {
+                                echo $lang['my_friends'];
+                            } else {
+                                echo $lang['people_i_follow'];
+                            }
+                            ?>
+                        </option>
+                    </select>
+                </div>
+                <div class="float-clear"></div>
+            </div>
+
+            <div class="form-input-wrapper">
+                <label class="float-left span35">
+                    <?php
+                    echo $lang['timeline_post_privacy_label'];
+                    ?>:
+                </label>
+                <div class="input float-left span55">
+                    <select name="timeline_post_privacy">
+                        <?php
+                        $timeline_post_privacy_everyone_selected_attr = '';
+                        $timeline_post_privacy_following_selected_attr = '';
+                        $timeline_post_privacy_none_selected_attr = '';
+                        
+                        if ($sk['user']['timeline_post_privacy'] == "everyone") {
+                            $timeline_post_privacy_everyone_selected_attr = ' selected';
+                        } elseif ($sk['user']['timeline_post_privacy'] == "following") {
+                            $timeline_post_privacy_following_selected_attr = ' selected';
+                        } elseif ($sk['user']['timeline_post_privacy'] == "none") {
+                            $timeline_post_privacy_none_selected_attr = ' selected';
+                        }
+                        ?>
+                        <option value="everyone"<?php echo $timeline_post_privacy_everyone_selected_attr; ?>>
+                            <?php echo $lang['everyone']; ?>
+                        </option>
+
+                        <option value="following"<?php echo $timeline_post_privacy_following_selected_attr; ?>>
+                            <?php
+                            if ($sk['config']['friends'] == true) {
+                                echo $lang['my_friends'];
+                            } else {
+                                echo $lang['people_i_follow'];
+                            }
+                            ?>
+                        </option>
+
+                        <option value="none"<?php echo $timeline_post_privacy_none_selected_attr; ?>>
+                            <?php echo $lang['no_one']; ?>
+                        </option>
+                    </select>
+                </div>
+                <div class="float-clear"></div>
+            </div>
+
+            <div class="form-input-wrapper">
+                <label class="float-left span35">
+                    <?php
+                    echo $lang['post_privacy'];
+                    ?>:
+                </label>
+                <div class="input float-left span55">
+                    <select name="post_privacy">
+                        <?php
+                        $post_privacy_everyone_selected_attr = '';
+                        $post_privacy_following_selected_attr = '';
+                        
+                        if ($sk['user']['post_privacy'] == "everyone") {
+                            $post_privacy_everyone_selected_attr = ' selected';
+                        }
+                        
+                        if ($sk['user']['post_privacy'] == "following") {
+                            $post_privacy_following_selected_attr = ' selected';
+                        }
+                        ?>
+                        <option value="everyone"<?php echo $post_privacy_everyone_selected_attr; ?>>
+                            <?php echo $lang['everyone']; ?>
+                        </option>
+                        
+                        <option value="following"<?php echo $post_privacy_following_selected_attr; ?>>
+                            <?php
+                            if ($sk['config']['friends'] == true) {
+                                echo $lang['my_friends'];
+                            } else {
+                                echo $lang['people_i_follow'];
+                            }
+                            ?>
+                        </option>
+                    </select>
+                </div>
+                <div class="float-clear"></div>
+            </div>
+
+            <div class="form-input-wrapper">
+                <button class="active">
+                    <i class="icon-lightbulb progress-icon hide"></i> 
+                    <?php echo $lang['save_changes_button']; ?>
+                </button>
+            </div>
+        </div>
+    </form>
+    <script>
+    $('form.update-timeline-form').ajaxForm({
+        url: SK_source()+'?t=user&a=settings',
+        
+        beforeSend: function () {
+            SK_progressIconLoader($('form.update-timeline-form').find('button'));
+        },
+        
+        
+        success: function (responseText) {
+            
+            if (responseText.status == 200) {
+                
+                $('.form-header').after('<div class="success-message hidden"><?php echo $lang['changes_saved']; ?></div>');
+                $('.success-message').fadeIn('fast',function () {
+                        $(this).fadeOut(1500, function() {
+                            $(this).remove();
+                        });
+                    });
+            }
+            
+            SK_progressIconLoader($('form.update-timeline-form').find('button'));
+        }
+    });
+    </script>
+    <?php
+    } elseif (isset($_GET['tab2']) && $_GET['tab2'] == "avatar") {
+    ?>
+    <form class="update-timeline-form" method="post" enctype="multipart/form-data" action="<?php echo $sk['config']['site_url']; ?>/request.php?t=avatar&a=post_upload">
+    <div class="form-container">
+        <div class="form-header">
+            <?php
+            echo $lang['change_avatar_label'];
+            ?>
+        </div>
+        <div class="form-input-wrapper">
+            <table border="0" width="95%">
+            <tr>
+                <td align="left" valign="middle">
+                    <img class="radius3" src="<?php echo $sk['user']['avatar_url']; ?>" width="48px" height="auto" alt="<?php echo $sk['user']['name']; ?>">
+                </td>
+                <td align="left" valign="middle">
+                    <input type="file" name="image" accept="image/jpeg,image/png" style="width: 80%;">
+                    <button>
+                        <?php
+                        echo $lang['upload_button'];
+                        ?>
+                    </button>
+                </td>
+            </tr>
+            </table>
+        </div>
+    </div>
+    <input name="timeline_id" value="<?php echo $sk['user']['id']; ?>" type="hidden">
+    </form>
+    <?php
+    } elseif (isset($_GET['tab2']) && $_GET['tab2'] == "cover") {
+    ?>
+    <form class="update-timeline-form" method="post" enctype="multipart/form-data" action="<?php echo $sk['config']['site_url']; ?>/request.php?t=cover&a=post_upload">
+        <div class="form-container">
+            <div class="form-header">
+                <?php
+                echo $lang['change_cover_label'];
+                ?>
+            </div>
+            <div align="center">
+                <img src="<?php echo $sk['user']['cover_url']; ?>" width="100%" height="auto" alt="<?php echo $sk['user']['name']; ?>">
+            </div>
+            <div class="form-input-wrapper">
+                <input type="file" name="image" accept="image/jpeg,image/png" style="width: 85%;">
+                <button>
+                    <?php echo $lang['upload_button']; ?>
+                </button>
+            </div>
+        </div>
+        <input name="timeline_id" value="<?php echo $sk['user']['id']; ?>" type="hidden">
+    </form>
+    <?php
+    } elseif (isset($_GET['tab2']) && $_GET['tab2'] == "password") {
+    ?>
+    <form class="update-timeline-form" method="post">
+    <div class="form-container">
+        <div class="form-header">
+            <?php
+            echo $lang['update_password_label'];
+            ?>
+        </div>
+        <div class="form-input-wrapper">
+            <label class="float-left span35">
+                <?php
+                echo $lang['current_password_label'];
+                ?>:
+            </label>
+            <div class="input float-left span55">
+                <input type="password" name="current_password">
+            </div>
+            <div class="float-clear"></div>
+        </div>
+        <div class="form-input-wrapper">
+            <label class="float-left span35">
+                <?php
+                echo $lang['new_password_label'];
+                ?>:
+            </label>
+            <div class="input float-left span55">
+                <input type="text" name="new_password">
+            </div>
+            <div class="float-clear"></div>
+        </div>
+        <div class="form-input-wrapper">
+            <button class="active">
+                <?php
+                echo $lang['save_changes_button'];
+                ?>
+            </button>
+        </div>
+    </div>
+    </form>
+    <script>
+    $(function () {
+        $('form.update-timeline-form').ajaxForm({
+            url: SK_source()+'?t=user&a=settings',
+            
+            success: function (responseText) {
+                
+                if (responseText.status == 200) {
+                    
+                    $('.form-header').after('<div class="success-message hidden"><?php echo $lang['changes_saved']; ?></div>');
+                    $('.success-message').fadeIn('fast',function () {
+                            $(this).fadeOut(1500, function() {
+                                $(this).remove();
+                            });
+                        });
+                    
+                    $('form.update-timeline-form').resetForm();
+                }
+                else {
+                    $('.form-header').after('<div class="success-message hidden"><?php echo $lang['passwords_not_match']; ?></div>');
+                    $('.success-message').fadeIn('fast',function () {
+                            $(this).fadeOut(1500, function() {
+                                $(this).remove();
+                            });
+                        });
+                }
+            }
+        });
+    });
+    </script>
+    <?php
+    }
+    ?>
+</div>
+<div class="float-clear"></div>

@@ -1,0 +1,59 @@
+<div id="comment_<?php echo $sk['comment']['id']; ?>" class="comment-wrapper comment_<?php echo $sk['comment']['id']; ?>" data-comment-id="<?php echo $sk['comment']['id']; ?>">
+    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+        <td width="40px" align="left" valign="top">
+            <a href="<?php echo $sk['comment']['publisher']['url']; ?>" data-href="?tab1=timeline&id=<?php echo $sk['comment']['publisher']['username']; ?>">
+                <img class="avatar" src="<?php echo $sk['comment']['publisher']['thumbnail_url']; ?>" width="32px" height="32px">
+            </a>
+        </td>
+        
+        <td align="left" valign="top">
+            <div class="comment-content">
+                <a class="name" href="<?php echo $sk['comment']['publisher']['url']; ?>" data-href="?tab1=timeline&id=<?php echo $sk['comment']['publisher']['username']; ?>">
+                    <?php echo $sk['comment']['publisher']['name']; ?>
+                </a>
+                <span class="comment-text">
+                    <?php echo $sk['comment']['text']; ?>
+                </span>
+                <?php
+                if ($sk['logged'] == true) {
+                ?>
+                <div class="setting-buttons">
+                    <?php
+                    if ($sk['comment']['admin'] == true) {
+                    ?>
+                    <span class="comment-remove-btn cursor-hand" title="Remove" onclick="SK_deletePostWindow(<?php echo $sk['comment']['id']; ?>);">
+                        <i class="icon-remove progress-icon"></i>
+                    </span>
+                    <?php
+                    } elseif (!SK_isPostReported($sk['comment']['id'])) {
+                    ?>
+                    <span class="report-btn cursor-hand" title="Report" onclick="SK_reportPost(<?php echo $sk['comment']['id']; ?>);">
+                        <i class="icon-flag progress-icon"></i>
+                    </span>
+                    <?php
+                    }
+                    ?>
+                </div>
+                <?php
+                }
+                ?>
+                <div class="other-data">
+                    <span class="time ajax-time" title="<?php echo date('c', $sk['comment']['time']); ?>"><?php echo date('c', $sk['comment']['time']); ?></span>
+                    <abbr class="space1">&#183;</abbr>
+                    <?php
+                    if ($sk['logged'] == true) {
+                    echo SK_getPostLikeButton($sk['comment']['id']);
+                    ?>
+                    <abbr class="space1">&#183;</abbr>
+                    <?php
+                    }
+                    ?>
+                    
+                    <?php echo SK_getPostLikeActivityButton($sk['comment']['id']); ?>
+                </div>
+            </div>
+        </td>
+    </tr>
+    </table>
+</div>
